@@ -683,6 +683,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (corfu-auto nil)
   (corfu-quit-no-match 'separator)
   :config
+  (if ek-use-nerd-fonts
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
   (corfu-popupinfo-mode)
 
   (defun corfu-enable-in-minibuffer ()
@@ -705,6 +707,13 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
 
   (require 'corfu-quick))
+
+(use-package nerd-icons-corfu
+  :if ek-use-nerd-fonts
+  :ensure t
+  :straight t
+  :defer t
+  :after (:all corfu))
 
 (use-package cape
   :straight t
