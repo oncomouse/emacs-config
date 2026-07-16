@@ -1,0 +1,10 @@
+straight/
+eln-cache/
+tree-sitter/
+undo-fu-session/
+recentf
+places
+org-roam.db
+history
+.session
+.emacs*
