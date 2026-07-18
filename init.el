@@ -515,6 +515,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :custom
   (vterm-toggle-scope 'project)
   (vterm-toggle-fullscreen-p nil)
+  :hook
+  (vterm-mode . (lambda () (setq-local global-hl-line-mode nil) (display-line-numbers-mode -1)))
   :general
   ("<leader> t T" 'vterm-toggle)
   ("<leader> t t" 'vterm)
