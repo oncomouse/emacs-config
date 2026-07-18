@@ -484,10 +484,10 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
                                      completion-preview-complete)))))
   :general-config
   (:keymaps 'completion-preview-active-mode-map
+			"TAB" 'completion-preview-insert
+			"M-SPC" 'completion-at-point
             "M-n" 'completion-preview-next-candidate
             "M-p" 'completion-preview-prev-candidate))
-
-
 
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
@@ -744,11 +744,10 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (corfu-min-width 50)                   ;; Minimum width of completion popup
   (corfu-popupinfo-delay 0.5)            ;; Delay before showing documentation popup
   :hook (after-init . global-corfu-mode)
-  :general-config
+  :general
   ("C-x C-o" 'completion-at-point)
   (:keymaps 'corfu-map
 			"C-c" 'corfu-quit
-			"C-g" 'corfu-quit
 			"Tab" 'corfu-insert
 			"C-y" 'corfu-insert
 			"M-t" 'corfu-popupinfo-toggle
@@ -756,7 +755,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 			"M-p" 'corfu-popupinfo-scroll-up
 			"M-q" #'corfu-quick-complete
 			"C-q" #'corfu-quick-insert
-      "M-m" #'corfu-move-to-minibuffer)
+			"M-m" #'corfu-move-to-minibuffer)
   :config
   (if ek-use-nerd-fonts
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
