@@ -9,3 +9,5 @@ history
 .session
 .emacs*
 auto-save-list/
+tramp
+transient/
