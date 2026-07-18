@@ -801,30 +801,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
            (setq-local completion-at-point-functions (list #'cape-dict #'cape-keyword #'cape-dabbrev)
                        completion-styles '(basic)))))
 
-(use-package completion-preview
-  :ensure nil
-  :diminish completion-preview-mode
-  :hook (((prog-mode org-mode markdown-mode) . completion-preview-mode)
-         (org-mode . (lambda ()
-                       (electric-indent-local-mode -1)
-                       ;; need to overwrite `completion-preview-commands' to trigger
-                       ;; completion-preview
-                       (setq-local completion-preview-commands
-                                   '(;; self-insert-command
-                                     evil-delete-backward-char-and-join
-                                     org-self-insert-command
-                                     insert-char
-                                     delete-backward-char
-                                     org-delete-backward-char
-                                     backward-delete-char-untabify
-                                     analyze-text-conversion
-                                     completion-preview-complete)))))
-  :general-config
-  (:keymaps 'completion-preview-active-mode-map
-            "M-n" 'completion-preview-next-candidate
-            "M-p" 'completion-preview-prev-candidate))
-
-
 ;;; Diff-HL
 ;; The `diff-hl' package provides visual indicators for version control changes
 ;; directly in the margin of the buffer, showing lines added, deleted, or changed.
