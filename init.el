@@ -187,7 +187,7 @@
   (global-display-line-numbers-mode +1) ;; Display line numbers everywhere
   (global-hl-line-mode 1)      ;; Enable highlight of the current line
   (global-auto-revert-mode 1)  ;; Enable global auto-revert mode to keep buffers up to date with their corresponding files.
-  (indent-tabs-mode -1)        ;; Disable the use of tabs for indentation (use spaces instead).
+  (indent-tabs-mode nil)       ;; Disable the use of tabs for indentation (use spaces instead).
   (recentf-mode 1)             ;; Enable tracking of recently opened files.
   (savehist-mode 1)            ;; Enable saving of command history.
   (save-place-mode 1)          ;; Enable saving the place in files for easier return.
