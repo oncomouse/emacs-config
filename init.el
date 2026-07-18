@@ -452,6 +452,42 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :hook
   (after-init . which-key-mode)) ;; Enable which-key mode after initialization.
 
+;;; ELECTRIC PAIR
+;; `electric-pair' is an Emacs package that automatically types the closing
+;; character for paired syntax elements (quotations, brackets, etc).
+(use-package electric-pair
+  :ensure nil
+  :defer t
+  :config
+  (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
+  (modify-syntax-entry ?= "(=" org-mode-syntax-table)
+  :hook
+  ((org-mode markdown-mode prog-mode) . electric-pair-mode))
+
+;;; COMPLETION PREVIEW
+(use-package completion-preview
+  :ensure nil
+  :diminish completion-preview-mode
+  :hook (((prog-mode org-mode markdown-mode) . completion-preview-mode)
+         (org-mode . (lambda ()
+                       ;; need to overwrite `completion-preview-commands' to trigger
+                       ;; completion-preview
+                       (setq-local completion-preview-commands
+                                   '(;; self-insert-command
+                                     evil-delete-backward-char-and-join
+                                     org-self-insert-command
+                                     insert-char
+                                     delete-backward-char
+                                     org-delete-backward-char
+                                     backward-delete-char-untabify
+                                     analyze-text-conversion
+                                     completion-preview-complete)))))
+  :general-config
+  (:keymaps 'completion-preview-active-mode-map
+            "M-n" 'completion-preview-next-candidate
+            "M-p" 'completion-preview-prev-candidate))
+
+
 
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
