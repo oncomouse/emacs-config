@@ -750,8 +750,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :general
   ("C-x C-o" 'completion-at-point)
   :general-config
-  (:keymaps 'corfu-map
-			(general-imap
+  (general-imap :keymaps 'corfu-map
 			  "C-c" 'corfu-quit
 			  "Tab" 'corfu-insert
 			  "C-y" 'corfu-insert
@@ -760,7 +759,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 			  "M-p" 'corfu-popupinfo-scroll-up
 			  "M-q" #'corfu-quick-complete
 			  "C-q" #'corfu-quick-insert
-			  "M-m" #'corfu-move-to-minibuffer))
+			  "M-m" #'corfu-move-to-minibuffer)
   :config
   (if ek-use-nerd-fonts
 	  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
