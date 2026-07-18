@@ -731,6 +731,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; suggestions as you type.
 ;; Corfu Mode is highly customizable and can be integrated with
 ;; various modes and languages.
+
 (use-package corfu
   :straight t
   :init
@@ -748,19 +749,21 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :hook (after-init . global-corfu-mode)
   :general
   ("C-x C-o" 'completion-at-point)
+  :general-config
   (:keymaps 'corfu-map
-			"C-c" 'corfu-quit
-			"Tab" 'corfu-insert
-			"C-y" 'corfu-insert
-			"M-t" 'corfu-popupinfo-toggle
-			"M-n" 'corfu-popupinfo-scroll-down
-			"M-p" 'corfu-popupinfo-scroll-up
-			"M-q" #'corfu-quick-complete
-			"C-q" #'corfu-quick-insert
-			"M-m" #'corfu-move-to-minibuffer)
+			(general-imap
+			  "C-c" 'corfu-quit
+			  "Tab" 'corfu-insert
+			  "C-y" 'corfu-insert
+			  "M-t" 'corfu-popupinfo-toggle
+			  "M-n" 'corfu-popupinfo-scroll-down
+			  "M-p" 'corfu-popupinfo-scroll-up
+			  "M-q" #'corfu-quick-complete
+			  "C-q" #'corfu-quick-insert
+			  "M-m" #'corfu-move-to-minibuffer))
   :config
   (if ek-use-nerd-fonts
-    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+	  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
   (corfu-popupinfo-mode)
 
   (defun corfu-enable-in-minibuffer ()
