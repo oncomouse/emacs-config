@@ -711,6 +711,18 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode t))
 
+;;; MARKDOWN-MODE
+;; Markdown Mode provides support for editing Markdown files in Emacs,
+;; enabling features like syntax highlighting, previews, and more.
+;; It’s particularly useful for README files, as it can be set
+;; to use GitHub Flavored Markdown for enhanced compatibility.
+(use-package markdown-mode
+  :defer t
+  :straight t
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
+  :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
+
 ;;; CORFU
 ;; Corfu Mode provides a text completion framework for Emacs.
 ;; It enhances the editing experience by offering context-aware
