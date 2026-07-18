@@ -695,6 +695,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (corfu-popupinfo-delay 0.5)            ;; Delay before showing documentation popup
   :hook (after-init . global-corfu-mode)
   :general-config
+  ("C-x C-o" 'completion-at-point)
   (:keymaps 'corfu-map
 			"C-c" 'corfu-quit
 			"C-g" 'corfu-quit
