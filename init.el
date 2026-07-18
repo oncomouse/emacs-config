@@ -452,6 +452,12 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :hook
   (after-init . which-key-mode)) ;; Enable which-key mode after initialization.
 
+
+;;; ==================== EXTERNAL PACKAGES ====================
+;;
+;; From this point onward, all configurations will be for third-party packages
+;; that enhance Emacs' functionality and extend its capabilities.
+
 (use-package vterm
   :straight t
   :custom
@@ -474,7 +480,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (vterm-toggle-scope 'project)
   (vterm-toggle-fullscreen-p nil)
   :general
-  ("<leader>ot" 'vterm-toggle)
+  ("<leader> t T" 'vterm-toggle)
+  ("<leader> t t" 'vterm)
   :general-config
   (:keymaps 'vterm-mode-map
             "s-n" 'vterm-toggle-forward
@@ -494,12 +501,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
                  ;;(dedicated . t) ;dedicated is supported in emacs27
                  (reusable-frames . visible)
                  (window-height . 0.35))))
-
-
-;;; ==================== EXTERNAL PACKAGES ====================
-;;
-;; From this point onward, all configurations will be for third-party packages
-;; that enhance Emacs' functionality and extend its capabilities.
 
 (use-package hydra
   :straight t)
@@ -596,9 +597,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
    [remap goto-line]  'consult-goto-line
    [remap imenu]  'consult-imenu
    [remap browse-kill-ring]  'consult-yank-from-kill-ring
-   [remap recentf]  'consult-recent-file
-   "<leader> A"  'consult-org-agenda
-   "<leader> B"  'consult-buffer)
+   [remap recentf]  'consult-recent-file)
 
   :init
   ;; Enhance register preview with thin lines and no mode line.
@@ -674,14 +673,28 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode t))
 
+;;; CORFU
+;; Corfu Mode provides a text completion framework for Emacs.
+;; It enhances the editing experience by offering context-aware
+;; suggestions as you type.
+;; Corfu Mode is highly customizable and can be integrated with
+;; various modes and languages.
 (use-package corfu
   :straight t
   :init
   (setq completion-cycle-threshold 4)
   (setq completion-auto-select 'second-tab)
+  :custom
+  (corfu-auto nil)                       ;; Only completes when hitting TAB
+  ;; (corfu-auto-delay 0)                ;; Delay before popup (enable if corfu-auto is t)
+  (corfu-auto-prefix 1)                  ;; Trigger completion after typing 1 character
+  (corfu-quit-no-match 'separator)       ;; Quit if no match and no M-SPC
+  (corfu-scroll-margin 5)                ;; Margin when scrolling completions
+  (corfu-max-width 50)                   ;; Maximum width of completion popup
+  (corfu-min-width 50)                   ;; Minimum width of completion popup
+  (corfu-popupinfo-delay 0.5)            ;; Delay before showing documentation popup
   :hook (after-init . global-corfu-mode)
   :general-config
-  ("C-x C-o" 'completion-at-point)
   (:keymaps 'corfu-map
 			"C-c" 'corfu-quit
 			"C-g" 'corfu-quit
@@ -691,10 +704,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 			"M-n" 'corfu-popupinfo-scroll-down
 			"M-p" 'corfu-popupinfo-scroll-up
 			"M-q" #'corfu-quick-complete
-			"C-q" #'corfu-quick-insert)
-  :custom
-  (corfu-auto nil)
-  (corfu-quit-no-match 'separator)
+			"C-q" #'corfu-quick-insert
+      "M-m" #'corfu-move-to-minibuffer)
   :config
   (if ek-use-nerd-fonts
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
@@ -716,7 +727,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
        (let ((completion-extra-properties extras)
              completion-cycle-threshold completion-cycling)
          (consult-completion-in-region beg end table pred)))))
-  (keymap-set corfu-map "M-m" #'corfu-move-to-minibuffer)
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
 
   (require 'corfu-quick))
@@ -952,7 +962,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 
   :config
   ;; Set the leader key to space for easier access to custom commands. (setq evil-want-leader t)
-  ;; (evil-set-leader nil (kbd "C-c l") t)
+  (evil-set-leader nil (kbd "C-c l") t)
   (evil-set-leader nil (kbd "C-c"))
 
   (define-advice forward-evil-paragraph (:around (orig-fun &rest args))
@@ -1477,114 +1487,114 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	    "C-M-<up>" 'org-up-element
 	    "C-z" 'org-cycle-list-bullet)
   (general-nivmap ;; Org open controls
-    "<leader>oj" 'org-clock-goto
-    "<leader>ol" 'org-clock-in-last
-    "<leader>oi" 'org-clock-in
-    "<leader>oo" 'org-clock-out
-    "<leader>oa" 'org-agenda
-    "<leader>oc" 'org-capture)
+    "<leader> o j" 'org-clock-goto
+    "<leader> o l" 'org-clock-in-last
+    "<leader> o i" 'org-clock-in
+    "<leader> o o" 'org-clock-out
+    "<leader> o a" 'org-agenda
+    "<leader> o c" 'org-capture)
   (general-nivmap :keymaps 'org-mode-map ;; Reproduce doom's org menu
-    "C-c l '" #'org-edit-special
-    "C-c l *" #'org-ctrl-c-star
-    "C-c l +" #'org-ctrl-c-minus
-    "C-c l ," #'org-switchb
-    "C-c l ." #'org-goto
-    "C-c l #" #'org-update-statistics-cookies
-    "C-c l @" #'org-cite-insert
-    "C-c l A" #'org-archive-subtree-default
-    "C-c l e" #'org-export-dispatch
-    "C-c l f" #'org-footnote-action
-    "C-c l h" #'org-toggle-heading
-    "C-c l i" #'org-toggle-item
-    "C-c l I" #'org-id-get-create
-    "C-c l k" #'org-babel-remove-result
-    "C-c l n" #'org-store-link
-    "C-c l q" #'org-set-tags-command
-    "C-c l t" #'org-todo
-    "C-c l T" #'org-todo-list
-    "C-c l x" #'org-toggle-checkbox
-    "C-c l a a" #'org-attach
-    "C-c l a d" #'org-attach-delete-one
-    "C-c l a D" #'org-attach-delete-all
-    "C-c l a n" #'org-attach-new
-    "C-c l a o" #'org-attach-open
-    "C-c l a O" #'org-attach-open-in-emacs
-    "C-c l a r" #'org-attach-reveal
-    "C-c l a R" #'org-attach-reveal-in-emacs
-    "C-c l a u" #'org-attach-url
-    "C-c l a s" #'org-attach-set-directory
-    "C-c l a S" #'org-attach-sync
-    "C-c l b -" #'org-table-insert-hline
-    "C-c l b a" #'org-table-align
-    "C-c l b b" #'org-table-blank-field
-    "C-c l b c" #'org-table-create-or-convert-from-region
-    "C-c l b e" #'org-table-edit-field
-    "C-c l b f" #'org-table-edit-formulas
-    "C-c l b h" #'org-table-field-info
-    "C-c l b s" #'org-table-sort-lines
-    "C-c l b r" #'org-table-recalculate
-    "C-c l b R" #'org-table-recalculate-buffer-tables
-    "C-c l b d c" #'org-table-delete-column
-    "C-c l b d r" #'org-table-kill-row
-    "C-c l b i c" #'org-table-insert-column
-    "C-c l b i h" #'org-table-insert-hline
-    "C-c l b i r" #'org-table-insert-row
-    "C-c l b i H" #'org-table-hline-and-move
-    "C-c l b t f" #'org-table-toggle-formula-debugger
-    "C-c l b t o" #'org-table-toggle-coordinate-overlays
-    "C-c l c c" #'org-clock-cancel
-    "C-c l c d" #'org-clock-mark-default-task
-    "C-c l c e" #'org-clock-modify-effort-estimate
-    "C-c l c E" #'org-set-effort
-    "C-c l c g" #'org-clock-goto
-    "C-c l c G" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
-    "C-c l c i" #'org-clock-in
-    "C-c l c I" #'org-clock-in-last
-    "C-c l c o" #'org-clock-out
-    "C-c l c r" #'org-resolve-clocks
-    "C-c l c R" #'org-clock-report
-    "C-c l c t" #'org-evaluate-time-range
-    "C-c l c =" #'org-clock-timestamps-up
-    "C-c l c -" #'org-clock-timestamps-down
-    "C-c l d d" #'org-deadline
-    "C-c l d s" #'org-schedule
-    "C-c l d t" #'org-time-stamp
-    "C-c l d T" #'org-time-stamp-inactive
-    "C-c l g c" #'org-clock-goto
-    "C-c l g C" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
-    "C-c l g i" #'org-id-goto
-    "C-c l g r" #'org-refile-goto-last-stored
-    "C-c l g x" #'org-capture-goto-last-stored
-    "C-c l l i" #'org-id-store-link
-    "C-c l l l" #'org-insert-link
-    "C-c l l L" #'org-insert-all-links
-    "C-c l l s" #'org-store-link
-    "C-c l l S" #'org-insert-last-stored-link
-    "C-c l l t" #'org-toggle-link-display
-    "C-c l P a" #'org-publish-all
-    "C-c l P f" #'org-publish-current-file
-    "C-c l P p" #'org-publish
-    "C-c l P P" #'org-publish-current-project
-    "C-c l P s" #'org-publish-sitemap
-    "C-c l r" #'org-refile
-    "C-c l R" #'org-refile-reverse
-    "C-c l s a" #'org-toggle-archive-tag
-    "C-c l s b" #'org-tree-to-indirect-buffer
-    "C-c l s c" #'org-clone-subtree-with-time-shift
-    "C-c l s d" #'org-cut-subtree
-    "C-c l s h" #'org-promote-subtree
-    "C-c l s j" #'org-move-subtree-down
-    "C-c l s k" #'org-move-subtree-up
-    "C-c l s l" #'org-demote-subtree
-    "C-c l s n" #'org-narrow-to-subtree
-    "C-c l s r" #'org-refile
-    "C-c l s s" #'org-sparse-tree
-    "C-c l s A" #'org-archive-subtree-default
-    "C-c l s N" #'widen
-    "C-c l s S" #'org-sort
-    "C-c l p d" #'org-priority-down
-    "C-c l p p" #'org-priority
-    "C-c l p u" #'org-priority-up)
+    "<localleader> '" #'org-edit-special
+    "<localleader> *" #'org-ctrl-c-star
+    "<localleader> +" #'org-ctrl-c-minus
+    "<localleader> ," #'org-switchb
+    "<localleader> ." #'org-goto
+    "<localleader> #" #'org-update-statistics-cookies
+    "<localleader> @" #'org-cite-insert
+    "<localleader> A" #'org-archive-subtree-default
+    "<localleader> e" #'org-export-dispatch
+    "<localleader> f" #'org-footnote-action
+    "<localleader> h" #'org-toggle-heading
+    "<localleader> i" #'org-toggle-item
+    "<localleader> I" #'org-id-get-create
+    "<localleader> k" #'org-babel-remove-result
+    "<localleader> n" #'org-store-link
+    "<localleader> q" #'org-set-tags-command
+    "<localleader> t" #'org-todo
+    "<localleader> T" #'org-todo-list
+    "<localleader> x" #'org-toggle-checkbox
+    "<localleader> a a" #'org-attach
+    "<localleader> a d" #'org-attach-delete-one
+    "<localleader> a D" #'org-attach-delete-all
+    "<localleader> a n" #'org-attach-new
+    "<localleader> a o" #'org-attach-open
+    "<localleader> a O" #'org-attach-open-in-emacs
+    "<localleader> a r" #'org-attach-reveal
+    "<localleader> a R" #'org-attach-reveal-in-emacs
+    "<localleader> a u" #'org-attach-url
+    "<localleader> a s" #'org-attach-set-directory
+    "<localleader> a S" #'org-attach-sync
+    "<localleader> b -" #'org-table-insert-hline
+    "<localleader> b a" #'org-table-align
+    "<localleader> b b" #'org-table-blank-field
+    "<localleader> b c" #'org-table-create-or-convert-from-region
+    "<localleader> b e" #'org-table-edit-field
+    "<localleader> b f" #'org-table-edit-formulas
+    "<localleader> b h" #'org-table-field-info
+    "<localleader> b s" #'org-table-sort-lines
+    "<localleader> b r" #'org-table-recalculate
+    "<localleader> b R" #'org-table-recalculate-buffer-tables
+    "<localleader> b d c" #'org-table-delete-column
+    "<localleader> b d r" #'org-table-kill-row
+    "<localleader> b i c" #'org-table-insert-column
+    "<localleader> b i h" #'org-table-insert-hline
+    "<localleader> b i r" #'org-table-insert-row
+    "<localleader> b i H" #'org-table-hline-and-move
+    "<localleader> b t f" #'org-table-toggle-formula-debugger
+    "<localleader> b t o" #'org-table-toggle-coordinate-overlays
+    "<localleader> c c" #'org-clock-cancel
+    "<localleader> c d" #'org-clock-mark-default-task
+    "<localleader> c e" #'org-clock-modify-effort-estimate
+    "<localleader> c E" #'org-set-effort
+    "<localleader> c g" #'org-clock-goto
+    "<localleader> c G" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
+    "<localleader> c i" #'org-clock-in
+    "<localleader> c I" #'org-clock-in-last
+    "<localleader> c o" #'org-clock-out
+    "<localleader> c r" #'org-resolve-clocks
+    "<localleader> c R" #'org-clock-report
+    "<localleader> c t" #'org-evaluate-time-range
+    "<localleader> c =" #'org-clock-timestamps-up
+    "<localleader> c -" #'org-clock-timestamps-down
+    "<localleader> d d" #'org-deadline
+    "<localleader> d s" #'org-schedule
+    "<localleader> d t" #'org-time-stamp
+    "<localleader> d T" #'org-time-stamp-inactive
+    "<localleader> g c" #'org-clock-goto
+    "<localleader> g C" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
+    "<localleader> g i" #'org-id-goto
+    "<localleader> g r" #'org-refile-goto-last-stored
+    "<localleader> g x" #'org-capture-goto-last-stored
+    "<localleader> l i" #'org-id-store-link
+    "<localleader> l l" #'org-insert-link
+    "<localleader> l L" #'org-insert-all-links
+    "<localleader> l s" #'org-store-link
+    "<localleader> l S" #'org-insert-last-stored-link
+    "<localleader> l t" #'org-toggle-link-display
+    "<localleader> P a" #'org-publish-all
+    "<localleader> P f" #'org-publish-current-file
+    "<localleader> P p" #'org-publish
+    "<localleader> P P" #'org-publish-current-project
+    "<localleader> P s" #'org-publish-sitemap
+    "<localleader> r" #'org-refile
+    "<localleader> R" #'org-refile-reverse
+    "<localleader> s a" #'org-toggle-archive-tag
+    "<localleader> s b" #'org-tree-to-indirect-buffer
+    "<localleader> s c" #'org-clone-subtree-with-time-shift
+    "<localleader> s d" #'org-cut-subtree
+    "<localleader> s h" #'org-promote-subtree
+    "<localleader> s j" #'org-move-subtree-down
+    "<localleader> s k" #'org-move-subtree-up
+    "<localleader> s l" #'org-demote-subtree
+    "<localleader> s n" #'org-narrow-to-subtree
+    "<localleader> s r" #'org-refile
+    "<localleader> s s" #'org-sparse-tree
+    "<localleader> s A" #'org-archive-subtree-default
+    "<localleader> s N" #'widen
+    "<localleader> s S" #'org-sort
+    "<localleader> p d" #'org-priority-down
+    "<localleader> p p" #'org-priority
+    "<localleader> p u" #'org-priority-up)
 
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
          (org-mode  . turn-on-visual-line-mode)
@@ -1756,10 +1766,10 @@ Switch to TODO otherwise"
   :hook ((org-mode markdown-mode latex-mode) . citar-capf-setup)
   :general-config
   (general-imap :keymaps '(org-mode-map markdown-mode-map)
-    "<localleader>@" 'citar-insert-citation)
+    "<localleader> @" 'citar-insert-citation)
   (:keymaps 'org-mode-map
-            "<localleader>on" 'citar-open-notes
-            "<localleader>of" 'citar-open-files)
+            "<localleader> o n" 'citar-open-notes
+            "<localleader> o f" 'citar-open-files)
   :custom
   (org-cite-insert-processor 'citar)
   (org-cite-follow-processor 'citar)
