@@ -608,6 +608,19 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (setq xref-show-xrefs-function #'consult-xref
 		xref-show-definitions-function #'consult-xref))
 
+;; AFFE
+;; Affe provides an asynchronous fuzzy finder similar to the fzf command-line fuzzy finder, written in pure Elisp. A producer process is started in the background, e.g., find or grep. The output produced by this process is filtered by an external asynchronous Emacs process. The Emacs UI always stays responsive since the work is off-loaded to other processes. The results are presented in the minibuffer using Consult, which allows to quickly select from the available items.
+(use-package affe
+  :ensure t
+  :straight t
+  :after (orderless)
+  :config
+  ;; Manual preview key for `affe-grep'
+  (consult-customize affe-grep :preview-key "M-.")
+  (defun affe-orderless-regexp-compiler (input _type _ignorecase)
+    (setq input (cdr (orderless-compile input)))
+    (cons input (apply-partially #'orderless--highlight input t)))
+  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler))
 
 ;;; EMBARK
 ;; Embark provides a powerful contextual action menu for Emacs, allowing
@@ -864,11 +877,13 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	    "<leader> u" 'universal-argument-more
 	    "C-u" 'universal-argument-more)
   (general-nivmap
-    "<leader> f f" 'consult-find
-    "<leader> f g" 'consult-grep
+    "<leader> f f" 'affe-find
+    "<leader> f g" 'affe-grep
     "<leader> f G" 'consult-git-grep
     "<leader> f r" 'consult-ripgrep
     "<leader> f h" 'consult-info
+    "<leader> f o h" 'consult-org-agenda
+    "<leader> f o H" 'consult-org-heading
     "<leader> /" 'consult-line
 
     ;; Flymake navigation
