@@ -1816,13 +1816,23 @@ Switch to TODO otherwise"
       :unnarrowed t)))
   (org-roam-directory "~/org/org-roam")
   :general
-  ("C-c n l" 'org-roam-buffer-toggle
-   "C-c n f" 'org-roam-node-find
-   "C-c n g" 'org-roam-graph
-   "C-c n i" 'org-roam-node-insert
-   "C-c n c" 'org-roam-capture
+  ("<leader> n l" 'org-roam-buffer-toggle
+   "<leader> n c" 'org-roam-capture
+   "<leader> n f" 'org-roam-node-find
+   "<leader> n g" 'org-roam-graph
+   "<leader> n i" 'org-roam-node-insert
+   "<leader> n a r" 'org-roam-alias-remove
+   "<leader> n a a" 'org-roam-alias-add
    ;; Dailies
-   "C-c n j" 'org-roam-dailies-capture-today)
+   "<leader> n d D" 'org-roam-dailies-capture-date
+   "<leader> n d N" 'org-roam-dailies-capture-today
+   "<leader> n d T" 'org-roam-dailies-capture-tomorrow
+   "<leader> n d f" 'org-roam-dailies-goto-date
+   "<leader> n d t" 'org-roam-dailies-goto-tomorrow
+   "<leader> n d y" 'org-roam-dailies-goto-yesterday
+   "<leader> n d n" 'org-roam-dailies-goto-today
+   "<leader> n d b" 'org-roam-dailies-goto-previous-note
+   "<leader> n d f" 'org-roam-dailies-goto-next-note)
   :config
   ;; If you're using a vertical completion framework, you might want a more informative completion interface
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
@@ -1905,11 +1915,10 @@ Switch to TODO otherwise"
    :preview-key "M-.")
   :general
   ;; Define some convenient keybindings as an addition
-  ("C-c n e" 'consult-org-roam-file-find
-   "C-c n b" 'consult-org-roam-backlinks
-   "C-c n B" 'consult-org-roam-backlinks-recursive
-   "C-c n L" 'consult-org-roam-forward-links
-   "C-c n r" 'consult-org-roam-search))
+  ("<leader> n e" 'consult-org-roam-file-find
+   "<leader> n b" 'consult-org-roam-backlinks-recursive
+   "<leader> n L" 'consult-org-roam-forward-links
+   "<leader> n r" 'consult-org-roam-search))
 
 (use-package evil-org
   :straight t
