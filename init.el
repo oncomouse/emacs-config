@@ -623,6 +623,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 (use-package consult
   :ensure t
   :straight t
+  :defer t
   :custom
   (consult-narrow-key "<")
   (consult-widen-key ">")
@@ -664,9 +665,9 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; actions on the candidates.
 ;; Just `<leader> .' over any text, explore it :)
 (use-package embark
+  :ensure t
   :straight t
-  :after (embark-consult)
-  :general-config
+  :general
   ("C-;" 'embark-act)
   (:keymaps 'vertico-map
 	    "C-c C-o" 'embark-collect
@@ -675,6 +676,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (:keymaps 'minibuffer-mode-map
 	    "C-c C-o" 'embark-collect
 	    "C-c C-e" 'embark-export)
+  :general-config
   (:keymaps 'embark-general-map
 	    "/" 'consult-ripgrep)
   :config
@@ -971,6 +973,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
     ;; Yank from kill ring
     "<leader> P" 'consult-yank-from-kill-ring
 
+	;; Embark
+	"<leader> ." 'embark-act
 
     ;; Help keybindings
     "<leader> h m" 'describe-mode ;; Describe current mode
