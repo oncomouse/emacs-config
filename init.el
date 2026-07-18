@@ -1938,12 +1938,12 @@ Switch to TODO otherwise"
 (use-package move-dup
   :straight t
   :general
-  ([M-S-up] 'move-dup-move-lines-up
-   [M-S-down] 'move-dup-move-lines-down
-   [M-up] 'move-dup-move-lines-up
-   [M-down] 'move-dup-move-lines-down
-   [C-M-up] 'move-dup-duplicate-up
-   [C-M-down] 'move-dup-duplicate-down))
+  ("M-S-k" 'move-dup-move-lines-up
+   "M-S-j" 'move-dup-move-lines-down
+   "M-k" 'move-dup-move-lines-up
+   "M-j" 'move-dup-move-lines-down
+   "C-M-k" 'move-dup-duplicate-up
+   "C-M-j" 'move-dup-duplicate-down))
 
 (use-package rg
   :straight t
