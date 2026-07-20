@@ -1796,12 +1796,12 @@ Switch to TODO otherwise"
   :straight t
   :after (org)
   :hook ((org-mode markdown-mode latex-mode) . citar-capf-setup)
-  :general-config
+  :general
   (general-imap :keymaps '(org-mode-map markdown-mode-map)
-    "<localleader> @" 'citar-insert-citation)
+	"<localleader> @" 'citar-insert-citation)
   (:keymaps 'org-mode-map
-            "<localleader> o n" 'citar-open-notes
-            "<localleader> o f" 'citar-open-files)
+			"<localleader> o n" 'citar-open-notes
+			"<localleader> o f" 'citar-open-files)
   :custom
   (org-cite-insert-processor 'citar)
   (org-cite-follow-processor 'citar)
@@ -1812,9 +1812,9 @@ Switch to TODO otherwise"
   ;; Run `citar-org-update-pre-suffix' after inserting a citation to immediately
   ;; set its prefix and suffix
   (advice-add 'org-cite-insert :after #'(lambda (args)
-                                          (save-excursion
-                                            (left-char) ; First move point inside citation
-                                            (citar-org-update-pre-suffix)))))
+										  (save-excursion
+											(left-char) ; First move point inside citation
+											(citar-org-update-pre-suffix)))))
 
 (use-package citar-embark
   :defer t
