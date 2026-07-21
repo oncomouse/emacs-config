@@ -494,52 +494,50 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; From this point onward, all configurations will be for third-party packages
 ;; that enhance Emacs' functionality and extend its capabilities.
 
-(use-package vterm
+;;; GHOSTEL
+;; Provides a termainl using is a terminal emulator for Emacs powered by
+;; libghostty-vt, the VT engine behind the Ghostty terminal.
+;;
+;; It aims to be featureful, fast, robust and correct.
+;;
+;; Ghostel's features include synchronized output, true color, the Kitty keyboard
+;; and graphics protocols, hyperlinks, desktop notifications, progress reports and
+;; a lot more.
+;;
+;; Shell integration (directory tracking, prompt navigation) all works out of the
+;; box for bash, zsh, fish and nushell.
+(use-package ghostel
   :straight t
-  :custom
-  (vterm-kill-buffer-on-exit t)
-  (vterm-max-scrollback 5000)
-  :commands (vterm)
-  :general-config
-  (:keymaps 'vterm-mode-map
-            "M-v" 'scroll-up-command
-            "C-v" 'scroll-down-command
-            "M-g" nil
-            "C-<backspace>" (lambda (_) (interactive "p") (vterm-send "C-<backspace>"))
-            "C-c C-c" (lambda (_) (interactive "p") (vterm-send "C-c")))
-  :config
-  (evil-set-initial-state 'vterm-mode 'emacs))
-
-(use-package vterm-toggle
-  :straight t
-  :custom
-  (vterm-toggle-scope 'project)
-  (vterm-toggle-fullscreen-p nil)
+  :init
+  (setq ghostel-compile-global-mode t)
+  (autoload 'ghostel-compile--compilation-start-advice "ghostel-compile")
+  (advice-add 'compilation-start :around #'ghostel-compile--compilation-start-advice)
   :hook
-  (vterm-mode . (lambda () (setq-local global-hl-line-mode nil) (display-line-numbers-mode -1)))
+  (ghostel-mode . (lambda () (setq-local global-hl-line-mode nil) (display-line-numbers-mode -1)))
   :general
-  ("<leader> t T" 'vterm-toggle)
-  ("<leader> t t" 'vterm)
-  :general-config
-  (:keymaps 'vterm-mode-map
-            "s-n" 'vterm-toggle-forward
-            "s-p" 'vterm-toggle-backward)
+  ("<leader> t t" (lambda () (interactive) (evil-window-vsplit) (other-window 1) (ghostel)))
+  ("<leader> t T" (lambda () (interactive) (evil-window-split) (other-window 1) (ghostel))))
+(use-package evil-ghostel
+  :straight (evil-ghostel
+             :type git
+             :host github
+             :repo "dakra/ghostel"
+             :files ("extensions/evil-ghostel/evil-ghostel.el"))
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode)
+  :custom
+  (evil-ghostel-escape 'evil) ; make ESC always switches to evil normal state
   :config
-  ;; Display vterm at the bottom:
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                   (let ((buffer (get-buffer buffer-or-name)))
-                     (with-current-buffer buffer
-                       (or (equal major-mode 'vterm-mode)
-                           (string-prefix-p "*vterm*" (buffer-name buffer))))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 ;;(display-buffer-reuse-window display-buffer-in-direction)
-                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                 ;;(direction . bottom)
-                 ;;(dedicated . t) ;dedicated is supported in emacs27
-                 (reusable-frames . visible)
-                 (window-height . 0.35))))
+  ;; Make C-q the literal-key escape hatch in insert state.
+  (evil-define-key 'insert evil-ghostel-mode-map
+    (kbd "C-q") #'ghostel-send-next-key))
 
+;;; HYDRA
+;; Hydras and transient menus both can provide a temporary menu of commands at
+;; the bottom of the screen. Hydras can also provide a pop-up menu as alternate
+;; mode of operation. Transient menus are currently more popular. Both are
+;; useful for getting work done with an unfamiliar package by providing for the
+;; execution of commands by clicking on hyperlinks.
 (use-package hydra
   :straight t)
 
