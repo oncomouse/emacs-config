@@ -1023,7 +1023,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
     "<leader> f h" 'consult-info
     "<leader> f o h" 'consult-org-agenda
     "<leader> f o H" 'consult-org-heading
-    "<leader> /" 'consult-line
+	"<leader> f b" 'consult-b
 
     ;; Flymake navigation
     "<leader> x x" 'consult-flymake;; Gives you something like `trouble.nvim'
@@ -1043,14 +1043,13 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
     "<leader> v D" 'diff-hl-show-hunk ;; Show diff for a hunk
     "<leader> v b" 'vc-annotate       ;; Annotate buffer with version control info
 
+    "<leader> b a" 'evil-buffer ;; Open consult buffer list
     "<leader> b i" 'consult-buffer ;; Open consult buffer list
     "<leader> b b" 'ibuffer ;; Open Ibuffer
-    "<leader> b d" 'kill-current-buffer ;; Kill current buffer
-    "<leader> b k" 'kill-current-buffer ;; Kill current buffer
-    "<leader> b x" 'kill-current-buffer ;; Kill current buffer
-    "<leader> b s" 'save-buffer ;; Save buffer
+    "<leader> b d" 'evil-delete-buffer ;; Kill current buffer
+    "<leader> b D" (lambda () (interactive) (evil-delete-buffer (current-buffer) t)) ;; Kill current buffer
+    "<leader> b s" 'scratch-buffer ;; Save buffer
     "<leader> b l" 'consult-buffer ;; Consult buffer
-    "<leader>SPC" 'consult-buffer ;; Consult buffer
 
     ;; Project management keybindings
     "<leader> p b" 'consult-project-buffer ;; Consult project buffer
