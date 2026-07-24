@@ -1371,11 +1371,13 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 (use-package better-jumper
   :straight t
   :diminish (better-jumper-mode better-jumper-local-mode)
-  :general-config
+  :general
   (:states 'motion
+		   "TAB" nil
            "C-o" 'better-jumper-jump-backward
            "C-i" 'better-jumper-jump-forward)
   :config
+  (general-define-key :states 'motion "TAB" nil)
   (better-jumper-mode +1))
 
 
