@@ -967,6 +967,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
                                   (unknown . "?")
                                   (ignored . "i"))))
 
+
 ;;; HL TODO
 ;; Highlight TODO and similar keywords in comments and strings
 (defun ap/get-catppuccin-color (fg-key &optional bg-key)
@@ -1005,6 +1006,7 @@ Otherwise returns the FG-KEY hex string."
   :hook
   (after-init . rainbow-mode))
 
+
 ;;; Magit
 ;; `magit' is a powerful Git interface for Emacs that provides a complete
 ;; set of features to manage Git repositories. With its intuitive interface,
@@ -1027,6 +1029,7 @@ Otherwise returns the FG-KEY hex string."
   :init
   (sanityinc/fullframe-mode 'magit-status-mode))
 
+
 ;;; XCLIP
 ;; `xclip' is an Emacs package that integrates the X Window System clipboard
 ;; with Emacs. It allows seamless copying and pasting between Emacs and other
@@ -1039,6 +1042,7 @@ Otherwise returns the FG-KEY hex string."
   :defer t
   :hook
   (after-init . xclip-mode))     ;; Enable xclip mode after initialization.
+
 
 ;; EVIL
 ;; The `evil' package provides Vim emulation within Emacs, allowing

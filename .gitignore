@@ -11,3 +11,5 @@ history
 auto-save-list/
 tramp
 transient/
+elpa/
+.lsp-session
