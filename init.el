@@ -967,6 +967,31 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
                                   (unknown . "?")
                                   (ignored . "i"))))
 
+(defun ap/get-catppuccin-color (fg-key &optional bg-key)
+  "Get color from catppuccin-flavor-alist using current catppuccin-flavor.
+If BG-KEY is provided, returns (:background bg :foreground fg).
+Otherwise returns the FG-KEY hex string."
+  (let* ((flavor (alist-get catppuccin-flavor catppuccin-flavor-alist))
+         (fg-val (alist-get fg-key flavor))
+         (bg-val (when bg-key (alist-get bg-key flavor))))
+    (if bg-val
+        `(:background ,bg-val :foreground ,fg-val)
+      fg-val)))
+
+(use-package hl-todo
+  :defer t
+  :ensure t
+  :straight t
+  :hook
+  (after-init . global-hl-todo-mode)
+  :config
+  (setq hl-todo-keyword-faces
+		`(("TODO"   . ,(ap/get-catppuccin-color 'base 'teal))
+		  ("FIXME"  . ,(ap/get-catppuccin-color 'base 'red))
+		  ("HACK"  . ,(ap/get-catppuccin-color 'base 'yellow))
+		  ("NOTE"  . ,(ap/get-catppuccin-color 'base 'sky)))))
+
+
 
 ;;; Magit
 ;; `magit' is a powerful Git interface for Emacs that provides a complete
