@@ -1067,6 +1067,9 @@ Otherwise returns the FG-KEY hex string."
    evil-want-C-u-delete t)       ;; Makes C-u delete on insert mode
   :general-config
   (general-nivmap
+	"M-l" 'evil-shift-right-line
+	"M-h" 'evil-shift-left-line)
+  (general-nivmap
     "C-n" 'evil-next-line
     "C-p" 'evil-previous-line)
   (general-imap
