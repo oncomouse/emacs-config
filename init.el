@@ -314,10 +314,12 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :config
   (desktop-save-mode 1))
 
+
 (use-package repeat
   :ensure nil
   :config
   (repeat-mode 1))
+
 
 (use-package holidays
   :ensure nil
@@ -341,6 +343,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :config
   (with-eval-after-load 'org
     (setq org-agenda-include-diary t)))
+
 
 ;;; ISEARCH
 ;; In this configuration, we're setting up isearch, Emacs's incremental search feature.
@@ -452,6 +455,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :hook
   (after-init . which-key-mode)) ;; Enable which-key mode after initialization.
 
+
 ;;; ELECTRIC PAIR
 ;; `electric-pair' is an Emacs package that automatically types the closing
 ;; character for paired syntax elements (quotations, brackets, etc).
@@ -462,13 +466,18 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
   (modify-syntax-entry ?= "(=" org-mode-syntax-table)
   :hook
-  ((org-mode markdown-mode prog-mode) . electric-pair-mode))
+  ((org-mode markdown-mode md-mode prog-mode) . electric-pair-mode))
+
 
 ;;; COMPLETION PREVIEW
+;; This library provides the Completion Preview mode.  This minor mode
+;; displays a completion suggestion for the symbol at point in an
+;; overlay after point.  Check out the customization group
+;; `completion-preview' for user options that you may want to tweak.
 (use-package completion-preview
   :ensure nil
   :diminish completion-preview-mode
-  :hook (((prog-mode org-mode markdown-mode) . completion-preview-mode)
+  :hook (((prog-mode org-mode md-mode markdown-mode) . completion-preview-mode)
          (org-mode . (lambda ()
                        ;; need to overwrite `completion-preview-commands' to trigger
                        ;; completion-preview
@@ -489,10 +498,12 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
             "M-n" 'completion-preview-next-candidate
             "M-p" 'completion-preview-prev-candidate))
 
+
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
 ;; From this point onward, all configurations will be for third-party packages
 ;; that enhance Emacs' functionality and extend its capabilities.
+
 
 ;;; GHOSTEL
 ;; Provides a termainl using is a terminal emulator for Emacs powered by
@@ -532,6 +543,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (evil-define-key 'insert evil-ghostel-mode-map
     (kbd "C-q") #'ghostel-send-next-key))
 
+
 ;;; HYDRA
 ;; Hydras and transient menus both can provide a temporary menu of commands at
 ;; the bottom of the screen. Hydras can also provide a pop-up menu as alternate
@@ -540,6 +552,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; execution of commands by clicking on hyperlinks.
 (use-package hydra
   :straight t)
+
 
 ;;; VERTICO
 ;; Vertico enhances the completion experience in Emacs by providing a
@@ -644,8 +657,15 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (setq xref-show-xrefs-function #'consult-xref
 		xref-show-definitions-function #'consult-xref))
 
-;; AFFE
-;; Affe provides an asynchronous fuzzy finder similar to the fzf command-line fuzzy finder, written in pure Elisp. A producer process is started in the background, e.g., find or grep. The output produced by this process is filtered by an external asynchronous Emacs process. The Emacs UI always stays responsive since the work is off-loaded to other processes. The results are presented in the minibuffer using Consult, which allows to quickly select from the available items.
+
+;; AFFE Affe provides an asynchronous fuzzy finder similar to the fzf
+;; command-line fuzzy finder, written in pure Elisp. A producer
+;; process is started in the background, e.g., find or grep. The
+;; output produced by this process is filtered by an external
+;; asynchronous Emacs process. The Emacs UI always stays responsive
+;; since the work is off-loaded to other processes. The results are
+;; presented in the minibuffer using Consult, which allows to quickly
+;; select from the available items.
 (use-package affe
   :ensure t
   :straight t
@@ -657,6 +677,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
     (setq input (cdr (orderless-compile input)))
     (cons input (apply-partially #'orderless--highlight input t)))
   (setq affe-regexp-compiler #'affe-orderless-regexp-compiler))
+
 
 ;;; EMBARK
 ;; Embark provides a powerful contextual action menu for Emacs, allowing
@@ -711,17 +732,27 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode t))
 
+
 ;;; MARKDOWN-MODE
 ;; Markdown Mode provides support for editing Markdown files in Emacs,
 ;; enabling features like syntax highlighting, previews, and more.
 ;; It’s particularly useful for README files, as it can be set
 ;; to use GitHub Flavored Markdown for enhanced compatibility.
-(use-package markdown-mode
-  :defer t
-  :straight t
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
-  :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
+;; (use-package markdown-mode
+;;   :defer t
+;;   :straight t
+;;   :ensure t
+;;   :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
+;;   :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
+
+(use-package md-mode
+  :straight (md-mode :type git :host github :repo "yibie/md-mode")
+  :mode ("\\.md\\'" . md-mode)
+  :general-config (:states 'motion :keymaps 'md-mode-map
+					 "] ]" 'outline-next-visible-heading
+					 "[ [" 'outline-previous-visible-heading
+					 "[ ]" 'outline-up-heading))
+
 
 ;;; CORFU
 ;; Corfu Mode provides a text completion framework for Emacs.
@@ -729,7 +760,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; suggestions as you type.
 ;; Corfu Mode is highly customizable and can be integrated with
 ;; various modes and languages.
-
 (use-package corfu
   :straight t
   :init
@@ -762,7 +792,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (if ek-use-nerd-fonts
 	  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
   (corfu-popupinfo-mode)
-
   (defun corfu-enable-in-minibuffer ()
     "Enable Corfu in the minibuffer."
     (when (local-variable-p 'completion-at-point-functions)
@@ -771,7 +800,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
                   corfu-popupinfo-delay nil)
       (corfu-mode 1)))
   (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
-
   (defun corfu-move-to-minibuffer ()
     (interactive)
     (pcase completion-in-region--data
@@ -780,7 +808,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
              completion-cycle-threshold completion-cycling)
          (consult-completion-in-region beg end table pred)))))
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
-
   (require 'corfu-quick))
 
 (use-package nerd-icons-corfu
@@ -789,6 +816,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :straight t
   :defer t
   :after (:all corfu))
+
 
 ;;; LSP
 ;; Emacs comes with an integrated LSP client called `eglot', which offers basic LSP functionality.
@@ -868,7 +896,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (lsp-register-client
    (make-lsp-client
     :new-connection (lsp-stdio-connection '("harper-ls" "-s"))
-    :major-modes '(markdown-mode org-mode)
+    :major-modes '(md-mode markdown-mode org-mode)
     :initialization-options '(:userDictPath ""
                               :fileDictPath ""
                               :linters (:SpellCheck t
@@ -891,6 +919,12 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
     :server-id 'harper-ls))
   (setq c-basic-offset 4))
 
+
+;;; CAPE
+;; Cape provides Completion At Point Extensions which can be used in
+;; combination with Corfu, Company or the default completion UI. The
+;; completion backends used by completion-at-point are so called
+;; completion-at-point-functions (Capfs).
 (use-package cape
   :straight t
   :commands (cape-keyword cape-dabbrev)
@@ -898,10 +932,11 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (general-imap
     "C-x C-f" #'cape-file
     "C-x C-k" #'cape-dict)
-  :hook ((markdown-mode org-mode) .
+  :hook ((md-mode markdown-mode org-mode) .
          (lambda ()
            (setq-local completion-at-point-functions (list #'cape-dict #'cape-keyword #'cape-dabbrev)
                        completion-styles '(basic)))))
+
 
 ;;; Diff-HL
 ;; The `diff-hl' package provides visual indicators for version control changes
@@ -978,6 +1013,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :straight t
   :hook ((org-mode . evil-visual-state)
 	 (markdown-mode . evil-visual-state)
+	 (md-mode . evil-visual-state)
 	 (visual-line-mode . evil-visual-state))
   :init
   (setq
@@ -1467,18 +1503,20 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (custom-set-faces
    ;; Set the color for changes in the diff highlighting to blue.
    `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
-
   (custom-set-faces
    ;; Set the color for deletions in the diff highlighting to red.
    `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
-
   (custom-set-faces
    ;; Set the color for insertions in the diff highlighting to green.
    `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
-
   ;; Load the Catppuccin theme without prompting for confirmation.
   (load-theme 'catppuccin :no-confirm))
 
+
+;;; AVY
+;; avy is a GNU Emacs package for jumping to visible text using a
+;; char-based decision tree. See also ace-jump-mode and vim-easymotion
+;; - avy uses the same idea.
 (use-package avy
   :straight t
   :general
@@ -1508,16 +1546,13 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	 (cdr
 	  (ring-ref avy-ring 0)))
 	t)
-
   (defun avy-action-yank-whole-line (pt)
 	(avy-action-copy-whole-line pt)
 	(save-excursion (yank))
 	t)
-
   (defun avy-action-mark-to-char (pt)
 	(activate-mark)
 	(goto-char pt))
-
   (defun avy-action-flyspell (pt)
 	(save-excursion
       (goto-char pt)
@@ -1526,11 +1561,9 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	(select-window
 	 (cdr (ring-ref avy-ring 0)))
 	t)
-
   (defun avy-action-teleport-whole-line (pt)
 	(avy-action-kill-whole-line pt)
 	(save-excursion (yank)) t)
-
   (defun avy-action-embark (pt)
 	(unwind-protect
 		(save-excursion
@@ -1539,7 +1572,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
       (select-window
        (cdr (ring-ref avy-ring 0))))
 	t)
-
   (setf (alist-get ?y avy-dispatch-alist) 'avy-action-yank
         (alist-get ?w avy-dispatch-alist) 'avy-action-copy
         (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
@@ -1553,6 +1585,21 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
         (alist-get ?\; avy-dispatch-alist) 'avy-action-embark)
   (setq avy-keys (delete ?k avy-keys)))
 
+
+;;; ACE WINDOW
+;; I'm sure you're aware of the other-window command. While it's great
+;; for two windows, it quickly loses its value when there are more
+;; windows. You need to call it many times, and since it's not easily
+;; predictable, you have to check each time if you're in the window
+;; that you wanted.
+;;
+;; Another approach is to use windmove-left, windmove-up, etc. These
+;; are fast and predictable. Their disadvantage is that they need 4
+;; key bindings. The default ones are shift+arrows, which are hard to
+;; reach.
+;;
+;; This package aims to take the speed and predictability of windmove
+;; and pack it into a single key binding, similar to other-window.
 (use-package ace-window
   :straight t
   :general
@@ -1582,7 +1629,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	("=" enlarge-window-horizontally "horizontal enlarge")
 	("_" shrink-window "vertical shrink")
 	("+" enlarge-window "vertical enlarge"))
-
   (defun aw-window-resize (window)
 	"Resize WINDOW using `hydra-window-resizer/body'."
 	(aw-switch-to-window window)
@@ -1606,7 +1652,15 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  (mapc #'delete-overlay aw-overlays-back)
 	  (call-interactively 'ace-window))))
 
+
 (setq dotfiles-bibliography "~/Reading/library.bib")
+
+
+;;; ORG MODE
+;; A GNU Emacs major mode for keeping notes, authoring documents,
+;; computational notebooks, literate programming, maintaining to-do
+;; lists, planning projects, and more — in a fast and effective plain
+;; text system.
 (use-package org
   :straight (org :type git :host github :repo "emacs-straight/org-mode")
   :defer t
@@ -1728,13 +1782,11 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
     "C-c l p d" #'org-priority-down
     "C-c l p p" #'org-priority
     "C-c l p u" #'org-priority-up)
-
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
          (org-mode  . turn-on-visual-line-mode)
          (org-agenda-mode . hl-line-mode)
          (org-agenda-mode . (lambda () (add-hook 'window-configuration-change-hook 'org-agenda-align-tags nil t)))
          (org-agenda-after-show . org-show-entry))
-
   :custom
   (org-beamer-mode t) ;; Export to beamer
   (org-catch-invisible-edits 'show)
@@ -1802,34 +1854,27 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (org-cite-export-processors '((t csl)))
   (org-cite-csl-styles-dir "~/.csl")
   :config
-
   ;; Open file links in the same frame:
   (setf (alist-get 'file org-link-frame-setup) #'find-file)
-
   ;; Open .docx files using macOS/XDG open:
   (add-to-list 'org-file-apps `("\\.docx\\'" . ,(if (eq system-type 'darwin) "open %s" "xdg-open %s")))
-
   ;; org-refile configuration:
   (advice-add 'org-refile :after (lambda (&rest _) (org-save-all-org-buffers)))
-
   ;; Exclude DONE state tasks from refile targets
   (defun sanityinc/verify-refile-target ()
     "Exclude todo keywords with a done state from refile targets."
     (not (member (nth 2 (org-heading-components)) org-done-keywords)))
   (setq org-refile-target-verify-function 'sanityinc/verify-refile-target)
-
   (defun sanityinc/org-refile-anywhere (&optional goto default-buffer rfloc msg)
     "A version of `org-refile' which allows refiling to any subtree."
     (interactive "P")
     (let ((org-refile-target-verify-function))
       (org-refile goto default-buffer rfloc msg)))
-
   (defun sanityinc/org-agenda-refile-anywhere (&optional goto rfloc no-update)
     "A version of `org-agenda-refile' which allows refiling to any subtree."
     (interactive "P")
     (let ((org-refile-target-verify-function))
       (org-agenda-refile goto rfloc no-update)))
-
   ;; Custom add-ons:
   (defun ap/org-summary-todo (n-done n-not-done)
     "Switch entry to DONE when all subentries are done, to TODO otherwise.
@@ -1838,7 +1883,6 @@ N-DONE is the number of done elements; N-NOT-DONE is the number of
 not done."
     (let (org-log-done org-log-states)  ; turn off logging
       (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-
   (defun ap/org-checkbox-todo ()
     "Switch header TODO state to DONE when all checkboxes are ticked.
 
@@ -1865,19 +1909,20 @@ Switch to TODO otherwise"
                       (org-todo 'done))
                   (unless (string-equal todo-state "TODO")
                     (org-todo 'todo)))))))))
-
   (add-hook 'org-after-todo-statistics-hook 'ap/org-summary-todo)
   (add-hook 'org-checkbox-statistics-hook 'ap/org-checkbox-todo)
-
   (defun ap/wrap-dotimes (fn)
     "Wrap FN in a dotimes loop to make it repeatable with universal arguments."
     (let ((fn fn)) #'(lambda (&optional c)
                        (interactive "p")
                        (dotimes (_ c) (funcall fn)))))
-
   (define-key org-mode-map (kbd "M-<up>") (ap/wrap-dotimes 'org-metaup))
   (define-key org-mode-map (kbd "M-<down>") (ap/wrap-dotimes 'org-metadown)))
 
+
+;;; OX PANDOC
+;; This is another exporter that translates Org-mode file to various
+;; other formats via Pandoc.
 (use-package ox-pandoc
   :straight t
   :after org
@@ -1888,17 +1933,38 @@ Switch to TODO otherwise"
           (mathjax . t)
           (variable . "revealjs-url=https://revealjs.com"))))
 
+
+;;; CITEPROC EL
+;; citeproc-el is an Emacs Lisp library for rendering citations and
+;; bibliographies in styles described in the Citation Style Language
+;; (CSL), an XML-based, open format to describe the formatting of
+;; bibliographic references (see http://citationstyles.org/ for
+;; further information on CSL).
+;;
+;; The library implements most of the CSL 1.0.2 specification,
+;; including such features as citation disambiguation, cite collapsing
+;; and subsequent author substitution, and passes more than 70% of the
+;; tests in the CSL Test Suite. In addition to the standard CSL-JSON
+;; data format, citeproc-el has rudimentary support for reading
+;; bibliographic data from BibTeX, biblatex and org-bibtex
+;; bibliographies and can produce output in several formats including
+;; HTML and org-mode markup (see Supported output formats for the full
+;; list).
 (use-package citeproc
   :straight t
   :after (org))
 
-;; Citar for advanced citation:
+
+;;; CITAR
+;; Citar provides a highly-configurable completing-read front-end to
+;; browse and act on BibTeX, BibLaTeX, and CSL JSON bibliographic
+;; data, and LaTeX, markdown, and org-cite editing support.
 (use-package citar
   :straight t
   :after (org)
-  :hook ((org-mode markdown-mode latex-mode) . citar-capf-setup)
+  :hook ((org-mode md-mode markdown-mode latex-mode) . citar-capf-setup)
   :general
-  (general-nivmap :keymaps '(org-mode-map markdown-mode-map)
+  (general-nivmap :keymaps '(org-mode-map markdown-mode-map md-mode-map)
 	"<localleader> @" 'citar-insert-citation)
   (general-nivmap :keymaps 'org-mode-map
 	"<localleader> o n" 'citar-open-notes
@@ -1917,6 +1983,10 @@ Switch to TODO otherwise"
 											(left-char) ; First move point inside citation
 											(citar-org-update-pre-suffix)))))
 
+
+;;; CITAR EMBARK
+;; companion package, that provides contextual actions in the
+;; minibuffer, and also at-point in org, markdown, and LaTeX buffers.
 (use-package citar-embark
   :defer t
   :straight t
@@ -1927,6 +1997,15 @@ Switch to TODO otherwise"
   :config
   (citar-embark-mode))
 
+
+;;; ORG ROAM
+;; Org-roam is a plain-text knowledge management system. It brings
+;; some of Roam's more powerful features into the Org-mode ecosystem.
+;;
+;; Org-roam borrows principles from the Zettelkasten method, providing
+;; a solution for non-hierarchical note-taking. It should also work as
+;; a plug-and-play solution for anyone already using Org-mode for
+;; their personal wiki.
 (use-package org-roam
   :defer t
   :straight t
@@ -1972,6 +2051,7 @@ Switch to TODO otherwise"
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
 
+
 ;; Use pdfannots to extract note information from PDFs
 (defun org-get-pdfannots ()
   "Use pdfannots to extract note infrom from linked PDF files and store in a note document"
@@ -1986,6 +2066,8 @@ Switch to TODO otherwise"
                         (insert "\n# Autogenerated notes start here\n\n" markdown-output))
       (message "Could not find a PDF in NOTER_DOCUMENT."))))
 
+
+;;; CITAR ORG ROAM
 ;; This package integrates org-roam with citar; use M-x citar-open-notes to create notes for a citation
 (use-package citar-org-roam
   :straight t
@@ -2011,20 +2093,25 @@ Switch to TODO otherwise"
            (file-path-temp (string-replace (getenv "HOME") "~" (alist-get 'file file-list-temp)))
            (cite-author (cdr (citar-get-field-with-value '(author) key)))
            (cite-url (cdr (citar-get-field-with-value '(url) key))) )
-
       (when (string-match ".pdf$" file-path-temp)
         (org-set-property "NOTER_DOCUMENT" file-path-temp))
       (org-set-property "CUSTOM_ID" key)
       (org-set-property "AUTHOR" cite-author)
       (org-roam-ref-add (concat "@" key))
       (org-id-get-create)))
-
   (advice-add 'citar-create-note :after #'citar-add-org-noter-document-property))
+
 
 ;; TODO - integrate org-noter with citar (https://github.com/emacs-citar/citar/wiki/Notes-configuration#org-noter)
 ;; TODO - integrate org-pdftools with org-noter (https://github.com/fuxialexander/org-pdftools)
 ;;        (this is supposed to allow synchronizing org-noters notes with org-roam notes)
 
+
+;;; CONSULT ORG ROAM
+;; This is a collection of functions to operate org-roam with the help
+;; of consult and its live preview feature. You can use it to search,
+;; filter and find notes, preview backlinks as well as forward links,
+;; and sift through currently open org-roam buffers.
 (use-package consult-org-roam
   :straight t
   :diminish consult-org-roam-mode
@@ -2052,12 +2139,22 @@ Switch to TODO otherwise"
    "<leader> n L" 'consult-org-roam-forward-links
    "<leader> n r" 'consult-org-roam-search))
 
+
+;;; EVIL INDENT PLUS
+;; The evil-indent-textobject package provides text objects that
+;; select lines with the exact same indentation as the current
+;; line. Lines that are either indented more, or which are empty, will
+;; interrupt the selection, contrary to expected behavior. This
+;; package correctly handles these cases.
 (use-package evil-indent-plus
   :straight t
   :after evil
   :config
   (evil-indent-plus-default-bindings))
 
+
+;;; EVIL ORG MODE
+;; Supplemental evil-mode key-bindings to Emacs org-mode. 
 (use-package evil-org
   :straight t
   :diminish (evil-org-mode)
@@ -2073,6 +2170,10 @@ Switch to TODO otherwise"
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
+
+;;; MOVE DUP
+;; This package offers convenient editing commands much like Eclipse's
+;; ability to move and duplicate lines or rectangular selections.
 (use-package move-dup
   :straight t
   :general
@@ -2083,11 +2184,18 @@ Switch to TODO otherwise"
    "C-M-k" 'move-dup-duplicate-up
    "C-M-j" 'move-dup-duplicate-down))
 
+
 (use-package rg
   :straight t
   :config
   (rg-enable-default-bindings))
 
+
+;;; SESSION
+;; When you start Emacs, package Session restores various variables
+;; (e.g., input histories) from your last session. It also provides a
+;; menu containing recently changed/visited files and restores the
+;; places (e.g., point) of such a file when you revisit it.
 (use-package session
   :straight t
   :hook
@@ -2097,6 +2205,16 @@ Switch to TODO otherwise"
   (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
   (setq session-save-file-coding-system 'utf-8))
 
+
+;;; JINX
+;; Jinx is a fast just-in-time spell-checker for Emacs. Jinx
+;; highlights misspelled words in the text of the visible portion of
+;; the buffer. For efficiency, Jinx highlights misspellings lazily,
+;; recognizes window boundaries and text folding, if any. For example,
+;; when unfolding or scrolling, only the newly visible part of the
+;; text is checked if it has not been checked before. Each misspelling
+;; can be corrected from a list of dictionary words presented as a
+;; completion menu.
 (use-package jinx
   :straight t
   :diminish jinx-mode
@@ -2114,6 +2232,7 @@ Switch to TODO otherwise"
   (with-eval-after-load 'vertico-multiform
     (add-to-list 'vertico-multiform-categories
                  '(jinx grid (vertico-grid-annotate . 20)))))
+
 
 ;;; UTILITARY FUNCTION TO INSTALL EMACS-KICK
 (defun ek/first-install ()
