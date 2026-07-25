@@ -967,6 +967,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
                                   (unknown . "?")
                                   (ignored . "i"))))
 
+;;; HL TODO
+;; Highlight TODO and similar keywords in comments and strings
 (defun ap/get-catppuccin-color (fg-key &optional bg-key)
   "Get color from catppuccin-flavor-alist using current catppuccin-flavor.
 If BG-KEY is provided, returns (:background bg :foreground fg).
@@ -977,7 +979,6 @@ Otherwise returns the FG-KEY hex string."
     (if bg-val
         `(:background ,bg-val :foreground ,fg-val)
       fg-val)))
-
 (use-package hl-todo
   :defer t
   :ensure t
@@ -992,6 +993,17 @@ Otherwise returns the FG-KEY hex string."
 		  ("NOTE"  . ,(ap/get-catppuccin-color 'base 'sky)))))
 
 
+;;; RAINBOW MODE
+;; This minor mode sets background color to strings that match color
+;; names, e.g. #0000ff is displayed in white with a blue background.
+(use-package rainbow-mode
+  :defer t
+  :ensure t
+  :straight t
+  :custom
+  (rainbow-x-colors nil)
+  :hook
+  (after-init . rainbow-mode))
 
 ;;; Magit
 ;; `magit' is a powerful Git interface for Emacs that provides a complete
