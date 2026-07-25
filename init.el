@@ -1566,7 +1566,9 @@ Otherwise returns the FG-KEY hex string."
   ("M-;" 'avy-goto-char-timer
    "<leader>gb" 'avy-pop-mark
    "<leader>gl" 'avy-goto-line
-   "<leader>gg" 'avy-goto-char-timer)
+   "<leader>gg" 'avy-goto-char-timer
+   (general-nmap
+	 "RET" 'avy-goto-word-0))
   (:states 'normal
 		   "ga" 'avy-goto-char-timer
 		   "gl" 'avy-goto-line)
@@ -1598,8 +1600,8 @@ Otherwise returns the FG-KEY hex string."
 	(goto-char pt))
   (defun avy-action-flyspell (pt)
 	(save-excursion
-      (goto-char pt)
-      (when (require 'flyspell nil t)
+	  (goto-char pt)
+	  (when (require 'flyspell nil t)
 		(flyspell-correct-at-point)))
 	(select-window
 	 (cdr (ring-ref avy-ring 0)))
@@ -1610,22 +1612,22 @@ Otherwise returns the FG-KEY hex string."
   (defun avy-action-embark (pt)
 	(unwind-protect
 		(save-excursion
-          (goto-char pt)
-          (embark-act))
-      (select-window
-       (cdr (ring-ref avy-ring 0))))
+		  (goto-char pt)
+		  (embark-act))
+	  (select-window
+	   (cdr (ring-ref avy-ring 0))))
 	t)
   (setf (alist-get ?y avy-dispatch-alist) 'avy-action-yank
-        (alist-get ?w avy-dispatch-alist) 'avy-action-copy
-        (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
-        (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
-        (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line
-        (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line
-        (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
-        (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
-        (alist-get ?  avy-dispatch-alist) 'avy-action-mark-to-char
-        (alist-get ?. avy-dispatch-alist) 'avy-action-flyspell
-        (alist-get ?\; avy-dispatch-alist) 'avy-action-embark)
+		(alist-get ?w avy-dispatch-alist) 'avy-action-copy
+		(alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
+		(alist-get ?t avy-dispatch-alist) 'avy-action-teleport
+		(alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line
+		(alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line
+		(alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
+		(alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+		(alist-get ?  avy-dispatch-alist) 'avy-action-mark-to-char
+		(alist-get ?. avy-dispatch-alist) 'avy-action-flyspell
+		(alist-get ?\; avy-dispatch-alist) 'avy-action-embark)
   (setq avy-keys (delete ?k avy-keys)))
 
 
