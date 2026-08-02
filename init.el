@@ -845,9 +845,11 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		   go-ts-mode                                   ;; Enable LSP for Go
 		   js-ts-mode                                   ;; Enable LSP for JavaScript (TS mode)
 		   prisma-mode                                  ;; Enable LSP for Prisma
-		   python-base-mode                             ;; Enable LSP for Python
+		   python-mode                                  ;; Enable LSP for Python
+		   python-ts-mode                               ;; Enable LSP for Python
 		   ruby-base-mode                               ;; Enable LSP for Ruby
 		   rust-ts-mode                                 ;; Enable LSP for Rust
+		   text-mode
 		   web-mode) . lsp-deferred))                   ;; Enable LSP for Web (HTML)
   :commands lsp
   :custom
@@ -892,31 +894,54 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   ;; Semantic settings
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :config
-  ;; Register harper-ls client
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection '("harper-ls" "-s"))
-    :major-modes '(md-mode markdown-mode org-mode)
-    :initialization-options '(:userDictPath ""
-                              :fileDictPath ""
-                              :linters (:SpellCheck t
-                                        :SpelledNumbers :json-false
-                                        :AnA t
-                                        :SentenceCapitalization t
-                                        :UnclosedQuotes t
-                                        :WrongQuotes :json-false
-                                        :LongSentences t
-                                        :RepeatedWords t
-                                        :Spaces t
-                                        :Matcher t
-                                        :CorrectNumberSuffix t)
-                              :codeActions (:ForceStable :json-false)
-                              :markdown (:IgnoreLinkTitle :json-false)
-                              :diagnosticSeverity "hint"
-                              :isolateEnglish :json-false)
-    :activation-fn (lsp-activate-on "markdown" "org")
-    :add-on? 't
-    :server-id 'harper-ls))
+  ;; Source for this: https://github.com/happy-dude/dotfiles/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
+  (defconst dotfiles-lsp-server-commands
+	'((dotfiles-bash . ("bash-language-server" "start"))
+	  (dotfiles-fish . ("fish-lsp" "start"))
+	  (dotfiles-harper . ("harper-ls" "-s"))
+	  (dotfiles-ruff . ("~/.venv/emacs-python-lsp/bin/ruff" "server"))
+	  (dotfiles-tinymist . ("tinymist" "lsp"))
+	  (dotfiles-zuban . ("~/.venv/emacs-python-lsp/bin/zuban" "server"))))
+  (defun dotfiles/lsp-command (server-id)
+	(or (alist-get server-id dotfiles-lsp-server-commands)
+		(error "No Nix command registered for %s" server-id)))
+  (cl-defun dotfiles/lsp-register (server-id major-modes
+											 &key add-on activation-fn
+											 initialization-options initialized-fn
+											 priority)
+	(lsp-register-client
+	 (make-lsp-client
+	  :new-connection (lsp-stdio-connection (dotfiles/lsp-command server-id))
+	  :major-modes major-modes
+	  :activation-fn activation-fn
+	  :server-id server-id
+	  :priority (or priority 0)
+	  :add-on? add-on
+	  :multi-root t
+	  :initialized-fn initialized-fn
+	  :initialization-options initialization-options)))
+  (dotfiles/lsp-register 'dotfiles-zuban '(python-mode python-ts-mode) :priority 1)
+  (dotfiles/lsp-register 'dotfiles-ruff '(python-mode python-ts-mode) :add-on t)
+  (dotfiles/lsp-register 'dotfiles-harper '(text-mode)
+						  :initialization-options '(:userDictPath ""
+																  :fileDictPath ""
+																  :linters (:SpellCheck t
+																						:SpelledNumbers :json-false
+																						:AnA t
+																						:SentenceCapitalization t
+																						:UnclosedQuotes t
+																						:WrongQuotes :json-false
+																						:LongSentences t
+																						:RepeatedWords t
+																						:Spaces f
+																						:Matcher t
+																						:CorrectNumberSuffix t)
+																  :codeActions (:ForceStable :json-false)
+																  :markdown (:IgnoreLinkTitle :json-false)
+																  :diagnosticSeverity "hint"
+																  :isolateEnglish :json-false)
+						  :activation-fn (lsp-activate-on "markdown" "org")
+						  :add-on 't)
   (setq c-basic-offset 4))
 
 
