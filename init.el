@@ -760,6 +760,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; treesit-auto doesn't cover Typst.
 (use-package typst-ts-mode
   :straight '(:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
+  :after (transient)
   :custom
   (typst-ts-watch-options "--open")
   (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
