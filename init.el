@@ -896,12 +896,10 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :config
   ;; Source for this: https://github.com/happy-dude/dotfiles/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
   (defconst dotfiles-lsp-server-commands
-	'((dotfiles-bash . ("bash-language-server" "start"))
-	  (dotfiles-fish . ("fish-lsp" "start"))
-	  (dotfiles-harper . ("harper-ls" "-s"))
-	  (dotfiles-ruff . ("~/.venv/emacs-python-lsp/bin/ruff" "server"))
-	  (dotfiles-tinymist . ("tinymist" "lsp"))
-	  (dotfiles-zuban . ("~/.venv/emacs-python-lsp/bin/zuban" "server"))))
+	'((harper-ls . ("harper-ls" "-s"))
+	  (ruff . ("~/.venv/emacs-python-lsp/bin/ruff" "server"))
+	  (tinymist . ("tinymist" "lsp"))
+	  (zuban . ("~/.venv/emacs-python-lsp/bin/zuban" "server"))))
   (defun dotfiles/lsp-command (server-id)
 	(or (alist-get server-id dotfiles-lsp-server-commands)
 		(error "No Nix command registered for %s" server-id)))
@@ -920,28 +918,81 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  :multi-root t
 	  :initialized-fn initialized-fn
 	  :initialization-options initialization-options)))
-  (dotfiles/lsp-register 'dotfiles-zuban '(python-mode python-ts-mode) :priority 1)
-  (dotfiles/lsp-register 'dotfiles-ruff '(python-mode python-ts-mode) :add-on t)
-  (dotfiles/lsp-register 'dotfiles-harper '(text-mode)
-						  :initialization-options '(:userDictPath ""
-																  :fileDictPath ""
-																  :linters (:SpellCheck t
-																						:SpelledNumbers :json-false
-																						:AnA t
-																						:SentenceCapitalization t
-																						:UnclosedQuotes t
-																						:WrongQuotes :json-false
-																						:LongSentences t
-																						:RepeatedWords t
-																						:Spaces f
-																						:Matcher t
-																						:CorrectNumberSuffix t)
-																  :codeActions (:ForceStable :json-false)
-																  :markdown (:IgnoreLinkTitle :json-false)
-																  :diagnosticSeverity "hint"
-																  :isolateEnglish :json-false)
-						  :activation-fn (lsp-activate-on "markdown" "org")
-						  :add-on 't)
+  (dotfiles/lsp-register 'zuban '(python-mode python-ts-mode) :priority 1)
+  (dotfiles/lsp-register 'ruff '(python-mode python-ts-mode) :add-on t)
+  (dotfiles/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
+  (dotfiles/lsp-register 'harper-ls '(text-mode)
+						 :initialization-options '(:userDictPath ""
+																 :fileDictPath "$XDG_CONFIG_HOME/harper-ls/dictionary.txt"
+																 :linters (:SpellCheck t
+																					   :AnA t
+																					   :Anywhere t
+																					   :AsFarBackAs t
+																					   :CorrectNumberSuffix t
+																					   :Dashes :json-false
+																					   :LongSentences t
+																					   :Matcher t
+																					   :RepeatedWords t
+																					   :SentenceCapitalization t
+																					   :Spaces :json-false
+																					   :SpellCheck t
+																					   :SpelledNumbers :json-false
+																					   :UnclosedQuotes t
+																					   :WrongQuotes :json-false
+																					   :SpelledNumbers :json-false)
+																 :rules (:Alongside t
+																					:ApartFrom t
+																					:Anywhere t
+																					:AsFarBackAs t
+																					:AsLongAs t
+																					:BackInTheDay t
+																					:ByAccident t
+																					:Cant t
+																					:ChangeTack t
+																					:Confident t
+																					:CriteriaPhenomena t
+																					:Didnt t
+																					:DoNotWant t
+																					:EllipsisLength t
+																					:Everybody t
+																					:ExpandBecause t
+																					:FootTheBill t
+																					:Freezing t
+																					:GoogleNames t
+																					:HadOf t
+																					:HelloGreeting t
+																					:Holidays t
+																					:InMyOpinion t
+																					:InRealLife t
+																					:ItCan t
+																					:IveGotTo t
+																					:Koreas t
+																					:LastButNotLeast t
+																					:LongSentences t
+																					:ManagerialReins t
+																					:Misunderstood t
+																					:MootPoint t
+																					:Multicore t
+																					:Nothing t
+																					:NotTo t
+																					:Notwithstanding t
+																					:Overall t
+																					:PossessiveNoun :json-false
+																					:PrayingMantis t
+																					:ProperNouns t
+																					:RapidFire t
+																					:Theres t
+																					:ThoughtProcess t
+																					:TransposedSpace t
+																					:Unless t
+																					:VerbToAdjective t)
+																 :codeActions (:ForceStable :json-false)
+																 :markdown (:IgnoreLinkTitle :json-false)
+																 :diagnosticSeverity "hint"
+																 :dialect "American"
+																 :isolateEnglish :json-false)
+						 :activation-fn (lsp-activate-on "markdown" "org")
+						 :add-on 't)
   (setq c-basic-offset 4))
 
 
