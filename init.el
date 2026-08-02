@@ -1214,8 +1214,8 @@ Otherwise returns the FG-KEY hex string."
     "<leader> b a" 'evil-buffer ;; Open consult buffer list
     "<leader> b i" 'consult-buffer ;; Open consult buffer list
     "<leader> b b" 'ibuffer ;; Open Ibuffer
-    "<leader> b d" 'evil-delete-buffer ;; Kill current buffer
-    "<leader> b D" (lambda () (interactive) (evil-delete-buffer (current-buffer) t)) ;; Kill current buffer
+    "<leader> b k" 'evil-delete-buffer ;; Kill current buffer
+    "<leader> b K" (lambda () (interactive) (evil-delete-buffer (current-buffer) t)) ;; Kill current buffer
     "<leader> b s" 'scratch-buffer ;; Save buffer
     "<leader> b l" 'consult-buffer ;; Consult buffer
 
