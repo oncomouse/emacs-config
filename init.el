@@ -908,7 +908,9 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :config
   ;; Source for this: https://github.com/happy-dude/dotfiles/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
-  ;; To install ruff and zuban, run pixi install in ~/.emacs.d
+  ;; Install ruff and zuban using pixi
+  (unless (file-exists-p (concat user-emacs-directory ".pixi"))
+	(shell-command (concat "pixi install -m " user-emacs-directory "pixi.toml")))
   (defconst dotfiles-lsp-server-commands
 	`((harper-ls . ("harper-ls" "-s"))
 	  (ruff . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))
