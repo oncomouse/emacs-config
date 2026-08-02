@@ -754,6 +754,18 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 					 "[ ]" 'outline-up-heading))
 
 
+;;; TYPST-TS-MODE
+;; Tree Sitter support for Typst. Minimum Emacs version requirement: 29. Its
+;; tree-sitter grammar is installed once with `M-x typst-ts-mc-install-grammar'
+;; treesit-auto doesn't cover Typst.
+(use-package typst-ts-mode
+  :straight '(:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
+  :custom
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t))
+
+
 ;;; CORFU
 ;; Corfu Mode provides a text completion framework for Emacs.
 ;; It enhances the editing experience by offering context-aware
