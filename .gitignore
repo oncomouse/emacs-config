@@ -15,3 +15,7 @@ elpa/
 .lsp-session
 .org-id-locations
 bookmarks
+.venv
+# pixi environments
+.pixi/*
+!.pixi/config.toml

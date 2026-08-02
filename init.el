@@ -907,11 +907,12 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :config
   ;; Source for this: https://github.com/happy-dude/dotfiles/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
+  ;; To install ruff and zuban, run pixi install in ~/.emacs.d
   (defconst dotfiles-lsp-server-commands
-	'((harper-ls . ("harper-ls" "-s"))
-	  (ruff . ("~/.venv/emacs-python-lsp/bin/ruff" "server"))
+	`((harper-ls . ("harper-ls" "-s"))
+	  (ruff . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))
 	  (tinymist . ("tinymist" "lsp"))
-	  (zuban . ("~/.venv/emacs-python-lsp/bin/zuban" "server"))))
+	  (zuban . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))))
   (defun dotfiles/lsp-command (server-id)
 	(or (alist-get server-id dotfiles-lsp-server-commands)
 		(error "No Nix command registered for %s" server-id)))
