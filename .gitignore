@@ -13,3 +13,5 @@ tramp
 transient/
 elpa/
 .lsp-session
+.org-id-locations
+bookmarks
