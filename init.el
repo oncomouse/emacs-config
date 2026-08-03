@@ -529,14 +529,15 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :hook
   (ghostel-mode . (lambda () (setq-local global-hl-line-mode nil) (display-line-numbers-mode -1)))
   :general
-  ("<leader> t t" (lambda () (interactive) (evil-window-vsplit) (other-window 1) (ghostel)))
-  ("<leader> t T" (lambda () (interactive) (evil-window-split) (other-window 1) (ghostel))))
+  (general-nmap
+	"<leader> t t" (lambda () (interactive) (evil-window-vsplit) (other-window 1) (ghostel))
+	"<leader> t T" (lambda () (interactive) (evil-window-split) (other-window 1) (ghostel))))
 (use-package evil-ghostel
   :straight (evil-ghostel
-             :type git
-             :host github
-             :repo "dakra/ghostel"
-             :files ("extensions/evil-ghostel/evil-ghostel.el"))
+			 :type git
+			 :host github
+			 :repo "dakra/ghostel"
+			 :files ("extensions/evil-ghostel/evil-ghostel.el"))
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode)
   :custom
@@ -544,7 +545,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :config
   ;; Make C-q the literal-key escape hatch in insert state.
   (evil-define-key 'insert evil-ghostel-mode-map
-    (kbd "C-q") #'ghostel-send-next-key))
+	(kbd "C-q") #'ghostel-send-next-key))
 
 
 ;;; HYDRA
@@ -869,7 +870,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		   web-mode) . lsp-deferred))                   ;; Enable LSP for Web (HTML)
   :commands lsp
   :custom
-  (lsp-keymap-prefix "C-c l")                           ;; Set the prefix for LSP commands.
+  (lsp-keymap-prefix "<localleader> l")                           ;; Set the prefix for LSP commands.
   (lsp-inlay-hint-enable nil)                           ;; Usage of inlay hints.
   (lsp-completion-provider :none)                       ;; Disable the default completion provider.
   (lsp-session-file (locate-user-emacs-file ".lsp-session")) ;; Specify session file location.
@@ -1186,11 +1187,11 @@ Otherwise returns the FG-KEY hex string."
     "gx" 'evil-eval-region)
   ;; Universal argument support:
   (general-nmap
-    "<leader> u" 'universal-argument)
+    "<C-c> u" 'universal-argument)
   (:keymaps 'universal-argument-map
-	    "<leader> u" 'universal-argument-more
+	    "<C-c> u" 'universal-argument-more
 	    "C-u" 'universal-argument-more)
-  (general-nivmap
+  (general-nmap
     "<leader> f f" 'affe-find
     "<leader> f g" 'affe-grep
     "<leader> f G" 'consult-git-grep
@@ -1267,8 +1268,8 @@ Otherwise returns the FG-KEY hex string."
 
   :config
   ;; Set the leader key to space for easier access to custom commands. (setq evil-want-leader t)
-  (evil-set-leader nil (kbd "C-c"))
-  (evil-set-leader nil (kbd "C-c l") t)
+  (evil-set-leader nil (kbd "SPC"))
+  (evil-set-leader nil (kbd ",") t)
 
   (define-advice forward-evil-paragraph (:around (orig-fun &rest args))
     (let ((paragraph-start (default-value 'paragraph-start))
@@ -1360,21 +1361,22 @@ Otherwise returns the FG-KEY hex string."
 (use-package evil-numbers
   :straight t
   :general
-  ("<leader> +" 'evil-numbers/inc-at-pt
-   "<leader> =" 'evil-numbers/inc-at-pt
-   "<leader> -" 'evil-numbers/dec-at-pt
-   "<leader> C-+" 'evil-numbers/inc-at-pt-incremental
-   "<leader> C-=" 'evil-numbers/inc-at-pt-incremental
-   "<leader> C--" 'evil-numbers/dec-at-pt-incremental)
+  (general-nmap
+	"<leader> +" 'evil-numbers/inc-at-pt
+	"<leader> =" 'evil-numbers/inc-at-pt
+	"<leader> -" 'evil-numbers/dec-at-pt
+	"<leader> C-+" 'evil-numbers/inc-at-pt-incremental
+	"<leader> C-=" 'evil-numbers/inc-at-pt-incremental
+	"<leader> C--" 'evil-numbers/dec-at-pt-incremental)
   :config
   (defvar-keymap evil-numbers-repeat-map
-    :repeat t
-    "+" 'evil-numbers/inc-at-pt
-    "=" 'evil-numbers/inc-at-pt
-    "C-=" 'evil-numbers/inc-at-pt-incremental
-    "C-+" 'evil-numbers/inc-at-pt-incremental
-    "C--" 'evil-numbers/dec-at-pt-incremental
-    "-" 'evil-numbers/dec-at-pt))
+	:repeat t
+	"+" 'evil-numbers/inc-at-pt
+	"=" 'evil-numbers/inc-at-pt
+	"C-=" 'evil-numbers/inc-at-pt-incremental
+	"C-+" 'evil-numbers/inc-at-pt-incremental
+	"C--" 'evil-numbers/dec-at-pt-incremental
+	"-" 'evil-numbers/dec-at-pt))
 
 ;; EVIL MATCHIT
 ;; The `evil-matchit' package extends `evil-mode' by enabling
@@ -1658,15 +1660,13 @@ Otherwise returns the FG-KEY hex string."
 (use-package avy
   :straight t
   :general
-  ("M-;" 'avy-goto-char-timer
-   "<leader>gb" 'avy-pop-mark
-   "<leader>gl" 'avy-goto-line
-   "<leader>gg" 'avy-goto-char-timer
-   (general-nmap
-	 "RET" 'avy-goto-word-0))
-  (:states 'normal
-		   "ga" 'avy-goto-char-timer
-		   "gl" 'avy-goto-line)
+  (general-nmap
+	"<leader>gb" 'avy-pop-mark
+	"<leader>gl" 'avy-goto-line
+	"<leader>gg" 'avy-goto-char-timer
+	"RET" 'avy-goto-word-0
+	"ga" 'avy-goto-char-timer
+	"gl" 'avy-goto-line)
   :config
   (defun avy-action-kill-whole-line (pt)
 	(save-excursion
@@ -1807,121 +1807,122 @@ Otherwise returns the FG-KEY hex string."
   :mode ("\\.org\\'" . org-mode)
   :commands (org-mode org-agenda org-capture)
   :general
-  ("<leader> a" 'org-agenda
+  (general-nmap
+   "<leader> a" 'org-agenda
    "<leader> c" 'org-capture)
   :general-config
   (:keymaps 'org-mode-map
 	    "C-M-<up>" 'org-up-element
 	    "C-z" 'org-cycle-list-bullet)
-  (general-nivmap ;; Org open controls
+  (general-nmap ;; Org open controls
     "<leader> o j" 'org-clock-goto
     "<leader> o l" 'org-clock-in-last
     "<leader> o i" 'org-clock-in
     "<leader> o o" 'org-clock-out
     "<leader> o a" 'org-agenda
     "<leader> o c" 'org-capture)
-  (general-nivmap :keymaps 'org-mode-map ;; Reproduce doom's org menu
-    "C-c l '" #'org-edit-special
-    "C-c l *" #'org-ctrl-c-star
-    "C-c l +" #'org-ctrl-c-minus
-    "C-c l ," #'org-switchb
-    "C-c l ." #'org-goto
-    "C-c l #" #'org-update-statistics-cookies
-    "C-c l @" #'org-cite-insert
-    "C-c l A" #'org-archive-subtree-default
-    "C-c l e" #'org-export-dispatch
-    "C-c l f" #'org-footnote-action
-    "C-c l h" #'org-toggle-heading
-    "C-c l i" #'org-toggle-item
-    "C-c l I" #'org-id-get-create
-    "C-c l k" #'org-babel-remove-result
-    "C-c l n" #'org-store-link
-    "C-c l q" #'org-set-tags-command
-    "C-c l t" #'org-todo
-    "C-c l T" #'org-todo-list
-    "C-c l x" #'org-toggle-checkbox
-    "C-c l a a" #'org-attach
-    "C-c l a d" #'org-attach-delete-one
-    "C-c l a D" #'org-attach-delete-all
-    "C-c l a n" #'org-attach-new
-    "C-c l a o" #'org-attach-open
-    "C-c l a O" #'org-attach-open-in-emacs
-    "C-c l a r" #'org-attach-reveal
-    "C-c l a R" #'org-attach-reveal-in-emacs
-    "C-c l a u" #'org-attach-url
-    "C-c l a s" #'org-attach-set-directory
-    "C-c l a S" #'org-attach-sync
-    "C-c l b -" #'org-table-insert-hline
-    "C-c l b a" #'org-table-align
-    "C-c l b b" #'org-table-blank-field
-    "C-c l b c" #'org-table-create-or-convert-from-region
-    "C-c l b e" #'org-table-edit-field
-    "C-c l b f" #'org-table-edit-formulas
-    "C-c l b h" #'org-table-field-info
-    "C-c l b s" #'org-table-sort-lines
-    "C-c l b r" #'org-table-recalculate
-    "C-c l b R" #'org-table-recalculate-buffer-tables
-    "C-c l b d c" #'org-table-delete-column
-    "C-c l b d r" #'org-table-kill-row
-    "C-c l b i c" #'org-table-insert-column
-    "C-c l b i h" #'org-table-insert-hline
-    "C-c l b i r" #'org-table-insert-row
-    "C-c l b i H" #'org-table-hline-and-move
-    "C-c l b t f" #'org-table-toggle-formula-debugger
-    "C-c l b t o" #'org-table-toggle-coordinate-overlays
-    "C-c l c c" #'org-clock-cancel
-    "C-c l c d" #'org-clock-mark-default-task
-    "C-c l c e" #'org-clock-modify-effort-estimate
-    "C-c l c E" #'org-set-effort
-    "C-c l c g" #'org-clock-goto
-    "C-c l c G" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
-    "C-c l c i" #'org-clock-in
-    "C-c l c I" #'org-clock-in-last
-    "C-c l c o" #'org-clock-out
-    "C-c l c r" #'org-resolve-clocks
-    "C-c l c R" #'org-clock-report
-    "C-c l c t" #'org-evaluate-time-range
-    "C-c l c =" #'org-clock-timestamps-up
-    "C-c l c -" #'org-clock-timestamps-down
-    "C-c l d d" #'org-deadline
-    "C-c l d s" #'org-schedule
-    "C-c l d t" #'org-time-stamp
-    "C-c l d T" #'org-time-stamp-inactive
-    "C-c l g c" #'org-clock-goto
-    "C-c l g C" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
-    "C-c l g i" #'org-id-goto
-    "C-c l g r" #'org-refile-goto-last-stored
-    "C-c l g x" #'org-capture-goto-last-stored
-    "C-c l l i" #'org-id-store-link
-    "C-c l l l" #'org-insert-link
-    "C-c l l L" #'org-insert-all-links
-    "C-c l l s" #'org-store-link
-    "C-c l l S" #'org-insert-last-stored-link
-    "C-c l l t" #'org-toggle-link-display
-    "C-c l P a" #'org-publish-all
-    "C-c l P f" #'org-publish-current-file
-    "C-c l P p" #'org-publish
-    "C-c l P P" #'org-publish-current-project
-    "C-c l P s" #'org-publish-sitemap
-    "C-c l r" #'org-refile
-    "C-c l R" #'org-refile-reverse
-    "C-c l s a" #'org-toggle-archive-tag
-    "C-c l s b" #'org-tree-to-indirect-buffer
-    "C-c l s c" #'org-clone-subtree-with-time-shift
-    "C-c l s d" #'org-cut-subtree
-    "C-c l s h" #'org-promote-subtree
-    "C-c l s j" #'org-move-subtree-down
-    "C-c l s k" #'org-move-subtree-up
-    "C-c l s l" #'org-demote-subtree
-    "C-c l s n" #'org-narrow-to-subtree
-    "C-c l s r" #'org-refile
-    "C-c l s s" #'org-sparse-tree
-    "C-c l s A" #'org-archive-subtree-default
-    "C-c l s N" #'widen
-    "C-c l s S" #'org-sort
-    "C-c l p d" #'org-priority-down
-    "C-c l p p" #'org-priority
-    "C-c l p u" #'org-priority-up)
+  (general-nmap :keymaps 'org-mode-map ;; Reproduce doom's org menu
+    "<localleader> '" #'org-edit-special
+    "<localleader> *" #'org-ctrl-c-star
+    "<localleader> +" #'org-ctrl-c-minus
+    "<localleader> ," #'org-switchb
+    "<localleader> ." #'org-goto
+    "<localleader> #" #'org-update-statistics-cookies
+    "<localleader> @" #'org-cite-insert
+    "<localleader> A" #'org-archive-subtree-default
+    "<localleader> e" #'org-export-dispatch
+    "<localleader> f" #'org-footnote-action
+    "<localleader> h" #'org-toggle-heading
+    "<localleader> i" #'org-toggle-item
+    "<localleader> I" #'org-id-get-create
+    "<localleader> k" #'org-babel-remove-result
+    "<localleader> n" #'org-store-link
+    "<localleader> q" #'org-set-tags-command
+    "<localleader> t" #'org-todo
+    "<localleader> T" #'org-todo-list
+    "<localleader> x" #'org-toggle-checkbox
+    "<localleader> a a" #'org-attach
+    "<localleader> a d" #'org-attach-delete-one
+    "<localleader> a D" #'org-attach-delete-all
+    "<localleader> a n" #'org-attach-new
+    "<localleader> a o" #'org-attach-open
+    "<localleader> a O" #'org-attach-open-in-emacs
+    "<localleader> a r" #'org-attach-reveal
+    "<localleader> a R" #'org-attach-reveal-in-emacs
+    "<localleader> a u" #'org-attach-url
+    "<localleader> a s" #'org-attach-set-directory
+    "<localleader> a S" #'org-attach-sync
+    "<localleader> b -" #'org-table-insert-hline
+    "<localleader> b a" #'org-table-align
+    "<localleader> b b" #'org-table-blank-field
+    "<localleader> b c" #'org-table-create-or-convert-from-region
+    "<localleader> b e" #'org-table-edit-field
+    "<localleader> b f" #'org-table-edit-formulas
+    "<localleader> b h" #'org-table-field-info
+    "<localleader> b s" #'org-table-sort-lines
+    "<localleader> b r" #'org-table-recalculate
+    "<localleader> b R" #'org-table-recalculate-buffer-tables
+    "<localleader> b d c" #'org-table-delete-column
+    "<localleader> b d r" #'org-table-kill-row
+    "<localleader> b i c" #'org-table-insert-column
+    "<localleader> b i h" #'org-table-insert-hline
+    "<localleader> b i r" #'org-table-insert-row
+    "<localleader> b i H" #'org-table-hline-and-move
+    "<localleader> b t f" #'org-table-toggle-formula-debugger
+    "<localleader> b t o" #'org-table-toggle-coordinate-overlays
+    "<localleader> c c" #'org-clock-cancel
+    "<localleader> c d" #'org-clock-mark-default-task
+    "<localleader> c e" #'org-clock-modify-effort-estimate
+    "<localleader> c E" #'org-set-effort
+    "<localleader> c g" #'org-clock-goto
+    "<localleader> c G" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
+    "<localleader> c i" #'org-clock-in
+    "<localleader> c I" #'org-clock-in-last
+    "<localleader> c o" #'org-clock-out
+    "<localleader> c r" #'org-resolve-clocks
+    "<localleader> c R" #'org-clock-report
+    "<localleader> c t" #'org-evaluate-time-range
+    "<localleader> c =" #'org-clock-timestamps-up
+    "<localleader> c -" #'org-clock-timestamps-down
+    "<localleader> d d" #'org-deadline
+    "<localleader> d s" #'org-schedule
+    "<localleader> d t" #'org-time-stamp
+    "<localleader> d T" #'org-time-stamp-inactive
+    "<localleader> g c" #'org-clock-goto
+    "<localleader> g C" (lambda (&rest _ (interactive) (org-clock-goto 'select)))
+    "<localleader> g i" #'org-id-goto
+    "<localleader> g r" #'org-refile-goto-last-stored
+    "<localleader> g x" #'org-capture-goto-last-stored
+    "<localleader> l i" #'org-id-store-link
+    "<localleader> l l" #'org-insert-link
+    "<localleader> l L" #'org-insert-all-links
+    "<localleader> l s" #'org-store-link
+    "<localleader> l S" #'org-insert-last-stored-link
+    "<localleader> l t" #'org-toggle-link-display
+    "<localleader> P a" #'org-publish-all
+    "<localleader> P f" #'org-publish-current-file
+    "<localleader> P p" #'org-publish
+    "<localleader> P P" #'org-publish-current-project
+    "<localleader> P s" #'org-publish-sitemap
+    "<localleader> r" #'org-refile
+    "<localleader> R" #'org-refile-reverse
+    "<localleader> s a" #'org-toggle-archive-tag
+    "<localleader> s b" #'org-tree-to-indirect-buffer
+    "<localleader> s c" #'org-clone-subtree-with-time-shift
+    "<localleader> s d" #'org-cut-subtree
+    "<localleader> s h" #'org-promote-subtree
+    "<localleader> s j" #'org-move-subtree-down
+    "<localleader> s k" #'org-move-subtree-up
+    "<localleader> s l" #'org-demote-subtree
+    "<localleader> s n" #'org-narrow-to-subtree
+    "<localleader> s r" #'org-refile
+    "<localleader> s s" #'org-sparse-tree
+    "<localleader> s A" #'org-archive-subtree-default
+    "<localleader> s N" #'widen
+    "<localleader> s S" #'org-sort
+    "<localleader> p d" #'org-priority-down
+    "<localleader> p p" #'org-priority
+    "<localleader> p u" #'org-priority-up)
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
          (org-mode  . turn-on-visual-line-mode)
          (org-agenda-mode . hl-line-mode)
@@ -2105,8 +2106,8 @@ Switch to TODO otherwise"
   :hook ((org-mode md-mode markdown-mode latex-mode) . citar-capf-setup)
   :general
   (general-nivmap :keymaps '(org-mode-map markdown-mode-map md-mode-map)
-	"<localleader> @" 'citar-insert-citation)
-  (general-nivmap :keymaps 'org-mode-map
+	"<C-c> @" 'citar-insert-citation)
+  (general-nmap :keymaps 'org-mode-map
 	"<localleader> o n" 'citar-open-notes
 	"<localleader> o f" 'citar-open-files)
   :custom
@@ -2152,38 +2153,39 @@ Switch to TODO otherwise"
   :custom
   (org-roam-capture-templates
    '(("d" "default" plain
-      "%?"
-      :target
-      (file+head
-       "%<%Y%m%d%H%M%S>-${slug}.org"
-       "#+title: ${title}\n")
-      :unnarrowed t)
-     ("r" "Zotero Reference" plain
-      "%?"
-      :target
-      (file+head
-       "${citar-citekey}.org"
-       "#+title: Notes on ${citar-title} (${citar-citekey})\n#+subtitle:${citar-author}, ${citar-date}\n#+created: %U\n#+last_modified: %U\n\n")
-      :unnarrowed t)))
+	  "%?"
+	  :target
+	  (file+head
+	   "%<%Y%m%d%H%M%S>-${slug}.org"
+	   "#+title: ${title}\n")
+	  :unnarrowed t)
+	 ("r" "Zotero Reference" plain
+	  "%?"
+	  :target
+	  (file+head
+	   "${citar-citekey}.org"
+	   "#+title: Notes on ${citar-title} (${citar-citekey})\n#+subtitle:${citar-author}, ${citar-date}\n#+created: %U\n#+last_modified: %U\n\n")
+	  :unnarrowed t)))
   (org-roam-directory "~/org/org-roam")
   :general
-  ("<leader> n l" 'org-roam-buffer-toggle
-   "<leader> n c" 'org-roam-capture
-   "<leader> n f" 'org-roam-node-find
-   "<leader> n g" 'org-roam-graph
-   "<leader> n i" 'org-roam-node-insert
-   "<leader> n a r" 'org-roam-alias-remove
-   "<leader> n a a" 'org-roam-alias-add
-   ;; Dailies
-   "<leader> n d D" 'org-roam-dailies-capture-date
-   "<leader> n d N" 'org-roam-dailies-capture-today
-   "<leader> n d T" 'org-roam-dailies-capture-tomorrow
-   "<leader> n d f" 'org-roam-dailies-goto-date
-   "<leader> n d t" 'org-roam-dailies-goto-tomorrow
-   "<leader> n d y" 'org-roam-dailies-goto-yesterday
-   "<leader> n d n" 'org-roam-dailies-goto-today
-   "<leader> n d b" 'org-roam-dailies-goto-previous-note
-   "<leader> n d f" 'org-roam-dailies-goto-next-note)
+  (general-nmap
+	"<leader> n l" 'org-roam-buffer-toggle
+	"<leader> n c" 'org-roam-capture
+	"<leader> n f" 'org-roam-node-find
+	"<leader> n g" 'org-roam-graph
+	"<leader> n i" 'org-roam-node-insert
+	"<leader> n a r" 'org-roam-alias-remove
+	"<leader> n a a" 'org-roam-alias-add
+	;; Dailies
+	"<leader> n d D" 'org-roam-dailies-capture-date
+	"<leader> n d N" 'org-roam-dailies-capture-today
+	"<leader> n d T" 'org-roam-dailies-capture-tomorrow
+	"<leader> n d f" 'org-roam-dailies-goto-date
+	"<leader> n d t" 'org-roam-dailies-goto-tomorrow
+	"<leader> n d y" 'org-roam-dailies-goto-yesterday
+	"<leader> n d n" 'org-roam-dailies-goto-today
+	"<leader> n d b" 'org-roam-dailies-goto-previous-note
+	"<leader> n d f" 'org-roam-dailies-goto-next-note)
   :config
   ;; If you're using a vertical completion framework, you might want a more informative completion interface
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
@@ -2274,10 +2276,11 @@ Switch to TODO otherwise"
    :preview-key "M-.")
   :general
   ;; Define some convenient keybindings as an addition
-  ("<leader> n e" 'consult-org-roam-file-find
-   "<leader> n b" 'consult-org-roam-backlinks-recursive
-   "<leader> n L" 'consult-org-roam-forward-links
-   "<leader> n r" 'consult-org-roam-search))
+  (general-nmap
+	"<leader> n e" 'consult-org-roam-file-find
+	"<leader> n b" 'consult-org-roam-backlinks-recursive
+	"<leader> n L" 'consult-org-roam-forward-links
+	"<leader> n r" 'consult-org-roam-search))
 
 
 ;;; EVIL INDENT PLUS
