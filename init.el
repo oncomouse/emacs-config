@@ -177,6 +177,9 @@
   ;; Makes Emacs vertical divisor the symbol │ instead of |.
   (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 
+  ;; Add a load-path entry for the user directory:
+  (add-to-list 'load-path (locate-user-emacs-file "lisp") t)
+
   :init                        ;; Initialization settings that apply before the package is loaded.
   (tool-bar-mode -1)           ;; Disable the tool bar for a cleaner interface.
   (menu-bar-mode -1)           ;; Disable the menu bar for a more streamlined look.
@@ -1411,13 +1414,13 @@ Otherwise returns the FG-KEY hex string."
     :keys "q"))
 
 (use-package evil-better-visual-line
-  :straight t
+  :ensure nil
+  :commands (evil-better-visual-line-next-line
+             evil-better-visual-line-previous-line)
   :general
-  (general-nvmap
-    "<down>" 'evil-better-visual-line-next-line
-    "<up>" 'evil-better-visual-line-previous-line)
-  :config
-  (evil-better-visual-line-on))
+  (:states '(normal operator visual)
+		  "j" 'evil-better-visual-line-next-line
+		  "k" 'evil-better-visual-line-previous-line))
 
 (use-package evil-goggles
   :straight t
