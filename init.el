@@ -527,11 +527,23 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (autoload 'ghostel-compile--compilation-start-advice "ghostel-compile")
   (advice-add 'compilation-start :around #'ghostel-compile--compilation-start-advice)
   :hook
-  (ghostel-mode . (lambda () (setq-local global-hl-line-mode nil) (display-line-numbers-mode -1)))
+  (ghostel-mode . (lambda () 
+                   (setq-local global-hl-line-mode nil) 
+                   (display-line-numbers-mode -1)
+                   ;; Clean up the window when the buffer is killed
+                   (add-hook 'kill-buffer-hook #'ghostel--close-window-on-kill nil t)))
   :general
   (general-nmap
-	"<leader> t t" (lambda () (interactive) (evil-window-vsplit) (other-window 1) (ghostel))
-	"<leader> t T" (lambda () (interactive) (evil-window-split) (other-window 1) (ghostel))))
+   "<leader> t t" (lambda () (interactive) (evil-window-vsplit) (other-window 1) (ghostel))
+   "<leader> t T" (lambda () (interactive) (evil-window-split) (other-window 1) (ghostel))))
+
+(defun ghostel--close-window-on-kill ()
+  "Remove the window if it contains a Ghostel buffer, but don't try to delete the last window."
+  (when (derived-mode-p 'ghostel-mode)
+    ;; Only delete the window if there are other windows in this frame
+    (when (> (length (window-list)) 1)
+      (delete-window))))
+
 (use-package evil-ghostel
   :straight (evil-ghostel
 			 :type git
