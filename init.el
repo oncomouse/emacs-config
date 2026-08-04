@@ -1199,7 +1199,7 @@ Otherwise returns the FG-KEY hex string."
     "<leader> f h" 'consult-info
     "<leader> f o h" 'consult-org-agenda
     "<leader> f o H" 'consult-org-heading
-	"<leader> f b" 'consult-b
+	"<leader> f b" 'consult-buffer
 
     ;; Flymake navigation
     "<leader> x x" 'consult-flymake;; Gives you something like `trouble.nvim'
