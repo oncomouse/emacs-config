@@ -140,7 +140,7 @@
   ;; (warning-minimum-level :emergency)              ;; Set the minimum level of warnings to display.
 
   :hook                                           ;; Add hooks to enable specific features in certain modes.
-  (prog-mode . display-line-numbers-mode)         ;; Enable line numbers in programming modes.
+  (before-save . delete-trailing-whitespace)      ;; Delete trailing spaces on save
 
   :general-config
   ("C-x C-r" 'recentf)
@@ -188,15 +188,15 @@
     (scroll-bar-mode -1))      ;; Disable the scroll bar if it is active.
 
   (global-display-line-numbers-mode +1) ;; Display line numbers everywhere
-  (global-hl-line-mode 1)      ;; Enable highlight of the current line
-  (global-auto-revert-mode 1)  ;; Enable global auto-revert mode to keep buffers up to date with their corresponding files.
-  (indent-tabs-mode nil)       ;; Disable the use of tabs for indentation (use spaces instead).
-  (recentf-mode 1)             ;; Enable tracking of recently opened files.
-  (savehist-mode 1)            ;; Enable saving of command history.
-  (save-place-mode 1)          ;; Enable saving the place in files for easier return.
-  (winner-mode 1)              ;; Enable winner mode to easily undo window configuration changes.
-  (xterm-mouse-mode 1)         ;; Enable mouse support in terminal mode.
-  (file-name-shadow-mode 1)    ;; Enable shadowing of filenames for clarity.
+  (global-hl-line-mode 1)               ;; Enable highlight of the current line
+  (global-auto-revert-mode 1)           ;; Enable global auto-revert mode to keep buffers up to date with their corresponding files.
+  (indent-tabs-mode nil)                ;; Disable the use of tabs for indentation (use spaces instead).
+  (recentf-mode 1)                      ;; Enable tracking of recently opened files.
+  (savehist-mode 1)                     ;; Enable saving of command history.
+  (save-place-mode 1)                   ;; Enable saving the place in files for easier return.
+  (winner-mode 1)                       ;; Enable winner mode to easily undo window configuration changes.
+  (xterm-mouse-mode 1)                  ;; Enable mouse support in terminal mode.
+  (file-name-shadow-mode 1)             ;; Enable shadowing of filenames for clarity.
 
   ;; Set the default coding system for files to UTF-8.
   (modify-coding-system-alist 'file "" 'utf-8)
@@ -527,8 +527,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (autoload 'ghostel-compile--compilation-start-advice "ghostel-compile")
   (advice-add 'compilation-start :around #'ghostel-compile--compilation-start-advice)
   :hook
-  (ghostel-mode . (lambda () 
-                   (setq-local global-hl-line-mode nil) 
+  (ghostel-mode . (lambda ()
+                   (setq-local global-hl-line-mode nil)
                    (display-line-numbers-mode -1)
                    ;; Clean up the window when the buffer is killed
                    (add-hook 'kill-buffer-hook #'ghostel--close-window-on-kill nil t)))
@@ -2309,7 +2309,7 @@ Switch to TODO otherwise"
 
 
 ;;; EVIL ORG MODE
-;; Supplemental evil-mode key-bindings to Emacs org-mode. 
+;; Supplemental evil-mode key-bindings to Emacs org-mode.
 (use-package evil-org
   :straight t
   :diminish (evil-org-mode)
