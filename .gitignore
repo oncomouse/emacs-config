@@ -19,3 +19,4 @@ bookmarks
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+projects
