@@ -1543,6 +1543,11 @@ Otherwise returns the FG-KEY hex string."
 
   (evil-define-key '(visual normal) 'global evil-replace-with-register-key 'evil-replace-with-register))
 
+(use-package evil-textobj-entire
+  :straight (evil-textobj-entire :host github :repo "nscoder/evil-textobj-entire")
+  :custom
+  (evil-textobj-entire-key "g"))
+
 (use-package undo-fu
   :straight t
   :hook (after-init . undo-fu-mode)
