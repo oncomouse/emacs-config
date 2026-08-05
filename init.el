@@ -674,6 +674,16 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		xref-show-definitions-function #'consult-xref))
 
 
+(use-package consult-hunks
+  :ensure nil
+  :commands (consult-hunks))
+
+
+(use-package consult-project-hunks
+  :ensure nil
+  :commands (consult-project-hunks))
+
+
 ;; AFFE Affe provides an asynchronous fuzzy finder similar to the fzf
 ;; command-line fuzzy finder, written in pure Elisp. A producer
 ;; process is started in the background, e.g., find or grep. The
@@ -1161,9 +1171,9 @@ Otherwise returns the FG-KEY hex string."
   :ensure t
   :straight t
   :hook ((org-mode . evil-visual-state)
-	 (markdown-mode . evil-visual-state)
-	 (md-mode . evil-visual-state)
-	 (visual-line-mode . evil-visual-state))
+		 (markdown-mode . evil-visual-state)
+		 (md-mode . evil-visual-state)
+		 (visual-line-mode . evil-visual-state))
   :init
   (setq
    evil-undo-system 'undo-fu
@@ -1174,70 +1184,59 @@ Otherwise returns the FG-KEY hex string."
    evil-want-C-u-scroll t       ;; Makes C-u scroll
    evil-want-C-u-delete t)       ;; Makes C-u delete on insert mode
   :general-config
+  ("C-c u" 'universal-argument)
+  (:keymaps 'universal-argument-map
+			"C-c u" 'universal-argument-more
+			"C-u" 'universal-argument-more)
   (general-nivmap
 	"M-l" 'evil-shift-right-line
 	"M-h" 'evil-shift-left-line)
   (general-nivmap
-    "C-n" 'evil-next-line
-    "C-p" 'evil-previous-line)
+	"C-n" 'evil-next-line
+	"C-p" 'evil-previous-line)
   (general-imap
-    "C-e" 'move-end-of-line
-    "C-a" 'move-beginning-of-line)
+	"C-e" 'move-end-of-line
+	"C-a" 'move-beginning-of-line)
   (general-imap
-    "C-y" 'yank
-    "M-y" 'yank-pop)
+	"C-y" 'yank
+	"M-y" 'yank-pop)
   (general-imap :keymaps 'org-mode-map
-    "C-y" 'org-yank)
+	"C-y" 'org-yank)
   (general-imap
-    "C-t" nil ;; unbind C-t for indentation
-    "C->" 'evil-shift-right-line
-    "C-<" 'evil-shift-left-line
-    "C-d" 'delete-char)
+	"C-t" nil ;; unbind C-t for indentation
+	"C->" 'evil-shift-right-line
+	"C-<" 'evil-shift-left-line
+	"C-d" 'delete-char)
   (general-vmap :keymaps 'emacs-lisp-mode-map
-    "gx" 'eval-region)
+	"gx" 'eval-region)
   (general-nmap :keymaps 'emacs-lisp-mode-map
-    "gx" 'evil-eval-region)
+	"gx" 'evil-eval-region)
   ;; Universal argument support:
   (general-nmap
-    "<C-c> u" 'universal-argument)
-  (:keymaps 'universal-argument-map
-	    "<C-c> u" 'universal-argument-more
-	    "C-u" 'universal-argument-more)
-  (general-nmap
-    "<leader> f f" 'affe-find
-    "<leader> f g" 'affe-grep
-    "<leader> f G" 'consult-git-grep
-    "<leader> f r" 'consult-ripgrep
-    "<leader> f h" 'consult-info
-    "<leader> f o h" 'consult-org-agenda
-    "<leader> f o H" 'consult-org-heading
-	"<leader> f b" 'consult-buffer
-
-    ;; Flymake navigation
-    "<leader> x x" 'consult-flymake;; Gives you something like `trouble.nvim'
-
-    ;; Dired commands for file management
-    "<leader> x d" 'dired
-    "<leader> x j" 'dired-jump
-    "<leader> x f" 'find-file
-
-    ;; NeoTree command for file exploration
-    "<leader> e d" 'dired-jump
-
-    ;; Magit keybindings for Git integration
-    "<leader> v g" 'magit-status      ;; Open Magit status
-    "<leader> v l" 'magit-log-current ;; Show current log
-    "<leader> v d" 'magit-diff-buffer-file ;; Show diff for the current file
-    "<leader> v D" 'diff-hl-show-hunk ;; Show diff for a hunk
-    "<leader> v b" 'vc-annotate       ;; Annotate buffer with version control info
-
     "<leader> b a" 'evil-buffer ;; Open consult buffer list
-    "<leader> b i" 'consult-buffer ;; Open consult buffer list
     "<leader> b b" 'ibuffer ;; Open Ibuffer
     "<leader> b k" 'evil-delete-buffer ;; Kill current buffer
     "<leader> b K" (lambda () (interactive) (evil-delete-buffer (current-buffer) t)) ;; Kill current buffer
     "<leader> b s" 'scratch-buffer ;; Save buffer
-    "<leader> b l" 'consult-buffer ;; Consult buffer
+    "<leader> b w" 'evil-delete-buffer ;; Kill current buffer
+    "<leader> b W" (lambda () (interactive) (evil-delete-buffer (current-buffer) t)) ;; Kill current buffer
+
+    "<leader> e d" 'project-dired
+	"<leader> e f" 'dired-jump
+
+    "<leader> f f" 'affe-find
+    "<leader> f g" 'affe-grep
+	"<leader> f G" (lambda () (interactive) (affe-grep default-directory (thing-at-point 'word t)))
+    ;; "<leader> f G" 'consult-git-grep
+    "<leader> f h" 'consult-info
+	"<leader> f l" 'consult-line
+	"<leader> f L" 'consult-goto-line
+	"<leader> f m" 'consult-project-hunks
+	"<leader> f M" 'consult-hunks
+    "<leader> f r" 'consult-ripgrep
+    "<leader> f o h" 'consult-org-agenda
+    "<leader> f o H" 'consult-org-heading
+	"<leader> f b" 'consult-buffer
 
     ;; Project management keybindings
     "<leader> p b" 'consult-project-buffer ;; Consult project buffer
@@ -1249,6 +1248,20 @@ Otherwise returns the FG-KEY hex string."
 
     ;; Yank from kill ring
     "<leader> P" 'consult-yank-from-kill-ring
+
+    ;; Flymake navigation
+    "<leader> x x" 'consult-flymake;; Gives you something like `trouble.nvim'
+    ;; Dired commands for file management
+    "<leader> x d" 'dired
+    "<leader> x j" 'dired-jump
+    "<leader> x f" 'find-file
+
+    ;; Magit keybindings for Git integration
+    "<leader> v g" 'magit-status      ;; Open Magit status
+    "<leader> v l" 'magit-log-current ;; Show current log
+    "<leader> v d" 'magit-diff-buffer-file ;; Show diff for the current file
+    "<leader> v D" 'diff-hl-show-hunk ;; Show diff for a hunk
+    "<leader> v b" 'vc-annotate       ;; Annotate buffer with version control info
 
 	;; Embark
 	"<leader> ." 'embark-act
@@ -1310,6 +1323,15 @@ Otherwise returns the FG-KEY hex string."
     "<" 'evil-window-decrease-width
     "=" 'balance-windows)
 
+(defun dotfiles/kill-current-buffer-and-window ()
+  "Kill the current buffer and close its window."
+  (interactive)
+  (if (> (length (window-list)) 1)
+      (progn
+        (kill-buffer (current-buffer))
+        (delete-window))
+    ;; If it's the last window, just kill the buffer
+    (kill-buffer (current-buffer))))
 
   ;; Enable evil mode
   (evil-mode 1))
