@@ -317,6 +317,59 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :config
   (desktop-save-mode 1))
 
+(defun dotfiles/tab-line-goto (n)
+  "Switch to the Nth tab (0-indexed) in the current window's tab line."
+  (interactive "p")
+  (let* ((window (selected-window))
+         (buffers (window-parameter window 'tab-line-buffers))
+         (tab (nth n buffers)))
+    (when tab
+      (switch-to-buffer tab))))
+
+
+(use-package tab-line
+  :ensure nil
+  :general
+  ("C-<iso-lefttab>" 'tab-line-switch-to-prev-tab
+   "C-<tab>" 'tab-line-switch-to-next-tab)
+  (:keymaps 'tab-line-mode-map
+			"M-1" (lambda () (interactive) (dotfiles/tab-line-goto 0))
+			"M-2" (lambda () (interactive) (dotfiles/tab-line-goto 1))
+			"M-3" (lambda () (interactive) (dotfiles/tab-line-goto 2))
+			"M-4" (lambda () (interactive) (dotfiles/tab-line-goto 3))
+			"M-5" (lambda () (interactive) (dotfiles/tab-line-goto 4))
+			"M-6" (lambda () (interactive) (dotfiles/tab-line-goto 5))
+			"M-7" (lambda () (interactive) (dotfiles/tab-line-goto 6))
+			"M-8" (lambda () (interactive) (dotfiles/tab-line-goto 7))
+			"M-9" (lambda () (interactive) (dotfiles/tab-line-goto 8))
+			"M-0" (lambda () (interactive) (dotfiles/tab-line-goto 9)))
+  :config
+  (global-tab-line-mode 1)
+  (setq
+   tab-line-new-button-show nil
+   tab-line-close-button-show nil))
+
+(with-eval-after-load 'catppuccin
+  (defun dotfiles/cp-color (key)
+	"Access color KEY from current Catppuccin flavor."
+	(let ((pair (assq key (cdr (assq catppuccin-flavor catppuccin-flavor-alist)))))
+	  (when pair (cdr pair))))
+  (set-face-attribute 'tab-line-highlight nil
+					  :inherit 'default
+					  :background (dotfiles/cp-color 'mantle))
+  (set-face-attribute 'tab-line-tab-inactive nil
+					  :foreground (dotfiles/cp-color 'text)
+					  :background (dotfiles/cp-color 'mantle))
+  (set-face-attribute 'tab-line-tab nil
+					  :foreground (dotfiles/cp-color 'text)
+					  :background (dotfiles/cp-color 'base))
+  (set-face-attribute 'tab-line-tab-modified nil
+					  :foreground (dotfiles/cp-color 'red))
+  (set-face-attribute 'tab-line-tab-current nil
+					  :foreground (dotfiles/cp-color 'text)
+					  :background (dotfiles/cp-color 'base)
+					  :weight 'bold
+					  :slant 'italic))
 
 (use-package repeat
   :ensure nil
@@ -1666,6 +1719,18 @@ Otherwise returns the FG-KEY hex string."
   :config
   (nerd-icons-completion-mode)            ;; Activate nerd icons for completion interfaces.
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup)) ;; Setup icons in the marginalia mode for enhanced completion display.
+
+
+;;; NERD ICONS TAB-LINE
+;; This package uses the nerd-icons package to apply appropriate icons
+;; to tab-line tabs.
+(use-package tab-line-nerd-icons
+  :if ek-use-nerd-fonts
+  :ensure t
+  :straight t
+  :after (:all nerd-icons)
+  :config
+  (tab-line-nerd-icons-global-mode))
 
 
 ;;; CATPPUCCIN THEME
