@@ -317,6 +317,16 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   :config
   (desktop-save-mode 1))
 
+
+;;; TAB LINE
+;; The command global-tab-line-mode toggles the display of a tab line
+;; on the top screen line of each window. The Tab Line shows special
+;; buttons (“tabs”) for each buffer that was displayed in a window,
+;; and allows switching to any of these buffers by clicking the
+;; corresponding button. Clicking on the + icon adds a new buffer to
+;; the window-local tab line of buffers, and clicking on the x icon of
+;; a tab deletes it. The mouse wheel on the tab line scrolls the tabs
+;; horizontally.
 (defun dotfiles/tab-line-goto (n)
   "Switch to the Nth tab (0-indexed) in the current window's tab line."
   (interactive "p")
@@ -325,8 +335,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
          (tab (nth n buffers)))
     (when tab
       (switch-to-buffer tab))))
-
-
 (use-package tab-line
   :ensure nil
   :general
@@ -349,6 +357,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
    tab-line-new-button-show nil
    tab-line-close-button-show nil))
 
+;; Customize catppuccin tab-line styles:
 (with-eval-after-load 'catppuccin
   (defun dotfiles/cp-color (key)
 	"Access color KEY from current Catppuccin flavor."
@@ -370,6 +379,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 					  :background (dotfiles/cp-color 'base)
 					  :weight 'bold
 					  :slant 'italic))
+
 
 (use-package repeat
   :ensure nil
