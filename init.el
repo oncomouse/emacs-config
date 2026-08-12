@@ -309,6 +309,11 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
         (setq insert-directory-program gls)))))
 
 
+;;; DESKTOP
+;; Use the desktop library to save the state of Emacs from one session
+;; to another. Once you save the Emacs desktop (the buffers, their
+;; file names, major modes, buffer positions, and so on) then
+;; subsequent Emacs sessions reload the saved desktop.
 (use-package desktop
   :ensure nil
   :custom
