@@ -332,7 +332,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; the window-local tab line of buffers, and clicking on the x icon of
 ;; a tab deletes it. The mouse wheel on the tab line scrolls the tabs
 ;; horizontally.
-(defun dotfiles/tab-line-goto (n)
+;; Customize catppuccin tab-line styles:
+(defun ap/tab-line-goto (n)
   "Switch to the Nth tab (0-indexed) in the current window's tab line."
   (interactive "p")
   (let* ((window (selected-window))
@@ -346,45 +347,38 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   ("C-<iso-lefttab>" 'tab-line-switch-to-prev-tab
    "C-<tab>" 'tab-line-switch-to-next-tab)
   (:keymaps 'tab-line-mode-map
-			"M-1" (lambda () (interactive) (dotfiles/tab-line-goto 0))
-			"M-2" (lambda () (interactive) (dotfiles/tab-line-goto 1))
-			"M-3" (lambda () (interactive) (dotfiles/tab-line-goto 2))
-			"M-4" (lambda () (interactive) (dotfiles/tab-line-goto 3))
-			"M-5" (lambda () (interactive) (dotfiles/tab-line-goto 4))
-			"M-6" (lambda () (interactive) (dotfiles/tab-line-goto 5))
-			"M-7" (lambda () (interactive) (dotfiles/tab-line-goto 6))
-			"M-8" (lambda () (interactive) (dotfiles/tab-line-goto 7))
-			"M-9" (lambda () (interactive) (dotfiles/tab-line-goto 8))
-			"M-0" (lambda () (interactive) (dotfiles/tab-line-goto 9)))
+			"M-1" (lambda () (interactive) (ap/tab-line-goto 0))
+			"M-2" (lambda () (interactive) (ap/tab-line-goto 1))
+			"M-3" (lambda () (interactive) (ap/tab-line-goto 2))
+			"M-4" (lambda () (interactive) (ap/tab-line-goto 3))
+			"M-5" (lambda () (interactive) (ap/tab-line-goto 4))
+			"M-6" (lambda () (interactive) (ap/tab-line-goto 5))
+			"M-7" (lambda () (interactive) (ap/tab-line-goto 6))
+			"M-8" (lambda () (interactive) (ap/tab-line-goto 7))
+			"M-9" (lambda () (interactive) (ap/tab-line-goto 8))
+			"M-0" (lambda () (interactive) (ap/tab-line-goto 9)))
   :config
   (global-tab-line-mode 1)
   (setq
    tab-line-new-button-show nil
-   tab-line-close-button-show nil))
-
-;; Customize catppuccin tab-line styles:
-(with-eval-after-load 'catppuccin
-  (defun dotfiles/cp-color (key)
-	"Access color KEY from current Catppuccin flavor."
-	(let ((pair (assq key (cdr (assq catppuccin-flavor catppuccin-flavor-alist)))))
-	  (when pair (cdr pair))))
+   tab-line-close-button-show nil)
+  (with-eval-after-load 'catppuccin-theme
   (set-face-attribute 'tab-line-highlight nil
 					  :inherit 'default
-					  :background (dotfiles/cp-color 'mantle))
+					  :background (ap/get-catppuccin-color 'mantle))
   (set-face-attribute 'tab-line-tab-inactive nil
-					  :foreground (dotfiles/cp-color 'text)
-					  :background (dotfiles/cp-color 'mantle))
+					  :foreground (ap/get-catppuccin-color 'text)
+					  :background (ap/get-catppuccin-color 'mantle))
   (set-face-attribute 'tab-line-tab nil
-					  :foreground (dotfiles/cp-color 'text)
-					  :background (dotfiles/cp-color 'base))
+					  :foreground (ap/get-catppuccin-color 'text)
+					  :background (ap/get-catppuccin-color 'base))
   (set-face-attribute 'tab-line-tab-modified nil
-					  :foreground (dotfiles/cp-color 'red))
+					  :foreground (ap/get-catppuccin-color 'red))
   (set-face-attribute 'tab-line-tab-current nil
-					  :foreground (dotfiles/cp-color 'text)
-					  :background (dotfiles/cp-color 'base)
+					  :foreground (ap/get-catppuccin-color 'text)
+					  :background (ap/get-catppuccin-color 'base)
 					  :weight 'bold
-					  :slant 'italic))
-
+					  :slant 'italic)))
 
 (use-package repeat
   :ensure nil
@@ -960,7 +954,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		   web-mode) . lsp-deferred))                   ;; Enable LSP for Web (HTML)
   :commands lsp
   :custom
-  (lsp-keymap-prefix "<localleader> l")                           ;; Set the prefix for LSP commands.
+  (lsp-keymap-prefix "<C-c> l")                           ;; Set the prefix for LSP commands.
   (lsp-inlay-hint-enable nil)                           ;; Usage of inlay hints.
   (lsp-completion-provider :none)                       ;; Disable the default completion provider.
   (lsp-session-file (locate-user-emacs-file ".lsp-session")) ;; Specify session file location.
@@ -1001,7 +995,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   ;; Semantic settings
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :config
-  ;; Source for this: https://github.com/happy-dude/dotfiles/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
+  ;; Source for this: https://github.com/happy-dude/ap/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
   ;; Install ruff and zuban using pixi
   (unless (file-exists-p (concat user-emacs-directory ".pixi"))
 	(shell-command (concat "pixi install -m " user-emacs-directory "pixi.toml")))
@@ -1010,16 +1004,16 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  (ruff . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))
 	  (tinymist . ("tinymist" "lsp"))
 	  (zuban . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))))
-  (defun dotfiles/lsp-command (server-id)
+  (defun ap/lsp-command (server-id)
 	(or (alist-get server-id dotfiles-lsp-server-commands)
 		(error "No Nix command registered for %s" server-id)))
-  (cl-defun dotfiles/lsp-register (server-id major-modes
+  (cl-defun ap/lsp-register (server-id major-modes
 											 &key add-on activation-fn
 											 initialization-options initialized-fn
 											 priority)
 	(lsp-register-client
 	 (make-lsp-client
-	  :new-connection (lsp-stdio-connection (dotfiles/lsp-command server-id))
+	  :new-connection (lsp-stdio-connection (ap/lsp-command server-id))
 	  :major-modes major-modes
 	  :activation-fn activation-fn
 	  :server-id server-id
@@ -1028,10 +1022,10 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  :multi-root t
 	  :initialized-fn initialized-fn
 	  :initialization-options initialization-options)))
-  (dotfiles/lsp-register 'zuban '(python-mode python-ts-mode) :priority 1)
-  (dotfiles/lsp-register 'ruff '(python-mode python-ts-mode) :add-on t)
-  (dotfiles/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
-  (dotfiles/lsp-register 'harper-ls '(text-mode)
+  (ap/lsp-register 'zuban '(python-mode python-ts-mode) :priority 1)
+  (ap/lsp-register 'ruff '(python-mode python-ts-mode) :add-on t)
+  (ap/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
+  (ap/lsp-register 'harper-ls '(text-mode)
 						 :initialization-options '(:userDictPath ""
 																 :fileDictPath "$XDG_CONFIG_HOME/harper-ls/dictionary.txt"
 																 :linters (:SpellCheck t
@@ -1293,6 +1287,7 @@ Otherwise returns the FG-KEY hex string."
 	"<leader> e f" 'dired-jump
 
     "<leader> f f" 'affe-find
+	"<leader> f F" 'find-file
     "<leader> f g" 'affe-grep
 	"<leader> f G" (lambda () (interactive) (affe-grep default-directory (thing-at-point 'word t)))
     ;; "<leader> f G" 'consult-git-grep
@@ -1391,7 +1386,7 @@ Otherwise returns the FG-KEY hex string."
     "<" 'evil-window-decrease-width
     "=" 'balance-windows)
 
-(defun dotfiles/kill-current-buffer-and-window ()
+(defun ap/kill-current-buffer-and-window ()
   "Kill the current buffer and close its window."
   (interactive)
   (if (> (length (window-list)) 1)
