@@ -16,7 +16,17 @@ elpa/
 .org-id-locations
 bookmarks
 .venv
-# pixi environments
 .pixi/*
 !.pixi/config.toml
+ellama-sessions/
+elpa*
+forge-database*
+org-clock-save.el
+persist/
+persp-confs/
+projectile*
+request/
+site-lisp/
+spell-fu/
+url/
 projects
