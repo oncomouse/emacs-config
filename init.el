@@ -359,6 +359,9 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 			"M-0" (lambda () (interactive) (ap/tab-line-goto 9)))
   :config
   (global-tab-line-mode 1)
+  ;; Use tab-line for previous tab and next tab
+  (defalias 'tab-previous 'tab-line-switch-to-prev-tab)
+  (defalias 'tab-next 'tab-line-switch-to-next-tab)
   (setq
    tab-line-new-button-show nil
    tab-line-close-button-show nil)
