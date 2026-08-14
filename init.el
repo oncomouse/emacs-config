@@ -380,6 +380,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 					  :weight 'bold
 					  :slant 'italic)))
 
+
 (use-package repeat
   :ensure nil
   :config
@@ -1174,13 +1175,18 @@ Otherwise returns the FG-KEY hex string."
 		  ("NOTE"  . ,(ap/get-catppuccin-color 'base 'sky)))))
 
 
+
 ;;; RAINBOW MODE
 ;; This minor mode sets background color to strings that match color
 ;; names, e.g. #0000ff is displayed in white with a blue background.
+(use-package ov ;; Required by this patch to rainbow-mode
+  :ensure t
+  :defer t
+  :straight t)
 (use-package rainbow-mode
   :defer t
   :ensure t
-  :straight t
+  :straight (rainbow-mode :type git :host github :repo "amosbird/rainbow-mode")
   :custom
   (rainbow-x-colors nil)
   :hook
