@@ -1286,7 +1286,8 @@ Otherwise returns the FG-KEY hex string."
   ;; Universal argument support:
   (general-nmap
     "<leader> b a" 'evil-buffer ;; Open consult buffer list
-    "<leader> b b" 'ibuffer ;; Open Ibuffer
+    "<leader> b b" 'bury-buffer ;; Bury the buffer (remove from tabline)
+    "<leader> b B" 'ibuffer ;; Open Ibuffer
     "<leader> b k" 'evil-delete-buffer ;; Kill current buffer
     "<leader> b K" (lambda () (interactive) (evil-delete-buffer (current-buffer) t)) ;; Kill current buffer
     "<leader> b s" 'scratch-buffer ;; Save buffer
