@@ -996,6 +996,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (lsp-headerline-arrow "▶")                            ;; Set arrow for headerline.
   (lsp-headerline-breadcrumb-enable-diagnostics nil)    ;; Disable diagnostics in headerline.
   (lsp-headerline-breadcrumb-icons-enable nil)          ;; Disable icons in breadcrumb.
+  (lsp-headerline-breadcrumb-enable nil)
   ;; Semantic settings
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :config
