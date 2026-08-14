@@ -42,7 +42,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/20/8b/28c4eaec9d6b036a52cb44720408f26b1a143ca9bce76cc19e8f5de00ab4/pdfminer_six-20260107-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/6b/72/a1116d683a6d7ece94590013882515de087edf9ef0e6292aae615a44df73/cryptography-50.0.0-cp311-abi3-manylinux_2_28_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/7f/5e/8d76c43f0a427aee4fb66de11c46529538cac72724058bd6428d18bbc316/pagelabels-1.2.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ba/8e/098c69c1d7dd3df5ad9175937fbcca5d52ef916b2229ae6fe29394d7d216/pdfannots-0.5-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/c0/84/af442c4458756bb0c0d2424102d1200616f3ff9b82c48aaa130e08549bf6/pdfrw-0.4-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c2/08/189b27e51fddc9d6b3695331da0e31792c1d88b953ad854e57f06e9b2cc8/charset_normalizer-3.5.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/f9/5ab411dbcfc118934feb19d2a80dba79277d4be2ebf89554e97918c2a826/zuban-0.9.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/e9/02/4e7d553a7ac4b4238b38b3c1b80d486e9d4436f8d2acbf87a0997fe3f402/cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
@@ -434,6 +436,12 @@ packages:
   - typing-extensions>=4.13.2 ; python_full_version < '3.11'
   - bcrypt>=3.1.5 ; extra == 'ssh'
   requires_python: '!=3.9.0,>=3.9,!=3.9.1'
+- pypi: https://files.pythonhosted.org/packages/7f/5e/8d76c43f0a427aee4fb66de11c46529538cac72724058bd6428d18bbc316/pagelabels-1.2.1-py3-none-any.whl
+  name: pagelabels
+  version: 1.2.1
+  sha256: 522401e42c5cd4bec29e2a75a859015053b0691be60d9f97be4faa7ffb4970e4
+  requires_dist:
+  - pdfrw
 - pypi: https://files.pythonhosted.org/packages/ba/8e/098c69c1d7dd3df5ad9175937fbcca5d52ef916b2229ae6fe29394d7d216/pdfannots-0.5-py3-none-any.whl
   name: pdfannots
   version: '0.5'
@@ -441,6 +449,10 @@ packages:
   requires_dist:
   - pdfminer-six>=20220319,!=20240706
   requires_python: '>=3.8'
+- pypi: https://files.pythonhosted.org/packages/c0/84/af442c4458756bb0c0d2424102d1200616f3ff9b82c48aaa130e08549bf6/pdfrw-0.4-py2.py3-none-any.whl
+  name: pdfrw
+  version: '0.4'
+  sha256: 758289edaa3b672e9a1a67504be73c18ec668d4e5b9d5ac9cbc0dc753d8d196b
 - pypi: https://files.pythonhosted.org/packages/c2/08/189b27e51fddc9d6b3695331da0e31792c1d88b953ad854e57f06e9b2cc8/charset_normalizer-3.5.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
   name: charset-normalizer
   version: 3.5.0
