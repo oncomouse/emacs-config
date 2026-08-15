@@ -45,9 +45,11 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/7f/5e/8d76c43f0a427aee4fb66de11c46529538cac72724058bd6428d18bbc316/pagelabels-1.2.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ba/8e/098c69c1d7dd3df5ad9175937fbcca5d52ef916b2229ae6fe29394d7d216/pdfannots-0.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c0/84/af442c4458756bb0c0d2424102d1200616f3ff9b82c48aaa130e08549bf6/pdfrw-0.4-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/c1/df/102d3b264eb7f2a58dd11952f229bb5150bb5668d176a6154976a6675981/ty-0.0.72-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c2/08/189b27e51fddc9d6b3695331da0e31792c1d88b953ad854e57f06e9b2cc8/charset_normalizer-3.5.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/d0/f9/5ab411dbcfc118934feb19d2a80dba79277d4be2ebf89554e97918c2a826/zuban-0.9.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/e9/02/4e7d553a7ac4b4238b38b3c1b80d486e9d4436f8d2acbf87a0997fe3f402/cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/f7/ce/b64787031e65d512a1453f0bfbac3d537e7f9d8b0a09c9c6796ebeb7c2b5/rassumfrassum-0.3.4-py3-none-any.whl
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-20_gnu.conda
   build_number: 20
@@ -453,6 +455,11 @@ packages:
   name: pdfrw
   version: '0.4'
   sha256: 758289edaa3b672e9a1a67504be73c18ec668d4e5b9d5ac9cbc0dc753d8d196b
+- pypi: https://files.pythonhosted.org/packages/c1/df/102d3b264eb7f2a58dd11952f229bb5150bb5668d176a6154976a6675981/ty-0.0.72-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  name: ty
+  version: 0.0.72
+  sha256: 802c5970a77d7739e6f499921fbb6984fb7ad8a31d95e1ff42fd46f3642e4f3b
+  requires_python: '>=3.8'
 - pypi: https://files.pythonhosted.org/packages/c2/08/189b27e51fddc9d6b3695331da0e31792c1d88b953ad854e57f06e9b2cc8/charset_normalizer-3.5.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
   name: charset-normalizer
   version: 3.5.0
@@ -469,4 +476,9 @@ packages:
   sha256: b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96
   requires_dist:
   - pycparser ; implementation_name != 'PyPy'
+  requires_python: '>=3.10'
+- pypi: https://files.pythonhosted.org/packages/f7/ce/b64787031e65d512a1453f0bfbac3d537e7f9d8b0a09c9c6796ebeb7c2b5/rassumfrassum-0.3.4-py3-none-any.whl
+  name: rassumfrassum
+  version: 0.3.4
+  sha256: 82c72d7d2e49a6d0fa3fe664af6e33af7297b550d548de333cb2263a062a5e3b
   requires_python: '>=3.10'

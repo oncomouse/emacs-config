@@ -958,7 +958,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		   web-mode) . lsp-deferred))                   ;; Enable LSP for Web (HTML)
   :commands lsp
   :custom
-  (lsp-keymap-prefix "<C-c> l")                           ;; Set the prefix for LSP commands.
+  (lsp-keymap-prefix "C-c l")                         ;; Set the prefix for LSP commands.
   (lsp-inlay-hint-enable nil)                           ;; Usage of inlay hints.
   (lsp-completion-provider :none)                       ;; Disable the default completion provider.
   (lsp-session-file (locate-user-emacs-file ".lsp-session")) ;; Specify session file location.
@@ -1003,15 +1003,14 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   ;; Source for this: https://github.com/happy-dude/ap/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
   ;; Install ruff and zuban using pixi
   (unless (file-exists-p (concat user-emacs-directory ".pixi"))
-	(shell-command (concat "pixi install -m " user-emacs-directory "pixi.toml")))
+	(shell-command (concat "pixi install -m " (expand-file-name (concat user-emacs-directory "pixi.toml")))))
   (defconst dotfiles-lsp-server-commands
 	`((harper-ls . ("harper-ls" "-s"))
-	  (ruff . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))
-	  (tinymist . ("tinymist" "lsp"))
-	  (zuban . ("pixi" "run" "-m" ,(concat user-emacs-directory "pixi.toml") "server"))))
+	  (rass-python . ("pixi" "run" "-m" ,(expand-file-name (concat user-emacs-directory "pixi.toml")) "rass" "python"))
+	  (tinymist . ("tinymist" "lsp"))))
   (defun ap/lsp-command (server-id)
 	(or (alist-get server-id dotfiles-lsp-server-commands)
-		(error "No Nix command registered for %s" server-id)))
+		(error "No command registered for %s" server-id)))
   (cl-defun ap/lsp-register (server-id major-modes
 											 &key add-on activation-fn
 											 initialization-options initialized-fn
@@ -1027,8 +1026,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  :multi-root t
 	  :initialized-fn initialized-fn
 	  :initialization-options initialization-options)))
-  (ap/lsp-register 'zuban '(python-mode python-ts-mode) :priority 1)
-  (ap/lsp-register 'ruff '(python-mode python-ts-mode) :add-on t)
+  (ap/lsp-register 'rass-python '(python-mode python-ts-mode) :priority 1)
   (ap/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
   (ap/lsp-register 'harper-ls '(text-mode)
 						 :initialization-options '(:userDictPath ""
