@@ -949,7 +949,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		   css-mode                                     ;; Enable LSP for CSS
 		   go-ts-mode                                   ;; Enable LSP for Go
 		   js-ts-mode                                   ;; Enable LSP for JavaScript (TS mode)
-		   prisma-mode                                  ;; Enable LSP for Prisma
+		   json-ts-mode
+		   jsx-ts-mode
 		   python-mode                                  ;; Enable LSP for Python
 		   python-ts-mode                               ;; Enable LSP for Python
 		   ruby-base-mode                               ;; Enable LSP for Ruby
@@ -1000,10 +1001,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   ;; Semantic settings
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :config
-  ;; Source for this: https://github.com/happy-dude/ap/blob/96c8e169bbd9790f36395e4a20e4be4f214c66c9/emacs/lsp-servers.el
-  ;; Install ruff and zuban using pixi
-  (unless (file-exists-p (concat user-emacs-directory ".pixi"))
-	(shell-command (concat "pixi install -m " (expand-file-name (concat user-emacs-directory "pixi.toml")))))
+  ;; Use these for custom lsp servers / servers not supported by lsp-mode:
   (defconst dotfiles-lsp-server-commands
 	`((harper-ls . ("harper-ls" "-s"))
 	  (rass-python . ("pixi" "run" "-m" ,(expand-file-name (concat user-emacs-directory "pixi.toml")) "rass" "python"))
@@ -1026,7 +1024,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  :multi-root t
 	  :initialized-fn initialized-fn
 	  :initialization-options initialization-options)))
-  (ap/lsp-register 'rass-python '(python-mode python-ts-mode) :priority 1)
+  (ap/lsp-register 'rass-python '(python-mode python-ts-mode))
   (ap/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
   (ap/lsp-register 'harper-ls '(text-mode)
 						 :initialization-options '(:userDictPath ""
@@ -1102,6 +1100,11 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 						 :add-on 't)
   (setq c-basic-offset 4))
 
+(use-package lsp-biome
+    :straight (lsp-biome
+			 :type git
+			 :host github
+			 :repo "cxa/lsp-biome"))
 
 ;;; CAPE
 ;; Cape provides Completion At Point Extensions which can be used in
@@ -2512,6 +2515,9 @@ Switch to TODO otherwise"
   (switch-to-buffer "*Messages*")                    ;; Switch to the *Messages* buffer to display installation messages.
   (message ">>> All required packages installed.")
   (message ">>> Configuring Emacs-Kick...")
+  (message ">>> Installing Python tooling...")
+  (unless (file-exists-p (concat user-emacs-directory ".pixi"))
+	(shell-command (concat "pixi install -m " (expand-file-name (concat user-emacs-directory "pixi.toml")))))
   (message ">>> Configuring Tree Sitter parsers...")
   (require 'treesit-auto)
   (treesit-auto-install-all)                         ;; Install all available Tree Sitter grammars.
