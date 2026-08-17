@@ -137,6 +137,7 @@
   (truncate-lines t)                              ;; Enable line truncation to avoid wrapping long lines.
   (use-dialog-box nil)                            ;; Disable dialog boxes in favor of minibuffer prompts.
   (use-short-answers t)                           ;; Use short answers in prompts for quicker responses (y instead of yes)
+  (sentence-end-double-space nil)                 ;; It's no longer the 1980s, Emacs
   ;; (warning-minimum-level :emergency)              ;; Set the minimum level of warnings to display.
 
   :hook                                           ;; Add hooks to enable specific features in certain modes.
