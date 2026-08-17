@@ -2234,9 +2234,9 @@ Switch to TODO otherwise"
   :general
   (general-nivmap :keymaps '(org-mode-map markdown-mode-map md-mode-map)
 	"<C-c> @" 'citar-insert-citation)
-  (general-nmap :keymaps 'org-mode-map
-	"<localleader> o n" 'citar-open-notes
-	"<localleader> o f" 'citar-open-files)
+  (general-nmap
+	"<leader> n o n" 'citar-open-notes
+	"<leader> n o f" 'citar-open-files)
   :custom
   (org-cite-insert-processor 'citar)
   (org-cite-follow-processor 'citar)
