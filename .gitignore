@@ -30,3 +30,4 @@ site-lisp/
 spell-fu/
 url/
 projects
+.cache/
