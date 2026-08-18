@@ -500,21 +500,6 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (global-eldoc-mode))
 
 
-;;; FLYMAKE
-;; Flymake is an on-the-fly syntax checking extension that provides real-time feedback
-;; about errors and warnings in your code as you write. This can greatly enhance your
-;; coding experience by catching issues early. The configuration below activates
-;; Flymake mode in programming buffers.
-(use-package flymake
-  :ensure nil          ;; This is built-in, no need to fetch it.
-  :defer t
-  :hook (prog-mode . flymake-mode)
-  :custom
-  (flymake-margin-indicators-string
-   '((error "!»" compilation-error) (warning "»" compilation-warning)
-     (note "»" compilation-info))))
-
-
 ;;; WHICH-KEY
 ;; `which-key' is an Emacs package that displays available keybindings in a
 ;; popup window whenever you partially type a key sequence. This is particularly
@@ -575,6 +560,16 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;;
 ;; From this point onward, all configurations will be for third-party packages
 ;; that enhance Emacs' functionality and extend its capabilities.
+
+
+;;; FLYCHECK
+;; Modern on-the-fly syntax checking extension for GNU Emacs.
+(defalias 'ap/next-error 'flycheck-next-error)
+(defalias 'ap/prev-error 'flycheck-previous-error)
+(use-package flycheck
+  :ensure t
+  :straight t
+  :hook (prog-mode . flycheck-mode))
 
 
 ;;; GHOSTEL
@@ -751,6 +746,15 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 (use-package consult-project-hunks
   :ensure nil
   :commands (consult-project-hunks))
+
+
+;;; CONSULT FLYCHECK
+;; This package provides the consult-flycheck command, which
+;; integrates Consult with Flycheck. Take a look at the Consult README
+;; for an extensive documentation.
+(use-package consult-flycheck
+  :straight t
+  :ensure t)
 
 
 ;; AFFE Affe provides an asynchronous fuzzy finder similar to the fzf
@@ -1335,7 +1339,7 @@ Otherwise returns the FG-KEY hex string."
     "<leader> P" 'consult-yank-from-kill-ring
 
     ;; Flymake navigation
-    "<leader> x x" 'consult-flymake;; Gives you something like `trouble.nvim'
+    "<leader> x x" 'consult-flycheck;; Gives you something like `trouble.nvim'
     ;; Dired commands for file management
     "<leader> x d" 'dired
     "<leader> x j" 'dired-jump
@@ -1370,8 +1374,8 @@ Otherwise returns the FG-KEY hex string."
     ;; Buffer management keybindings
     "] b" 'switch-to-next-buffer ;; Switch to next buffer
     "[ b" 'switch-to-prev-buffer ;; Switch to previous buffer
-    "] d" 'flymake-goto-next-error ;; Go to next Flymake error
-    "[ d" 'flymake-goto-prev-error ;; Go to previous Flymake error
+    "] d" 'ap/next-error ;; Go to next Flymake error
+    "[ d" 'ap/prev-error ;; Go to previous Flymake error
     ;; Diff-HL navigation for version control
     "] c" 'diff-hl-next-hunk ;; Next diff hunk
     "[ c" 'diff-hl-previous-hunk) ;; Previous diff hunk
