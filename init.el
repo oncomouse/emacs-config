@@ -1110,6 +1110,10 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 			 :host github
 			 :repo "cxa/lsp-biome"))
 
+(use-package lsp-ui
+  :straight t)
+
+
 ;;; CAPE
 ;; Cape provides Completion At Point Extensions which can be used in
 ;; combination with Corfu, Company or the default completion UI. The
