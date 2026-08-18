@@ -1005,15 +1005,15 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   ;; Use these for custom lsp servers / servers not supported by lsp-mode:
   (defconst dotfiles-lsp-server-commands
 	`((harper-ls . ("harper-ls" "-s"))
-	  (rass-python . ("pixi" "run" "-m" ,(expand-file-name (concat user-emacs-directory "pixi.toml")) "rass" "python"))
+	  (rass-python . ("pixi" "run" "-m" ,(expand-file-name "pixi.toml" user-emacs-directory) "rass" "python"))
 	  (tinymist . ("tinymist" "lsp"))))
   (defun ap/lsp-command (server-id)
 	(or (alist-get server-id dotfiles-lsp-server-commands)
 		(error "No command registered for %s" server-id)))
   (cl-defun ap/lsp-register (server-id major-modes
-											 &key add-on activation-fn
-											 initialization-options initialized-fn
-											 priority)
+									   &key add-on activation-fn
+									   initialization-options initialized-fn
+									   priority)
 	(lsp-register-client
 	 (make-lsp-client
 	  :new-connection (lsp-stdio-connection (ap/lsp-command server-id))
@@ -1028,77 +1028,78 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (ap/lsp-register 'rass-python '(python-mode python-ts-mode))
   (ap/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
   (ap/lsp-register 'harper-ls '(text-mode)
-						 :initialization-options '(:userDictPath ""
-																 :fileDictPath "$XDG_CONFIG_HOME/harper-ls/dictionary.txt"
-																 :linters (:SpellCheck t
-																					   :AnA t
-																					   :Anywhere t
-																					   :AsFarBackAs t
-																					   :CorrectNumberSuffix t
-																					   :Dashes :json-false
-																					   :LongSentences t
-																					   :Matcher t
-																					   :RepeatedWords t
-																					   :SentenceCapitalization t
-																					   :Spaces :json-false
-																					   :SpellCheck t
-																					   :SpelledNumbers :json-false
-																					   :UnclosedQuotes t
-																					   :WrongQuotes :json-false
-																					   :SpelledNumbers :json-false)
-																 :rules (:Alongside t
-																					:ApartFrom t
-																					:Anywhere t
-																					:AsFarBackAs t
-																					:AsLongAs t
-																					:BackInTheDay t
-																					:ByAccident t
-																					:Cant t
-																					:ChangeTack t
-																					:Confident t
-																					:CriteriaPhenomena t
-																					:Didnt t
-																					:DoNotWant t
-																					:EllipsisLength t
-																					:Everybody t
-																					:ExpandBecause t
-																					:FootTheBill t
-																					:Freezing t
-																					:GoogleNames t
-																					:HadOf t
-																					:HelloGreeting t
-																					:Holidays t
-																					:InMyOpinion t
-																					:InRealLife t
-																					:ItCan t
-																					:IveGotTo t
-																					:Koreas t
-																					:LastButNotLeast t
-																					:LongSentences t
-																					:ManagerialReins t
-																					:Misunderstood t
-																					:MootPoint t
-																					:Multicore t
-																					:Nothing t
-																					:NotTo t
-																					:Notwithstanding t
-																					:Overall t
-																					:PossessiveNoun :json-false
-																					:PrayingMantis t
-																					:ProperNouns t
-																					:RapidFire t
-																					:Theres t
-																					:ThoughtProcess t
-																					:TransposedSpace t
-																					:Unless t
-																					:VerbToAdjective t)
-																 :codeActions (:ForceStable :json-false)
-																 :markdown (:IgnoreLinkTitle :json-false)
-																 :diagnosticSeverity "hint"
-																 :dialect "American"
-																 :isolateEnglish :json-false)
-						 :activation-fn (lsp-activate-on "markdown" "org")
-						 :add-on 't)
+				   :initialization-options
+				   '(:userDictPath ""
+								   :fileDictPath "$XDG_CONFIG_HOME/harper-ls/dictionary.txt"
+								   :linters (:SpellCheck t
+														 :AnA t
+														 :Anywhere t
+														 :AsFarBackAs t
+														 :CorrectNumberSuffix t
+														 :Dashes :json-false
+														 :LongSentences t
+														 :Matcher t
+														 :RepeatedWords t
+														 :SentenceCapitalization t
+														 :Spaces :json-false
+														 :SpellCheck t
+														 :SpelledNumbers :json-false
+														 :UnclosedQuotes t
+														 :WrongQuotes :json-false
+														 :SpelledNumbers :json-false)
+								   :rules (:Alongside t
+													  :ApartFrom t
+													  :Anywhere t
+													  :AsFarBackAs t
+													  :AsLongAs t
+													  :BackInTheDay t
+													  :ByAccident t
+													  :Cant t
+													  :ChangeTack t
+													  :Confident t
+													  :CriteriaPhenomena t
+													  :Didnt t
+													  :DoNotWant t
+													  :EllipsisLength t
+													  :Everybody t
+													  :ExpandBecause t
+													  :FootTheBill t
+													  :Freezing t
+													  :GoogleNames t
+													  :HadOf t
+													  :HelloGreeting t
+													  :Holidays t
+													  :InMyOpinion t
+													  :InRealLife t
+													  :ItCan t
+													  :IveGotTo t
+													  :Koreas t
+													  :LastButNotLeast t
+													  :LongSentences t
+													  :ManagerialReins t
+													  :Misunderstood t
+													  :MootPoint t
+													  :Multicore t
+													  :Nothing t
+													  :NotTo t
+													  :Notwithstanding t
+													  :Overall t
+													  :PossessiveNoun :json-false
+													  :PrayingMantis t
+													  :ProperNouns t
+													  :RapidFire t
+													  :Theres t
+													  :ThoughtProcess t
+													  :TransposedSpace t
+													  :Unless t
+													  :VerbToAdjective t)
+								   :codeActions (:ForceStable :json-false)
+								   :markdown (:IgnoreLinkTitle :json-false)
+								   :diagnosticSeverity "hint"
+								   :dialect "American"
+								   :isolateEnglish :json-false)
+				   :activation-fn (lsp-activate-on "markdown" "org")
+				   :add-on 't)
   (setq c-basic-offset 4)
   ;; Disable telemetry:
   (lsp-register-custom-settings '(("redhat.telemetry.enable" nil))))
@@ -2333,7 +2334,7 @@ Switch to TODO otherwise"
 							  (and (string-match ".pdf$" pdf-file)
 								   (file-exists-p pdf-file))
 							  (shell-command-to-string
-							   (format "pixi run -m %s pdfannots %s -f json | jq -r \".[] | \\\"> \\(.text) [@cite-key, p. \\(if .page_label == null then .page else .page_label end)]\n\\\"\" | pandoc -f markdown -t org --wrap=none | sed -e \"s/@cite-key/@%s/\"" (shell-quote-argument (expand-file-name (concat user-emacs-directory "pixi.toml"))) (shell-quote-argument (expand-file-name pdf-file)) (shell-quote-argument cite-key)))
+							   (format "pixi run -m %s pdfannots %s -f json | jq -r \".[] | \\\"> \\(.text) [@cite-key, p. \\(if .page_label == null then .page else .page_label end)]\n\\\"\" | pandoc -f markdown -t org --wrap=none | sed -e \"s/@cite-key/@%s/\"" (shell-quote-argument (expand-file-name "pixi.toml" user-emacs-directory)) (shell-quote-argument (expand-file-name pdf-file)) (shell-quote-argument cite-key)))
 							"")))
 	(if (> (length markdown-output) 0)
 		(save-excursion (goto-char (point-max))
@@ -2535,7 +2536,7 @@ Switch to TODO otherwise"
   (message ">>> All required packages installed.")
   (message ">>> Configuring Emacs-Kick...")
   (message ">>> Installing Python tooling...")
-  (unless (file-exists-p (concat user-emacs-directory ".pixi"))
+  (unless (file-exists-p (expand-file-name ".pixi" user-emacs-directory))
 	(shell-command (concat "pixi install -m " (expand-file-name (concat user-emacs-directory "pixi.toml")))))
   (message ">>> Configuring Tree Sitter parsers...")
   (require 'treesit-auto)
