@@ -534,6 +534,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 (use-package completion-preview
   :ensure nil
   :diminish completion-preview-mode
+  :custom
+  (completion-preview-minimum-symbol-length 2)
   :hook (((prog-mode org-mode md-mode markdown-mode) . completion-preview-mode)
          (org-mode . (lambda ()
                        ;; need to overwrite `completion-preview-commands' to trigger
