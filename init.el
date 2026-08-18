@@ -1099,7 +1099,9 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 																 :isolateEnglish :json-false)
 						 :activation-fn (lsp-activate-on "markdown" "org")
 						 :add-on 't)
-  (setq c-basic-offset 4))
+  (setq c-basic-offset 4)
+  ;; Disable telemetry:
+  (lsp-register-custom-settings '(("redhat.telemetry.enable" nil))))
 
 (use-package lsp-biome
     :straight (lsp-biome
