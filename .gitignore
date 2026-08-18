@@ -31,3 +31,4 @@ spell-fu/
 url/
 projects
 .cache/
+.lsp-session*
