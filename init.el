@@ -8,6 +8,8 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Don't bind C-i to tab
+(define-key input-decode-map [?\C-i] [C-i])
 ;; Performance Hacks
 ;; Emacs is an Elisp interpreter, and when running programs or packages,
 ;; it can occasionally experience pauses due to garbage collection.
@@ -1673,7 +1675,7 @@ Otherwise returns the FG-KEY hex string."
   (:states 'motion
 		   "TAB" nil
            "C-o" 'better-jumper-jump-backward
-           "C-i" 'better-jumper-jump-forward)
+           "<C-i>" 'better-jumper-jump-forward)
   :config
   (general-define-key :states 'motion "TAB" nil)
   (better-jumper-mode +1))
@@ -2519,7 +2521,7 @@ Switch to TODO otherwise"
   :hook (after-init . global-jinx-mode)
   :custom
   (jinx-languages "en_US")
-  :general-config
+  :general
   ("M-$" 'jinx-correct
    "C-M-$" 'jinx-languages)
   (general-nmap
