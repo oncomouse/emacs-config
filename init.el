@@ -964,8 +964,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 		   python-ts-mode                               ;; Enable LSP for Python
 		   ruby-base-mode                               ;; Enable LSP for Ruby
 		   rust-ts-mode                                 ;; Enable LSP for Rust
-		   text-mode
 		   web-mode) . lsp-deferred))                   ;; Enable LSP for Web (HTML)
+  (lsp-completion-mode . my/lsp-mode-setup-completion)
   :commands lsp
   :custom
   (lsp-keymap-prefix "C-c l")                         ;; Set the prefix for LSP commands.
@@ -1009,115 +1009,132 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (lsp-headerline-breadcrumb-enable nil)
   ;; Semantic settings
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
+  :init
+  (defun my/lsp-mode-setup-completion ()
+
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless))) ;; Configure orderless
   :config
   ;; Use these for custom lsp servers / servers not supported by lsp-mode:
-  (defconst dotfiles-lsp-server-commands
-	`((harper-ls . ("harper-ls" "-s"))
-	  (rass-python . ("pixi" "run" "-m" ,(expand-file-name "pixi.toml" user-emacs-directory) "rass" "python"))
-	  (tinymist . ("tinymist" "lsp"))))
-  (defun ap/lsp-command (server-id)
-	(or (alist-get server-id dotfiles-lsp-server-commands)
-		(error "No command registered for %s" server-id)))
-  (cl-defun ap/lsp-register (server-id major-modes
-									   &key add-on activation-fn
-									   initialization-options initialized-fn
-									   priority)
-	(lsp-register-client
-	 (make-lsp-client
-	  :new-connection (lsp-stdio-connection (ap/lsp-command server-id))
-	  :major-modes major-modes
-	  :activation-fn activation-fn
-	  :server-id server-id
-	  :priority (or priority 0)
-	  :add-on? add-on
-	  :multi-root t
-	  :initialized-fn initialized-fn
-	  :initialization-options initialization-options)))
-  (ap/lsp-register 'rass-python '(python-mode python-ts-mode))
-  (ap/lsp-register 'tinymist '(typst-ts-mode) :add-on t)
-  (ap/lsp-register 'harper-ls '(text-mode)
-				   :initialization-options
-				   '(:userDictPath ""
-								   :fileDictPath "$XDG_CONFIG_HOME/harper-ls/dictionary.txt"
-								   :linters (:SpellCheck t
-														 :AnA t
-														 :Anywhere t
-														 :AsFarBackAs t
-														 :CorrectNumberSuffix t
-														 :Dashes :json-false
-														 :LongSentences t
-														 :Matcher t
-														 :RepeatedWords t
-														 :SentenceCapitalization t
-														 :Spaces :json-false
-														 :SpellCheck t
-														 :SpelledNumbers :json-false
-														 :UnclosedQuotes t
-														 :WrongQuotes :json-false
-														 :SpelledNumbers :json-false)
-								   :rules (:Alongside t
-													  :ApartFrom t
-													  :Anywhere t
-													  :AsFarBackAs t
-													  :AsLongAs t
-													  :BackInTheDay t
-													  :ByAccident t
-													  :Cant t
-													  :ChangeTack t
-													  :Confident t
-													  :CriteriaPhenomena t
-													  :Didnt t
-													  :DoNotWant t
-													  :EllipsisLength t
-													  :Everybody t
-													  :ExpandBecause t
-													  :FootTheBill t
-													  :Freezing t
-													  :GoogleNames t
-													  :HadOf t
-													  :HelloGreeting t
-													  :Holidays t
-													  :InMyOpinion t
-													  :InRealLife t
-													  :ItCan t
-													  :IveGotTo t
-													  :Koreas t
-													  :LastButNotLeast t
-													  :LongSentences t
-													  :ManagerialReins t
-													  :Misunderstood t
-													  :MootPoint t
-													  :Multicore t
-													  :Nothing t
-													  :NotTo t
-													  :Notwithstanding t
-													  :Overall t
-													  :PossessiveNoun :json-false
-													  :PrayingMantis t
-													  :ProperNouns t
-													  :RapidFire t
-													  :Theres t
-													  :ThoughtProcess t
-													  :TransposedSpace t
-													  :Unless t
-													  :VerbToAdjective t)
-								   :codeActions (:ForceStable :json-false)
-								   :markdown (:IgnoreLinkTitle :json-false)
-								   :diagnosticSeverity "hint"
-								   :dialect "American"
-								   :isolateEnglish :json-false)
-				   :activation-fn (lsp-activate-on "markdown" "org")
-				   :add-on 't)
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("uvx" "ruff" "server"))
+					:major-modes '(python-mode python-ts-mode)
+					:server-id 'ruff-correct
+					:priority 1))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("uvx" "ty" "server"))
+					:major-modes '(python-mode python-ts-mode)
+					:server-id 'ty
+					:priority 2
+					:add-on? t))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("tinymist" "lsp"))
+					:major-modes '(typst-ts-mode)
+					:server-id 'tinymist
+					:priority 2))
+  (lsp-register-custom-settings `(("harper-ls.userDictPath" "")))
+  (lsp-defcustom lsp-harper-linters-sentence-capilization nil
+	"Whether sentences should start with a capital letter"
+	:type '(choice (const :tag "Enabled"        t)
+				   (const :tag "Disabled"      :json-false)
+				   (const :tag "Not Specified" nil))
+	:lsp-path "harper-ls.linters.SentenceCapitalization")
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("harper-ls" "-s"))
+					:major-modes '(org-mode markdown-mode markdown-ts-mode typst-ts-mode)
+					:server-id 'harper-ls
+					:priority 1
+					:add-on? t
+					:initialization-options
+					'(:userDictPath ""
+									:fileDictPath "$XDG_CONFIG_HOME/harper-ls/dictionary.txt"
+									:linters (:SpellCheck t
+														  :AnA t
+														  :Anywhere t
+														  :AsFarBackAs t
+														  :CorrectNumberSuffix t
+														  :Dashes :json-false
+														  :LongSentences t
+														  :Matcher t
+														  :RepeatedWords t
+														  :SentenceCapitalization t
+														  :Spaces :json-false
+														  :SpellCheck t
+														  :SpelledNumbers :json-false
+														  :UnclosedQuotes t
+														  :WrongQuotes :json-false
+														  :SpelledNumbers :json-false)
+									:rules (:Alongside t
+													   :ApartFrom t
+													   :Anywhere t
+													   :AsFarBackAs t
+													   :AsLongAs t
+													   :BackInTheDay t
+													   :ByAccident t
+													   :Cant t
+													   :ChangeTack t
+													   :Confident t
+													   :CriteriaPhenomena t
+													   :Didnt t
+													   :DoNotWant t
+													   :EllipsisLength t
+													   :Everybody t
+													   :ExpandBecause t
+													   :FootTheBill t
+													   :Freezing t
+													   :GoogleNames t
+													   :HadOf t
+													   :HelloGreeting t
+													   :Holidays t
+													   :InMyOpinion t
+													   :InRealLife t
+													   :ItCan t
+													   :IveGotTo t
+													   :Koreas t
+													   :LastButNotLeast t
+													   :LongSentences t
+													   :ManagerialReins t
+													   :Misunderstood t
+													   :MootPoint t
+													   :Multicore t
+													   :Nothing t
+													   :NotTo t
+													   :Notwithstanding t
+													   :Overall t
+													   :PossessiveNoun :json-false
+													   :PrayingMantis t
+													   :ProperNouns t
+													   :RapidFire t
+													   :Theres t
+													   :ThoughtProcess t
+													   :TransposedSpace t
+													   :Unless t
+													   :VerbToAdjective t)
+									:codeActions (:ForceStable :json-false)
+									:markdown (:IgnoreLinkTitle :json-false)
+									:diagnosticSeverity "hint"
+									:dialect "American"
+									:isolateEnglish :json-false)))
   (setq c-basic-offset 4)
   ;; Disable telemetry:
   (lsp-register-custom-settings '(("redhat.telemetry.enable" nil))))
 
+
+;;; LSP BIOME
+;; lsp-mode client for Biome.
 (use-package lsp-biome
     :straight (lsp-biome
 			 :type git
 			 :host github
 			 :repo "cxa/lsp-biome"))
 
+
+;;; LSP UI
+;; This package contains all the higher level UI modules of lsp-mode,
+;; like flycheck support and code lenses.
+;;
+;; By default, lsp-mode automatically activates lsp-ui unless
+;; lsp-auto-configure is set to nil.
 (use-package lsp-ui
   :straight t)
 
@@ -1340,7 +1357,7 @@ Otherwise returns the FG-KEY hex string."
     ;; Yank from kill ring
     "<leader> P" 'consult-yank-from-kill-ring
 
-    ;; Flymake navigation
+    ;; Diagnostic navigation
     "<leader> x x" 'consult-flycheck;; Gives you something like `trouble.nvim'
     ;; Dired commands for file management
     "<leader> x d" 'dired
@@ -1486,13 +1503,13 @@ Otherwise returns the FG-KEY hex string."
 (use-package evil-numbers
   :straight t
   :general
-  (general-nmap
-	"<leader> +" 'evil-numbers/inc-at-pt
-	"<leader> =" 'evil-numbers/inc-at-pt
-	"<leader> -" 'evil-numbers/dec-at-pt
-	"<leader> C-+" 'evil-numbers/inc-at-pt-incremental
-	"<leader> C-=" 'evil-numbers/inc-at-pt-incremental
-	"<leader> C--" 'evil-numbers/dec-at-pt-incremental)
+  (general-nivmap
+	"C-c +" 'evil-numbers/inc-at-pt
+	"C-c =" 'evil-numbers/inc-at-pt
+	"C-c -" 'evil-numbers/dec-at-pt
+	"C-c C-+" 'evil-numbers/inc-at-pt-incremental
+	"C-c C-=" 'evil-numbers/inc-at-pt-incremental
+	"C-c C--" 'evil-numbers/dec-at-pt-incremental)
   :config
   (defvar-keymap evil-numbers-repeat-map
 	:repeat t
