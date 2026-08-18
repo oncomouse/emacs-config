@@ -1019,12 +1019,12 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("uvx" "ruff" "server"))
 					:major-modes '(python-mode python-ts-mode)
-					:server-id 'ruff-correct
+					:server-id 'ruff-uvx
 					:priority 1))
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("uvx" "ty" "server"))
 					:major-modes '(python-mode python-ts-mode)
-					:server-id 'ty
+					:server-id 'ty-uvx
 					:priority 2
 					:add-on? t))
   (lsp-register-client
