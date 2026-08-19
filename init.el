@@ -1248,7 +1248,7 @@ Otherwise returns the FG-KEY hex string."
   (after-init . rainbow-mode))
 
 
-;;; Magit
+;;; MAGIT
 ;; `magit' is a powerful Git interface for Emacs that provides a complete
 ;; set of features to manage Git repositories. With its intuitive interface,
 ;; you can easily stage, commit, branch, merge, and perform other Git
@@ -1495,18 +1495,31 @@ Otherwise returns the FG-KEY hex string."
   :config
   (global-evil-surround-mode 1))
 
+
+;;; EMBRACE.EL
+;; Add/Change/Delete pairs based on expand-region.
 (use-package embrace
   :straight t
   :hook (org-mode . embrace-org-mode-hook)
   :general
   ("C-," 'embrace-commander))
 
+
+;;; EVIL EMBRACE
+;; This package provides evil integration of embrace.el. Since
+;; evil-surround provides a similar set of features as embrace.el,
+;; this package aims at adding the goodies of embrace.el to
+;; evil-surround and making evil-surround even better.
 (use-package evil-embrace
   :straight t
   :after evil-surround
   :config
   (evil-embrace-enable-evil-surround-integration))
 
+
+;;; EVIL NERD COMMENTER
+;; A Nerd Commenter emulation, help you comment code efficiently. For
+;; example, you can press “99,ci” to comment out 99 lines.
 (use-package evil-nerd-commenter
   :straight t
   :general
@@ -1517,6 +1530,15 @@ Otherwise returns the FG-KEY hex string."
   (:keymaps 'evil-outer-text-objects-map
             "c" 'evilnc-outer-comment))
 
+
+;;; EVIL NUMBERS
+;; + Increment / Decrement binary, octal, decimal and hex literals
+;; + Works like C-a/C-x in vim, i.e. searches for number up to eol
+;;   and then increments or decrements and keep zero padding up
+;;   (unlike in vim)
+;; + When a region is active, as in evil’s visual mode, all the
+;;   numbers within that region will be incremented/decremented (unlike
+;;   in vim)
 (use-package evil-numbers
   :straight t
   :general
@@ -1537,6 +1559,7 @@ Otherwise returns the FG-KEY hex string."
 	"C--" 'evil-numbers/dec-at-pt-incremental
 	"-" 'evil-numbers/dec-at-pt))
 
+
 ;; EVIL MATCHIT
 ;; The `evil-matchit' package extends `evil-mode' by enabling
 ;; text object matching for structures such as parentheses, HTML
@@ -1550,30 +1573,43 @@ Otherwise returns the FG-KEY hex string."
   :config
   (global-evil-matchit-mode 1))
 
+
+;;; TARGETS.EL
+;; This package is like a combination of the targets, TextObjectify,
+;; anyblock, and expand-region vim plugins.
 (use-package targets
   :straight (targets :type git :host github :repo "noctuid/targets.el")
   :config
   (targets-setup t)
+  (targets-setup t)
   (targets-define-composite-to anyblock
-    (("(" ")" pair)
-     ("[" "]" pair)
-     ("{" "}" pair)
-     ("<" ">" pair)
-     ("\"" "\"" quote)
-     ("'" "'" quote)
-     ("`" "`" quote)
-     ("“" "”" quote))
-    :bind t
-    :keys "b")
+	(("(" ")" pair)
+	 ("[" "]" pair)
+	 ("{" "}" pair)
+	 ("<" ">" pair)
+	 ("\"" "\"" quote)
+	 ("'" "'" quote)
+	 ("`" "`" quote)
+	 ("“" "”" quote))
+	:bind t
+	:keys "b")
   (targets-define-composite-to anyquote
-    (("'" "'" quote)
-     ("\"" "\"" quote)
-     ("`" "`" quote)
-     ("‘" "’" quote)
-     ("“" "”" quote))
-    :bind t
-    :keys "q"))
+	(("'" "'" quote)
+	 ("\"" "\"" quote)
+	 ("`" "`" quote)
+	 ("‘" "’" quote)
+	 ("“" "”" quote))
+	:bind t
+	:keys "q"))
 
+
+;;; EVIL BETTER VISUAL LINE
+;; This package will allow you to easily navigate through your file,
+;; as you might expect when using the ‘j’ and ‘k’ keys, while you’re
+;; in visual-line-mode.
+;;
+;; This is a custom revision of
+;; https://github.com/YourFin/evil-better-visual-line
 (use-package evil-better-visual-line
   :ensure nil
   :commands (evil-better-visual-line-next-line
@@ -1583,6 +1619,9 @@ Otherwise returns the FG-KEY hex string."
 		  "j" 'evil-better-visual-line-next-line
 		  "k" 'evil-better-visual-line-previous-line))
 
+
+;;; EVIL GOGGLES
+;; evil-goggles-mode displays a visual hint when editing with evil.
 (use-package evil-goggles
   :straight t
   :diminish evil-goggles-mode
@@ -1590,6 +1629,7 @@ Otherwise returns the FG-KEY hex string."
   (setq evil-goggles-pulse nil)
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
+
 
 ;; Override evil-replace-register with a function that uses evil-paste and override evil-paste-pop to allow
 ;; evil-replace-with-register to count as a paste command.
@@ -1668,11 +1708,60 @@ Otherwise returns the FG-KEY hex string."
 
   (evil-define-key '(visual normal) 'global evil-replace-with-register-key 'evil-replace-with-register))
 
+
+;;; EVIL TEXTOBJ ENTIRE
+;; "Entire Buffer" text objects for emacs `evil`
 (use-package evil-textobj-entire
   :straight (evil-textobj-entire :host github :repo "nscoder/evil-textobj-entire")
   :custom
   (evil-textobj-entire-key "g"))
 
+
+;;; EVIL RSI
+;; evil-rsi is intended to be a port of vim-rsi.
+;;
+;; It brings some essential emacs motion bindings (and potentially
+;; RSI...) back.
+(use-package evil-rsi
+     :straight (evil-rsi :type git :host github :repo "linktohack/evil-rsi")
+     :after evil
+     :hook
+	 (evil-mode . evil-rsi))
+
+
+;;; EVIL LION
+;; This package provides gl and gL align operators: gl MOTION CHAR and
+;; right-align gL MOTION CHAR.
+;;
+;; Use CHAR / to enter regular expression if a single character
+;; wouldn't suffice.
+;;
+;; Use CHAR RET to align with align.el's default rules for the active
+;; major mode.
+(use-package evil-lion
+  :ensure t
+  :config
+  (evil-lion-mode))
+
+
+;;; UNDO FU
+;; Simple, stable linear undo with redo for Emacs.
+;;
+;; This is a lightweight wrapper for Emacs built-in undo system,
+;; adding convenient undo/redo without losing access to the full undo
+;; history, allowing you to visit all previous states of the document
+;; if you need.
+;;
+;; The changes compared to Emacs undo are as follows:
+;;
+;; + Redo will not pass the initial undo action.
+;; + Redo will not undo (unlike Emacs redo which traverses previous
+;;   undo/redo steps).
+;; + These constraints can be temporarily disabled by pressing C-g
+;;   before undo or redo.
+;;
+;; Note that this doesn't interfere with Emacs internal undo data,
+;; which can be error prone.
 (use-package undo-fu
   :straight t
   :hook (after-init . undo-fu-mode)
@@ -1696,6 +1785,12 @@ Otherwise returns the FG-KEY hex string."
     :init-value nil
     :global t))
 
+
+;;; UNDO FU SESSION
+;; Save & recover undo steps between Emacs sessions.
+;;
+;; This package writes undo/redo information upon file save which is
+;; restored where possible when the file is loaded again.
 (use-package undo-fu-session
   :straight t
   :hook (undo-fu-mode  . undo-fu-session-global-mode)
@@ -1708,6 +1803,10 @@ Otherwise returns the FG-KEY hex string."
     ;; is our priority within Emacs
     (setq undo-fu-session-compression 'zst)))
 
+
+;;; BETTER JUMPER
+;; A configurable jump list implementation for Emacs that can be used
+;; to easily jump back to previous locations.
 (use-package better-jumper
   :straight t
   :diminish (better-jumper-mode better-jumper-local-mode)
@@ -1969,7 +2068,7 @@ Otherwise returns the FG-KEY hex string."
 	  (call-interactively 'ace-window))))
 
 
-(setq dotfiles-bibliography "~/Reading/library.bib")
+(defvar dotfiles-bibliography "~/Reading/library.bib")
 
 
 ;;; ORG MODE
@@ -2525,6 +2624,13 @@ Switch to TODO otherwise"
    "C-M-j" 'move-dup-duplicate-down))
 
 
+;;; RG.EL
+;; Use ripgrep in Emacs.
+;;
+;; Ripgrep is a replacement for both grep like (search one file) and
+;; ag like (search many files) tools. It's fast and versatile and
+;; written in Rust. For some introduction and benchmarks, see ripgrep
+;; is faster than {grep, ag, git grep, ucg, pt, sift}.
 (use-package rg
   :straight t
   :config
@@ -2572,6 +2678,23 @@ Switch to TODO otherwise"
   (with-eval-after-load 'vertico-multiform
     (add-to-list 'vertico-multiform-categories
                  '(jinx grid (vertico-grid-annotate . 20)))))
+
+
+;;; HIGHLIGHT INDENT GUIDES
+;; This minor mode highlights indentation levels via font-lock. Indent
+;; widths are dynamically discovered, which means this correctly
+;; highlights in any mode, regardless of indent width, even in
+;; languages with non-uniform indentation such as Haskell. By default,
+;; this mode also inspects your theme dynamically, and automatically
+;; chooses appropriate colors for highlighting. This mode works
+;; properly around hard tabs and mixed indentation, and it behaves
+;; well in large buffers.
+(use-package highlight-indent-guides
+  :straight t
+  :diminish highlight-indent-guides-mode
+  :custom
+  (highlight-indent-guides-method 'character)
+  :hook (prog-mode . highlight-indent-guides-mode))
 
 
 ;;; UTILITARY FUNCTION TO INSTALL EMACS-KICK
