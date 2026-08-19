@@ -552,10 +552,10 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 										; Retrieved 2026-08-19, License - CC BY-SA 3.0
   :hook
   ((org-mode markdown-mode md-mode prog-mode) . electric-pair-mode)
-  (md-mode . (lambda ()
+  ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
 			   (add-hook 'post-self-insert-hook
 						 #'markdown-electric-pair-string-delimiter 'append t)))
-  (md-mode . (lambda ()
+  ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
 			   (setq-local electric-pair-pairs
 						   (append electric-pair-pairs
 								   '((?* . ?*)
