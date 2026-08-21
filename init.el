@@ -633,8 +633,9 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
           help-mode
           compilation-mode
 		  ghostel-mode))
-  (popper-mode +1)
-  (popper-echo-mode +1))
+  :hook
+  (after-init . popper-mode)
+  (after-init . popper-echo-mode))
 
 
 ;;; FLYCHECK
