@@ -264,7 +264,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 	  (display-buffer-in-side-window)
 	  (window-height . 0.45)
 	  (side . bottom)
-	  (slot . 0))
+	  (slot . -1))
 
      ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Occur\\|eldoc.*\\)\\*"
       (display-buffer-in-side-window)
@@ -620,8 +620,8 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 ;; you need instant access to but want kept out of your way!
 (use-package popper
   :straight t
-  :bind (("C-`"   . popper-toggle)
-         ("M-`"   . popper-cycle)
+  :bind (("M-`"   . popper-toggle)
+         ("C-`"   . popper-cycle)
          ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-group-function #'popper-group-by-project)
