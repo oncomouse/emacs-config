@@ -1272,10 +1272,9 @@ Otherwise returns the FG-KEY hex string."
     (if bg-val
         `(:background ,bg-val :foreground ,fg-val)
       fg-val)))
-(use-package hl-todo
+(use-package hl-todo-ov
   :defer t
-  :ensure t
-  :straight t
+  :ensure nil
   :hook
   (after-init . global-hl-todo-mode)
   :config
