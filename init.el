@@ -1062,11 +1062,14 @@ targets."
 		   tsx-ts-mode                                  ;; Enable LSP for TSX
 		   typescript-ts-base-mode                      ;; Enable LSP for TypeScript
 		   css-mode                                     ;; Enable LSP for CSS
+		   css-ts-mode
 		   go-ts-mode                                   ;; Enable LSP for Go
 		   js-ts-mode                                   ;; Enable LSP for JavaScript (TS mode)
 		   json-ts-mode
 		   jsx-ts-mode
+		   lua-ts-mode
 		   fish-mode
+		   svelte-ts-mode
 		   python-mode                                  ;; Enable LSP for Python
 		   python-ts-mode                               ;; Enable LSP for Python
 		   ruby-base-mode                               ;; Enable LSP for Ruby
@@ -2809,6 +2812,16 @@ Switch to TODO otherwise"
 ;; Emacs major mode for fish shell scripts.
 (use-package fish-mode
   :straight t)
+
+
+;;; SVELTE MODE
+;; Emacs major mode for .svelte files. It's based on mhtml-mode. It
+;; requires (>= emacs-major-version 26).
+(use-package svelte-ts-mode
+  :straight (svelte-ts-mode :type git :host github :repo "leafOfTree/svelte-ts-mode")
+  :config
+    (dolist (item svelte-ts-mode-language-source-alist)
+    (add-to-list 'treesit-language-source-alist item)))
 
 
 ;;; UTILITARY FUNCTION TO INSTALL EMACS-KICK
