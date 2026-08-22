@@ -1068,6 +1068,7 @@ targets."
 		   js-ts-mode                                   ;; Enable LSP for JavaScript (TS mode)
 		   json-ts-mode
 		   jsx-ts-mode
+		   fish-mode
 		   python-mode                                  ;; Enable LSP for Python
 		   python-ts-mode                               ;; Enable LSP for Python
 		   ruby-base-mode                               ;; Enable LSP for Ruby
