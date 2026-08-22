@@ -920,9 +920,7 @@ targets."
 ;; that Consult commands, like previews, are available when using Embark.
 (use-package embark-consult
   :ensure t
-  :straight t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode)) ;; Enable preview in Embark collect mode.
+  :straight t) ;; Enable preview in Embark collect mode.
 
 
 ;;; TREESITTER-AUTO
@@ -1833,7 +1831,7 @@ Otherwise returns the FG-KEY hex string."
      :straight (evil-rsi :type git :host github :repo "linktohack/evil-rsi")
      :after evil
      :hook
-	 (evil-mode . evil-rsi))
+	 (evil-mode . evil-rsi-mode))
 
 
 ;;; EVIL LION
