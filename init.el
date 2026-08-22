@@ -1120,8 +1120,8 @@ targets."
   :init
   (defun my/lsp-mode-setup-completion ()
 
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless))) ;; Configure orderless
+	(setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+		  '(orderless))) ;; Configure orderless
   :config
   ;; Use these for custom lsp servers / servers not supported by lsp-mode:
   (lsp-register-client
@@ -1224,6 +1224,22 @@ targets."
 									:dialect "American"
 									:isolateEnglish :json-false)))
   (setq c-basic-offset 4)
+  ;; Custom configuration for fish-lsp that supports actually
+  ;; installing the LSP with NPM (shocking!)
+  (lsp-dependency 'fish-language-server
+				  '(:system "fish-lsp")
+				  '(:npm :package "fish-lsp" :path "fish-lsp"))
+  (lsp-register-client
+   (make-lsp-client
+	:server-id 'fish-language-server
+	:new-connection
+	(lsp-stdio-connection
+	 (lambda () (list (lsp-package-path 'fish-language-server) "start")))
+	:activation-fn (lsp-activate-on "fish")
+	:major-modes '(fish-mode)
+	:download-server-fn
+	(lambda (_client callback error-callback _update?)
+	  (lsp-package-ensure 'fish-language-server callback error-callback))))
   ;; Disable telemetry:
   (lsp-register-custom-settings '(("redhat.telemetry.enable" nil))))
 
@@ -2785,6 +2801,15 @@ Switch to TODO otherwise"
   :custom
   (highlight-indent-guides-method 'character)
   :hook (prog-mode . highlight-indent-guides-mode))
+
+;;; ==================== LANGUAGE MODES ====================
+
+;; Here is where I have to install all the different modes to support Emacs syntax highlighting
+
+;;; EMACS FISH
+;; Emacs major mode for fish shell scripts.
+(use-package fish-mode
+  :straight t)
 
 
 ;;; UTILITARY FUNCTION TO INSTALL EMACS-KICK
