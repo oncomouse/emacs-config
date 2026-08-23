@@ -260,7 +260,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
      ;;  (slot . -1))
 
 	 ;; Make ghostel a bit bigger
-	 ("\\*\\(ghostel\\)"
+	 ("\\*\\(ghostel\\)\\*"
 	  (display-buffer-in-side-window)
 	  (window-height . 0.45)
 	  (side . bottom)
