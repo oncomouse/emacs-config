@@ -1344,10 +1344,8 @@ Otherwise returns the FG-KEY hex string."
 ;; names, e.g. #0000ff is displayed in white with a blue background.
 (use-package ov ;; Required by this patch to rainbow-mode
   :ensure t
-  :defer t
   :straight t)
 (use-package rainbow-mode
-  :defer t
   :ensure t
   :straight (rainbow-mode :type git :host github :repo "amosbird/rainbow-mode")
   :custom
