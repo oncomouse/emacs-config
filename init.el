@@ -260,7 +260,7 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
      ;;  (slot . -1))
 
 	 ;; Make ghostel a bit bigger
-	 ("\\*\\(ghostel\\)\\*"
+	 ("\\*\\(ghostel\\)"
 	  (display-buffer-in-side-window)
 	  (window-height . 0.45)
 	  (side . bottom)
@@ -1846,6 +1846,7 @@ Otherwise returns the FG-KEY hex string."
 ;; major mode.
 (use-package evil-lion
   :ensure t
+  :straight t
   :config
   (evil-lion-mode))
 
