@@ -204,24 +204,6 @@
   ;; Set the default coding system for files to UTF-8.
   (modify-coding-system-alist 'file "" 'utf-8)
 
-  ;; Display some modes in full-frame
-  (defun sanityinc/display-buffer-full-frame (buffer alist)
-    "If it's not visible, display buffer full-frame, saving the prior window config.
-The saved config will be restored when the window is quit later.
-BUFFER and ALIST are as for `display-buffer-full-frame'."
-    (let ((initial-window-configuration (current-window-configuration)))
-      (or (display-buffer-reuse-window buffer alist)
-          (let ((full-window (display-buffer-full-frame buffer alist)))
-            (prog1
-                full-window
-              (set-window-parameter full-window 'sanityinc/previous-config initial-window-configuration))))))
-  (defmacro sanityinc/fullframe-mode (mode)
-    "Configure buffers that open in MODE to display in full-frame."
-    `(add-to-list 'display-buffer-alist
-                  (cons (cons 'major-mode ,mode)
-                        (list 'sanityinc/display-buffer-full-frame))))
-
-  (sanityinc/fullframe-mode 'ibuffer-mode)
   ;; Add a hook to run code after Emacs has fully initialized.
   (add-hook 'after-init-hook
             (lambda ()
@@ -260,11 +242,11 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
      ;;  (slot . -1))
 
 	 ;; Make ghostel a bit bigger
-	 ("\\*\\(ghostel\\)"
+	 ((major-mode . ghostel-mode)
 	  (display-buffer-in-side-window)
 	  (window-height . 0.45)
 	  (side . bottom)
-	  (slot . -1))
+	  (slot . 0))
 
      ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Occur\\|eldoc.*\\)\\*"
       (display-buffer-in-side-window)
@@ -287,7 +269,26 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
       (window-height . 0.25)
       (side . bottom)
       (slot . 1))
-     )))
+     ))
+  :config
+    ;; Display some modes in full-frame
+  (defun sanityinc/display-buffer-full-frame (buffer alist)
+    "If it's not visible, display buffer full-frame, saving the prior window config.
+The saved config will be restored when the window is quit later.
+BUFFER and ALIST are as for `display-buffer-full-frame'."
+    (let ((initial-window-configuration (current-window-configuration)))
+      (or (display-buffer-reuse-window buffer alist)
+          (let ((full-window (display-buffer-full-frame buffer alist)))
+            (prog1
+                full-window
+              (set-window-parameter full-window 'sanityinc/previous-config initial-window-configuration))))))
+  (defmacro sanityinc/fullframe-mode (mode)
+    "Configure buffers that open in MODE to display in full-frame."
+    `(add-to-list 'display-buffer-alist
+                  (cons (cons 'major-mode ,mode)
+                        (list 'sanityinc/display-buffer-full-frame))))
+
+  (sanityinc/fullframe-mode 'ibuffer-mode))
 
 ;;; DIRED
 ;; In Emacs, the `dired' package provides a powerful and built-in file manager
@@ -621,18 +622,19 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 (use-package popper
   :straight t
   :bind (("M-`"   . popper-toggle)
-         ("C-`"   . popper-cycle)
-         ("C-M-`" . popper-toggle-type))
-  :init
-  (setq popper-group-function #'popper-group-by-project)
-  (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "\\*Warnings\\*"
-		  "Output\\*$"
-          "\\*Async Shell Command\\*"
-          help-mode
-          compilation-mode
-		  ghostel-mode))
+		 ("C-`"   . popper-cycle)
+		 ("C-M-`" . popper-toggle-type))
+  :custom
+  (popper-display-control nil) ;; Let display-buffer-alist manage this
+  (popper-group-function #'popper-group-by-project)
+  (popper-reference-buffers
+   '("\\*Messages\\*"
+	 "\\*Warnings\\*"
+	 "Output\\*$"
+	 "\\*Async Shell Command\\*"
+	 help-mode
+	 compilation-mode
+	 ghostel-mode))
   :hook
   (after-init . popper-mode)
   (after-init . popper-echo-mode))
@@ -1373,7 +1375,7 @@ Otherwise returns the FG-KEY hex string."
   :ensure t
   :straight t
   :defer t
-  :init
+  :config
   (sanityinc/fullframe-mode 'magit-status-mode))
 
 
