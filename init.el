@@ -145,7 +145,6 @@
 
   :general-config
   ("C-x C-r" 'recentf)
-  ("C-x C-b" 'ibuffer)
   :config
   ;; By default emacs gives you access to a lot of *special* buffers, while navigating with [b and ]b,
   ;; this might be confusing for newcomers. This settings make sure ]b and [b will always load a
@@ -219,43 +218,37 @@
                          (number-to-string (length package-activated-list))))))))
 
 
-;;; WINDOW
-;; This section configures window management in Emacs, enhancing the way buffers
-;; are displayed for a more efficient workflow. The `window' use-package helps
-;; streamline how various buffers are shown, especially those related to help,
-;; diagnostics, and completion.
-;;
-;; Note: I have left some commented-out code below that may facilitate your
-;; Emacs journey later on. These configurations can be useful for displaying
-;; other types of buffers in side windows, allowing for a more organized workspace.
-(use-package window
-  :ensure nil       ;; This is built-in, no need to fetch it.
-  :config
-  ;; Display some modes in full-frame
-  (defun sanityinc/display-buffer-full-frame (buffer alist)
-	"If it's not visible, display buffer full-frame, saving the prior window config.
+;;; PURCELL FULLFRAME MODE
+;; Display some modes in full-frame
+(defun sanityinc/display-buffer-full-frame (buffer alist)
+  "If it's not visible, display buffer full-frame, saving the prior window config.
 The saved config will be restored when the window is quit later.
 BUFFER and ALIST are as for `display-buffer-full-frame'."
-	(let ((initial-window-configuration (current-window-configuration)))
-	  (or (display-buffer-reuse-window buffer alist)
-		  (let ((full-window (display-buffer-full-frame buffer alist)))
-			(prog1
-				full-window
-			  (set-window-parameter full-window 'sanityinc/previous-config initial-window-configuration))))))
-  (defun sanityinc/maybe-restore-window-configuration (orig &optional kill window)
-	(let* ((window  (or window (selected-window)))
-		   (to-restore (window-parameter window 'sanityinc/previous-config)))
-	  (set-window-parameter window 'sanityinc/previous-config nil)
-	  (funcall orig kill window)
-	  (when to-restore
-		(set-window-configuration to-restore))))
-  (advice-add 'quit-window :around 'sanityinc/maybe-restore-window-configuration)
-  (defmacro sanityinc/fullframe-mode (mode)
-	"Configure buffers that open in MODE to display in full-frame."
-	`(add-to-list 'display-buffer-alist
-				  (cons (cons 'major-mode ,mode)
-						(list 'sanityinc/display-buffer-full-frame))))
-  (sanityinc/fullframe-mode 'ibuffer-mode))
+  (let ((initial-window-configuration (current-window-configuration)))
+	(or (display-buffer-reuse-window buffer alist)
+		(let ((full-window (display-buffer-full-frame buffer alist)))
+		  (prog1
+			  full-window
+			(set-window-parameter full-window 'sanityinc/previous-config initial-window-configuration))))))
+(defun sanityinc/maybe-restore-window-configuration (orig &optional kill window)
+  "Advice for `quit-window' (ORIG).
+Quit WINDOW and bury its buffer.
+WINDOW must be a live window and defaults to the selected one.
+With prefix argument KILL non-nil, kill the buffer instead of
+burying it."
+  (let* ((window  (or window (selected-window)))
+		 (to-restore (window-parameter window 'sanityinc/previous-config)))
+	(set-window-parameter window 'sanityinc/previous-config nil)
+	(funcall orig kill window)
+	(when to-restore
+	  (set-window-configuration to-restore))))
+(advice-add 'quit-window :around 'sanityinc/maybe-restore-window-configuration)
+(defmacro sanityinc/fullframe-mode (mode)
+  "Configure buffers that open in MODE to display in full-frame."
+  `(add-to-list 'display-buffer-alist
+				(cons (cons 'major-mode ,mode)
+					  (list 'sanityinc/display-buffer-full-frame))))
+
 
 ;;; DIRED
 ;; In Emacs, the `dired' package provides a powerful and built-in file manager
@@ -567,6 +560,20 @@ BUFFER and ALIST are as for `display-buffer-full-frame'."
 			"M-SPC" 'completion-at-point
             "M-n" 'completion-preview-next-candidate
             "M-p" 'completion-preview-prev-candidate))
+
+
+;;; IBUFFER
+;; Ibuffer is a built-in Emacs package that allows users to manage and
+;; operate on buffers in a Dired-like manner, enabling sorting,
+;; filtering, and marking of buffers based on various criteria.
+(use-package ibuffer
+  :ensure t
+  :defer t
+  :commands (ibuffer)
+  :general
+  ("C-x C-b" 'ibuffer)
+  :init
+  (sanityinc/fullframe-mode 'ibuffer-mode))
 
 
 ;;; ==================== EXTERNAL PACKAGES ====================
