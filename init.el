@@ -8,8 +8,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Don't bind C-i to tab
-(define-key input-decode-map [?\C-i] [C-i])
 ;; Performance Hacks
 ;; Emacs is an Elisp interpreter, and when running programs or packages,
 ;; it can occasionally experience pauses due to garbage collection.
@@ -1461,6 +1459,7 @@ Otherwise returns the FG-KEY hex string."
    evil-want-integration t      ;; Integrate `evil' with other Emacs features (optional as it's true by default).
    evil-want-keybinding nil     ;; Disable default keybinding to set custom ones.
    evil-want-C-u-scroll t       ;; Makes C-u scroll
+   evil-want-C-i-jump nil
    evil-want-C-u-delete t)       ;; Makes C-u delete on insert mode
   :general-config
   ("C-c u" 'universal-argument)
@@ -1968,12 +1967,10 @@ Otherwise returns the FG-KEY hex string."
   :straight t
   :diminish (better-jumper-mode better-jumper-local-mode)
   :general
-  (:states 'motion
-		   "TAB" nil
+  (:states 'normal
            "C-o" 'better-jumper-jump-backward
-           "<C-i>" 'better-jumper-jump-forward)
+           "C-i" 'better-jumper-jump-forward)
   :config
-  (general-define-key :states 'motion "TAB" nil)
   (better-jumper-mode +1))
 
 
