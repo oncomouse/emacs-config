@@ -1085,14 +1085,6 @@ targets."
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
   (require 'corfu-quick))
 
-(use-package nerd-icons-corfu
-  :if ek-use-nerd-fonts
-  :ensure t
-  :straight t
-  :defer t
-  :after (:all corfu))
-
-
 ;;; LSP
 ;; Emacs comes with an integrated LSP client called `eglot', which offers basic LSP functionality.
 ;; However, `eglot' has limitations, such as not supporting multiple language servers
@@ -2063,6 +2055,26 @@ Otherwise returns the FG-KEY hex string."
   :after (:all nerd-icons)
   :config
   (tab-line-nerd-icons-global-mode))
+
+
+;;; NERD ICONS IBUFFER
+;; Display nerd icons in ibuffer.
+(use-package nerd-icons-ibuffer
+  :if ek-use-nerd-fonts
+  :ensure t
+  :straight t
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+
+;;; NERD ICONS CORFU
+;; Nerd-icons-corfu.el is a library for adding icons to completions in
+;; Corfu. It uses nerd-icons.el under the hood and, as such, works on
+;; both GUI and terminal. Below is a screenshot of the GUI version.
+(use-package nerd-icons-corfu
+  :if ek-use-nerd-fonts
+  :ensure t
+  :straight t
+  :after (:all corfu))
 
 
 ;;; CATPPUCCIN THEME
