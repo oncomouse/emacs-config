@@ -2545,13 +2545,13 @@ Switch to TODO otherwise"
   (org-cite-activate-processor 'citar)
   (citar-bibliography org-cite-global-bibliography)
   :config
-  (add-to-list 'citar-file-open-functions '("pdf" . citar-file-open-external))
-  ;; Run `citar-org-update-pre-suffix' after inserting a citation to immediately
-  ;; set its prefix and suffix
-  (advice-add 'org-cite-insert :after #'(lambda (args)
-										  (save-excursion
-											(left-char) ; First move point inside citation
-											(citar-org-update-pre-suffix)))))
+  (add-to-list 'citar-file-open-functions '("pdf" . citar-file-open-external)))
+  ;; ;; Run `citar-org-update-pre-suffix' after inserting a citation to immediately
+  ;; ;; set its prefix and suffix
+  ;; (advice-add 'org-cite-insert :after #'(lambda (args)
+  ;; 										  (save-excursion
+  ;; 											(left-char) ; First move point inside citation
+  ;; 											(citar-org-update-prefix-suffix)))))
 
 
 ;;; CITAR EMBARK
