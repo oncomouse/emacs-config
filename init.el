@@ -730,8 +730,10 @@ standard Emacs window‑selection utilities."
                    (add-hook 'kill-buffer-hook #'ghostel--close-window-on-kill nil t)))
   :general
   (general-nmap
-   "<leader> t t" 'ghostel
-   "<leader> t T" (lambda () (interactive) (evil-window-split) (other-window 1) (ghostel))))
+	"<leader> t t" 'ghostel)
+  (:keymaps 'ghostel-semi-char-mode-map
+			"M-`" 'popper-toggle
+			"M-o" 'other-window))
 
 (defun ghostel--close-window-on-kill ()
   "Remove window if it contains a Ghostel buffer, unless last window."
