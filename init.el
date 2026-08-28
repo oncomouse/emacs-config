@@ -1125,7 +1125,8 @@ targets."
   (lsp-completion-mode . my/lsp-mode-setup-completion)
   :commands lsp
   :custom
-  (lsp-keymap-prefix "C-c l")                         ;; Set the prefix for LSP commands.
+  (lsp-use-plists t)                                    ;; Plists
+  (lsp-keymap-prefix "C-c l")                           ;; Set the prefix for LSP commands.
   (lsp-inlay-hint-enable nil)                           ;; Usage of inlay hints.
   (lsp-completion-provider :none)                       ;; Disable the default completion provider.
   (lsp-session-file (locate-user-emacs-file ".lsp-session")) ;; Specify session file location.
@@ -1168,7 +1169,6 @@ targets."
   (lsp-semantic-tokens-enable nil)                     ;; Disable semantic tokens.
   :init
   (defun my/lsp-mode-setup-completion ()
-
 	(setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
 		  '(orderless))) ;; Configure orderless
   :config

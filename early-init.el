@@ -12,8 +12,7 @@
   (setq load-path-filter-function
         #'load-path-filter-cache-directory-files))
 
-;; * native-comp
-
+;;; * native-comp
 ;; - move eln files to a cache dir
 ;; - don't bombard the user with warnings
 ;; - compile packages on install, not at runtime
@@ -25,5 +24,9 @@
                  (concat "~/.cache/emacs/" "eln-cache/"))
     (setq native-comp-async-report-warnings-errors 'silent
           native-comp-deferred-compilation t)))
+
+
+;;; lsp-mode optimizations
+(setenv "LSP_USE_PLISTS" "true")
 
 ;;; early-init.el ends here
