@@ -144,6 +144,7 @@
   (before-save . delete-trailing-whitespace)      ;; Delete trailing spaces on save
 
   :general-config
+  ("M-o" 'other-window)
   ("C-x C-r" 'recentf)
   :config
   ;; By default emacs gives you access to a lot of *special* buffers, while navigating with [b and ]b,
@@ -2191,7 +2192,8 @@ Otherwise returns the FG-KEY hex string."
 (use-package ace-window
   :straight t
   :general
-  ("M-o" 'ace-window)
+  ;; ("M-o" 'ace-window)
+  ([remap other-window] 'ace-window)
   :custom
   (ace-window-display-mode t)
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
