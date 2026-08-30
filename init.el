@@ -2870,16 +2870,6 @@ Switch to TODO otherwise"
   :hook (prog-mode . highlight-indent-guides-mode))
 
 
-;;; LLM Tool Collection
-;; A curated collection of tools to empower Emacs-based LLM agents.
-(use-package llm-tool-collection
-  :after gptel
-  :straight (llm-tool-collection :type git :host github :repo "skissue/llm-tool-collection")
-  :config
-  (mapcar (apply-partially #'apply #'gptel-make-tool)
-                  (llm-tool-collection-get-all)))
-
-
 ;;; GPTEL
 ;; gptel is a simple Large Language Model chat client for Emacs, with
 ;; support for multiple models and backends. It works in the spirit of
@@ -2905,6 +2895,11 @@ Switch to TODO otherwise"
 	:host "cubtram:8080"
 	:models '(cubtram)
 	:request-params '(:chat_template_kwargs (:enable_thinking :json-false)))
+  (gptel-make-openai "cubtram-smol"
+	:stream t
+	:protocol "http"
+	:host "cubtram:8082"
+	:models '(cubtram-smol))
 
   (setq gptel-model 'cubtram
 		gptel-backend (gptel-get-backend "cubtram-nothink"))
@@ -3135,6 +3130,16 @@ Edit freely."
   :commands (gptel-inline)
   :general
   ("C-c C-g" 'gptel-inline))
+
+
+;;; LLM Tool Collection
+;; A curated collection of tools to empower Emacs-based LLM agents.
+(use-package llm-tool-collection
+  :after gptel
+  :straight (llm-tool-collection :type git :host github :repo "skissue/llm-tool-collection")
+  :config
+  (mapcar (apply-partially #'apply #'gptel-make-tool)
+                  (llm-tool-collection-get-all)))
 
 
 ;;; ==================== LANGUAGE MODES ====================
