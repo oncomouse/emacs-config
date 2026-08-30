@@ -1472,12 +1472,6 @@ Otherwise returns the FG-KEY hex string."
   (general-nivmap
 	"M-l" 'evil-shift-right-line
 	"M-h" 'evil-shift-left-line)
-  (general-nivmap
-	"C-n" 'evil-next-line
-	"C-p" 'evil-previous-line)
-  (general-imap
-	"C-e" 'move-end-of-line
-	"C-a" 'move-beginning-of-line)
   (general-imap
 	"C-y" 'yank
 	"M-y" 'yank-pop)
@@ -1883,8 +1877,8 @@ Otherwise returns the FG-KEY hex string."
 (use-package evil-rsi
      :straight (evil-rsi :type git :host github :repo "linktohack/evil-rsi")
      :after evil
-     :hook
-	 (evil-mode . evil-rsi-mode))
+     :config
+	 (evil-rsi-mode))
 
 
 ;;; EVIL LION
@@ -2856,6 +2850,7 @@ Switch to TODO otherwise"
   (with-eval-after-load 'vertico-multiform
     (add-to-list 'vertico-multiform-categories
                  '(jinx grid (vertico-grid-annotate . 20)))))
+
 
 
 ;;; HIGHLIGHT INDENT GUIDES
