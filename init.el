@@ -2928,11 +2928,16 @@ Switch to TODO otherwise"
 	:host "cubtram:8080"
 	:models '(cubtram)
 	:request-params '(:chat_template_kwargs (:enable_thinking :json-false)))
-  (gptel-make-openai "cubtram-smol"
+  (gptel-make-openai "OpenRouter"
+	:host "openrouter.ai"
+	:endpoint "/api/v1/chat/completions"
 	:stream t
-	:protocol "http"
-	:host "cubtram:8082"
-	:models '(cubtram-smol))
+	:key openrouter-api-key
+	:models (gptel-openrouter-get-annotated-models
+			 '(z-ai/glm-5.3-flash
+			   deepseek/deepseek-v4-flash-0731
+			   deepseek/deepseek-v4-pro-0813
+			   google/gemini-3.7-flash)))
 
   (setq gptel-model 'cubtram
 		gptel-backend (gptel-get-backend "cubtram-nothink"))
@@ -3162,7 +3167,21 @@ Edit freely."
   :ensure nil
   :commands (gptel-inline)
   :general
-  ("C-c C-g" 'gptel-inline))
+  ("C-c C-g" 'gptel-inline)
+  (:keymaps 'gptel-inline-map
+			"C-c m" 'gptel-menu))
+
+
+;;; GPTEL OPENROUTER
+;; gptel-openrouter.el is an Emacs package designed to retrieve and
+;; process model information from OpenRouter's API. It allows Emacs
+;; users to fetch detailed annotations about available models,
+;; including descriptions, context lengths, prices, and more. This
+;; information is formatted for compatibility with gptel, an Emacs
+;; package facilitating communication with AI models.
+(use-package gptel-openrouter
+  :after gptel
+  :straight (gptel-openrouter :type git :host github :repo "darcamo/gptel-openrouter"))
 
 
 ;;; LLM Tool Collection
