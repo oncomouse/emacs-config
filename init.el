@@ -2643,7 +2643,7 @@ Switch to TODO otherwise"
 	  "%?"
 	  :target
 	  (file+head
-	   "${citar-citekey}.org"
+	   "%<%Y%m%d%H%M%S>-${citar-citekey}.org"
 	   "#+title: Notes on ${citar-title} (${citar-citekey})\n#+subtitle:${citar-author}, ${citar-date}\n#+created: %U\n#+last_modified: %U\n\n")
 	  :unnarrowed t)))
   (org-roam-directory "~/org/org-roam")
