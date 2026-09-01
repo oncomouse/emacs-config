@@ -164,6 +164,7 @@
   (when (eq system-type 'darwin)       ;; Check if the system is macOS.
 	(setq mac-command-modifier 'meta)  ;; Set the Command key to act as the Meta key.
 	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 175))
+  (set-face-attribute 'variable-pitch nil :family "FiraSans" :height 145)
 
   ;; Use C-h A to describe-face
   (with-eval-after-load 'help
@@ -337,7 +338,6 @@ burying it."
   (setq
    tab-line-new-button-show nil
    tab-line-close-button-show nil)
-  (with-eval-after-load 'catppuccin-theme
   (set-face-attribute 'tab-line-highlight nil
 					  :inherit 'default
 					  :background (ap/get-catppuccin-color 'mantle))
@@ -353,7 +353,7 @@ burying it."
 					  :foreground (ap/get-catppuccin-color 'text)
 					  :background (ap/get-catppuccin-color 'base)
 					  :weight 'bold
-					  :slant 'italic)))
+					  :slant 'italic))
 
 
 (use-package repeat
@@ -1401,16 +1401,6 @@ targets."
 
 ;;; HL TODO
 ;; Highlight TODO and similar keywords in comments and strings
-(defun ap/get-catppuccin-color (fg-key &optional bg-key)
-  "Get color from catppuccin-flavor-alist using current catppuccin-flavor.
-If BG-KEY is provided, returns (:background bg :foreground fg).
-Otherwise returns the FG-KEY hex string."
-  (let* ((flavor (alist-get catppuccin-flavor catppuccin-flavor-alist))
-         (fg-val (alist-get fg-key flavor))
-         (bg-val (when bg-key (alist-get bg-key flavor))))
-    (if bg-val
-        `(:background ,bg-val :foreground ,fg-val)
-      fg-val)))
 (use-package hl-todo
   :defer t
   :ensure t
@@ -1430,10 +1420,9 @@ Otherwise returns the FG-KEY hex string."
 ;; This minor mode sets background color to strings that match color
 ;; names, e.g. #0000ff is displayed in white with a blue background.
 (use-package ov ;; Required by this patch to rainbow-mode
-  :ensure t
   :straight t)
 (use-package rainbow-mode
-  :ensure t
+  :defer nil
   :straight (rainbow-mode :type git :host github :repo "amosbird/rainbow-mode")
   :custom
   (rainbow-x-colors nil)
@@ -2105,29 +2094,78 @@ Otherwise returns the FG-KEY hex string."
   :after (:all corfu))
 
 
-;;; CATPPUCCIN THEME
-;; The `catppuccin-theme' package provides a visually pleasing color theme
-;; for Emacs that is inspired by the popular Catppuccin color palette.
-;; This theme aims to create a comfortable and aesthetic coding environment
-;; with soft colors that are easy on the eyes.
-(use-package catppuccin-theme
-  :ensure t
+;;; MODUS THEMES
+;; Starting with version 5.0.0 of the `modus-themes', other packages
+;; can be built on top to provide their own "Modus" derivatives.
+;; For example, this is what I do with my `ef-themes' and
+;; `standard-themes' (starting with versions 2.0.0 and 3.0.0,
+;; respectively).
+;;
+;; The `modus-themes-include-derivatives-mode' makes all Modus
+;; commands that act on a theme consider all such derivatives, if
+;; their respective packages are available and have been loaded.
+;;
+;; Note that those packages can even completely take over from the
+;; Modus themes such that, for example, `modus-themes-rotate' only
+;; goes through the Ef themes (to this end, the Ef themes provide
+;; the `ef-themes-take-over-modus-themes-mode' and the Standard
+;; themes have the `standard-themes-take-over-modus-themes-mode'
+;; equivalent).
+;;
+;; If you only care about the Modus themes, then (i) you do not need
+;; to enable the `modus-themes-include-derivatives-mode' and (ii) do
+;; not install and activate those other theme packages.
+(use-package modus-themes
   :straight t
+  :demand t
   :init
-  (setq catppuccin-flavor 'latte)
+  (modus-themes-include-derivatives-mode 1)
+  :bind
+  (("<f5>" . modus-themes-rotate)
+   ("C-<f5>" . modus-themes-select)
+   ("M-<f5>" . modus-themes-load-random))
   :config
-  (custom-set-faces
-   ;; Set the color for changes in the diff highlighting to blue.
-   `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
-  (custom-set-faces
-   ;; Set the color for deletions in the diff highlighting to red.
-   `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
-  (custom-set-faces
-   ;; Set the color for insertions in the diff highlighting to green.
-   `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
-  ;; Load the Catppuccin theme without prompting for confirmation.
-  (load-theme 'catppuccin :no-confirm))
+  ;; Your customizations here.  All customizations must evaluated
+  ;; BEFORE loading the theme.
+  (setq modus-themes-to-toggle '(modus-operandi modus-vivendi)
+        modus-themes-to-rotate modus-themes-items
+        modus-themes-mixed-fonts t
+        modus-themes-variable-pitch-ui t
+        modus-themes-italic-constructs t
+        modus-themes-bold-constructs t
+        modus-themes-completions '((t . (bold)))
+        modus-themes-prompts '(bold)
+        modus-themes-headings
+        '((agenda-structure . (variable-pitch light 2.2))
+          (agenda-date . (variable-pitch regular 1.3))
+          (t . (bold 1.15)))))
 
+;;; MODUS CATPPUCCIN
+;; Themes for Emacs based on the Catppuccin palette, built on
+;; modus-themes.
+(use-package modus-catppuccin
+  :straight (:type git
+             :repo "http://gitlab.com/magus/modus-catppuccin.git"
+             :branch "main")
+  :config
+  (modus-themes-load-theme 'catppuccin-latte))
+
+(defconst catppuccin-to-modus-colors
+  `((base . bg-main)
+	(text . fg-main)
+	(mantle . bg-mode-line-active)
+	(teal . info)
+	(red . err)
+	(yellow . warning)
+	(sky . operator)))
+(defun ap/get-catppuccin-color (fg-key &optional bg-key)
+  "Get modus colors based on catppuccin keys passed in FG-KEY and BG-KEY."
+  (let ((fg-val (modus-themes-get-color-value (alist-get fg-key catppuccin-to-modus-colors)))
+		(bg-val (when bg-key (modus-themes-get-color-value (alist-get bg-key catppuccin-to-modus-colors)))))
+		(if bg-val
+			`(:background ,bg-val
+						  :foreground ,fg-val)
+		  fg-val)))
 
 ;;; AVY
 ;; avy is a GNU Emacs package for jumping to visible text using a
@@ -2402,7 +2440,7 @@ Otherwise returns the FG-KEY hex string."
     "<localleader> p u" #'org-priority-up)
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
 		 (org-mode . (lambda () (setq-local line-spacing 0.1)))
-         (org-mode  . turn-on-visual-line-mode)
+         ((org-mode md-mode markdown-mode markdown-ts-mode)  . turn-on-visual-line-mode)
          (org-agenda-mode . hl-line-mode)
          (org-agenda-mode . (lambda () (add-hook 'window-configuration-change-hook 'org-agenda-align-tags nil t)))
          (org-agenda-after-show . org-show-entry))
@@ -3167,7 +3205,12 @@ Edit freely."
   :general
   ("C-c C-g" 'gptel-inline)
   (:keymaps 'gptel-inline-map
-			"C-c m" 'gptel-menu))
+			"C-c m" 'gptel-menu)
+  (:keymaps 'gptel-inline--response-overlay-mode-map
+			"j" #'gptel-inline--response-overlay-down
+			"k" #'gptel-inline--response-overlay-up
+			[remap evil-scroll-down] #'gptel-inline--response-overlay-pagedown
+			[remap evil-scroll-up] #'gptel-inline--response-overlay-pageup))
 
 
 ;;; GPTEL OPENROUTER
