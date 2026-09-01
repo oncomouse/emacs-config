@@ -1404,6 +1404,7 @@ targets."
 (use-package hl-todo
   :defer t
   :ensure t
+  :after modus-themes
   :straight t
   :hook
   (after-init . global-hl-todo-mode)
@@ -1427,7 +1428,7 @@ targets."
   :custom
   (rainbow-x-colors nil)
   :hook
-  (after-init . rainbow-mode))
+  (prog-mode . rainbow-mode))
 
 
 ;;; MAGIT
@@ -2149,6 +2150,7 @@ targets."
              :branch "main")
   :config
   (modus-themes-load-theme 'catppuccin-latte))
+
 
 (defconst catppuccin-to-modus-colors
   `((base . bg-main)
