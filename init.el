@@ -165,6 +165,7 @@
 	(setq mac-command-modifier 'meta)  ;; Set the Command key to act as the Meta key.
 	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 175))
   (set-face-attribute 'variable-pitch nil :family "FiraSans" :height 145)
+  (set-face-attribute 'fixed-pitch nil :family (face-attribute 'default :family))
 
   ;; Use C-h A to describe-face
   (with-eval-after-load 'help
@@ -2130,7 +2131,7 @@ targets."
   (setq modus-themes-to-toggle '(modus-operandi modus-vivendi)
         modus-themes-to-rotate modus-themes-items
         modus-themes-mixed-fonts t
-        modus-themes-variable-pitch-ui t
+        modus-themes-variable-pitch-ui nil
         modus-themes-italic-constructs t
         modus-themes-bold-constructs t
         modus-themes-completions '((t . (bold)))
