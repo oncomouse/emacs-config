@@ -1652,14 +1652,12 @@ Otherwise returns the FG-KEY hex string."
 ;; provides a better modal experience by remapping keybindings and
 ;; commands to fit the `evil' style.
 (use-package evil-collection
-  :defer t
+  :after evil
   :straight t
-  :ensure t
   :custom
-  (evil-collection-want-find-usages-bindings nil)
-  ;; Hook to initialize `evil-collection' when `evil-mode' is activated.
-  :hook
-  (evil-mode . evil-collection-init))
+  (evil-collection-binding-overrides '((find-usages :enabled nil)))
+  :init
+  (evil-collection-init))
 
 
 ;; EVIL SURROUND
