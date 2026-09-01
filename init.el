@@ -2167,6 +2167,18 @@ targets."
 						  :foreground ,fg-val)
 		  fg-val)))
 
+
+;;; STANDARD THEMES
+;; The standard-themes are a collection of light and dark themes for
+;; GNU Emacs. The standard-light and standard-dark emulate the
+;; out-of-the-box looks of Emacs (which technically do NOT constitute
+;; a theme) while bringing to them thematic consistency,
+;; customizability, and extensibility. Other themes are stylistic
+;; variations of those.
+(use-package standard-themes
+  :straight t)
+
+
 ;;; AVY
 ;; avy is a GNU Emacs package for jumping to visible text using a
 ;; char-based decision tree. See also ace-jump-mode and vim-easymotion
