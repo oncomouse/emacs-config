@@ -108,6 +108,7 @@
 ;; `use-package` declarations for specific packages, which will help us enable
 ;; the desired features and improve our workflow.
 
+
 ;;; EMACS
 ;;  This is biggest one. Keep going, plugins (oops, I mean packages) will be shorter :)
 (use-package emacs
@@ -161,8 +162,8 @@
   ;; But without this, I fear you could start Graphical Emacs and be sad
   (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font"  :height 145)
   (when (eq system-type 'darwin)       ;; Check if the system is macOS.
-    (setq mac-command-modifier 'meta)  ;; Set the Command key to act as the Meta key.
-    (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 175))
+	(setq mac-command-modifier 'meta)  ;; Set the Command key to act as the Meta key.
+	(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 175))
 
   ;; Use C-h A to describe-face
   (with-eval-after-load 'help
@@ -874,7 +875,37 @@ standard Emacs window‑selection utilities."
 
   ;; Use Consult for xref locations with a preview feature.
   (setq xref-show-xrefs-function #'consult-xref
-		xref-show-definitions-function #'consult-xref))
+		xref-show-definitions-function #'consult-xref)
+  :config
+   (defun my/consult-buffer-font (&optional buffer)
+   "Pick a font family for BUFFER (default current buffer), with live preview."
+   (interactive)
+   (let* ((buf (or buffer (current-buffer)))
+          (orig-face (buffer-local-value 'buffer-face-mode-face buf))
+          (orig-mode (buffer-local-value 'buffer-face-mode buf))
+          (selected
+           (consult--read
+            (font-family-list)
+            :prompt (format "Font for %s: " (buffer-name buf))
+            :require-match t
+            :sort t
+            :preview-key 'any
+            :default (plist-get orig-face :family)
+            :state (lambda (action cand)
+                     (when (buffer-live-p buf)
+                       (with-current-buffer buf
+                         (pcase action
+                           ('preview
+                            (if cand
+                                (progn
+                                  (setq buffer-face-mode-face (list :family cand))
+                                  (buffer-face-mode 1))
+                              (setq buffer-face-mode-face orig-face)
+                              (buffer-face-mode (if orig-mode 1 -1)))))))))))
+     (when selected
+       (with-current-buffer buf
+         (setq buffer-face-mode-face (list :family selected))
+         (buffer-face-mode 1))))))
 
 
 (use-package consult-hunks
@@ -1455,10 +1486,6 @@ Otherwise returns the FG-KEY hex string."
 (use-package evil
   :ensure t
   :straight t
-  :hook ((org-mode . evil-visual-state)
-		 (markdown-mode . evil-visual-state)
-		 (md-mode . evil-visual-state)
-		 (visual-line-mode . evil-visual-state))
   :init
   (setq
    evil-undo-system 'undo-fu
@@ -2376,6 +2403,7 @@ Otherwise returns the FG-KEY hex string."
     "<localleader> p p" #'org-priority
     "<localleader> p u" #'org-priority-up)
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
+		 (org-mode . (lambda () (setq-local line-spacing 0.1)))
          (org-mode  . turn-on-visual-line-mode)
          (org-agenda-mode . hl-line-mode)
          (org-agenda-mode . (lambda () (add-hook 'window-configuration-change-hook 'org-agenda-align-tags nil t)))
