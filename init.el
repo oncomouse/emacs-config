@@ -3215,7 +3215,7 @@ Edit freely."
   :ensure nil
   :commands (gptel-inline)
   :general
-  ("C-c C-g" 'gptel-inline)
+  ("C-c g" 'gptel-inline)
   (:keymaps 'gptel-inline-map
 			"C-c m" 'gptel-menu)
   (:keymaps 'gptel-inline--response-overlay-mode-map
