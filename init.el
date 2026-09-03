@@ -3399,7 +3399,7 @@ Edit freely."
 
 
 (use-package gptel-inline
-  :ensure nil
+  :straight (gptel-inline :type git :host github :repo "karthink/gptel-inline")
   :commands (gptel-inline)
   :general
   ("C-c g" 'gptel-inline)
