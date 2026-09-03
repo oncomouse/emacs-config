@@ -332,6 +332,7 @@ burying it."
 			"M-9" (lambda () (interactive) (ap/tab-line-goto 8))
 			"M-0" (lambda () (interactive) (ap/tab-line-goto 9)))
   :config
+  (setq tab-line-tab-name-function #'tab-line-tab-name-truncated-buffer)
   (global-tab-line-mode 1)
   ;; Use tab-line for previous tab and next tab
   (defalias 'tab-previous 'tab-line-switch-to-prev-tab)
