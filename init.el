@@ -480,6 +480,7 @@ burying it."
 (use-package which-key
   :ensure nil     ;; This is built-in, no need to fetch it.
   :defer t        ;; Defer loading Which-Key until after init.
+  :diminish which-key-mode
   :hook
   (after-init . which-key-mode)) ;; Enable which-key mode after initialization.
 
@@ -830,6 +831,16 @@ standard Emacs window‑selection utilities."
 		  (set-window-text-height win lines)
 		  t)))))
 
+
+;;; DIMINISH
+;; This package implements hiding or abbreviation of the mode line
+;; displays (lighters) of minor-modes.
+(use-package diminish
+  :straight t
+  :config
+  (diminish 'visual-line-mode)
+  (diminish 'eldoc-mode)
+  (diminish 'evil-collection-unimpaired-mode))
 
 ;;; POPPER
 ;; Popper is a minor-mode to tame the flood of ephemeral windows Emacs
@@ -1595,6 +1606,7 @@ targets."
 (use-package rainbow-mode
   :defer nil
   :straight (rainbow-mode :type git :host github :repo "amosbird/rainbow-mode")
+  :diminish rainbow-mode
   :custom
   (rainbow-x-colors nil)
   :hook
@@ -2066,6 +2078,7 @@ targets."
 ;; RSI...) back.
 (use-package evil-rsi
      :straight (evil-rsi :type git :host github :repo "linktohack/evil-rsi")
+	 :diminish evil-rsi-mode
      :after evil
      :config
 	 (evil-rsi-mode))
@@ -2178,6 +2191,7 @@ targets."
 ;; and functional. It integrates well with various Emacs features, enhancing the overall user
 ;; experience by displaying relevant information in a compact format.
 (use-package doom-modeline
+  :disabled
   :ensure t
   :straight t
   :defer t
@@ -3001,6 +3015,7 @@ Switch to TODO otherwise"
 ;; the cursor to the end of the previous line.
 (use-package org-autolist
   :straight t
+  :diminish org-autolist-mode
   :hook (org-mode . org-autolist-mode))
 
 
