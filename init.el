@@ -143,6 +143,7 @@
 
   :hook                                           ;; Add hooks to enable specific features in certain modes.
   (before-save . delete-trailing-whitespace)      ;; Delete trailing spaces on save
+  (after-init . undelete-frame-mode)
 
   :general-config
   ("M-o" 'other-window)
