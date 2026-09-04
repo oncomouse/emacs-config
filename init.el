@@ -525,6 +525,9 @@ burying it."
 										; Retrieved 2026-08-19, License - CC BY-SA 3.0
   :hook
   ((org-mode markdown-mode md-mode prog-mode) . electric-pair-mode)
+  ((org-mode markdown-mode md-mode markdown-ts-mode) . (lambda ()
+														 (add-function :before-until (local 'electric-pair-inhibit-predicate)
+																	   (lambda (c) (eq c ?<)))))
   ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
 			   (add-hook 'post-self-insert-hook
 						 #'markdown-electric-pair-string-delimiter 'append t)))
@@ -3434,6 +3437,14 @@ Edit freely."
   (mapcar (apply-partially #'apply #'gptel-make-tool)
                   (llm-tool-collection-get-all)))
 
+
+(use-package yasnippet
+  :straight t
+  :config
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :straight t)
 
 ;;; ==================== LANGUAGE MODES ====================
 
