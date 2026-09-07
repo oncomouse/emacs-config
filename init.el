@@ -744,7 +744,7 @@ to be active.")
 ;; operate on buffers in a Dired-like manner, enabling sorting,
 ;; filtering, and marking of buffers based on various criteria.
 (use-package ibuffer
-  :ensure t
+  :ensure nil
   :defer t
   :commands (ibuffer)
   :general
@@ -752,6 +752,16 @@ to be active.")
   :init
   (sanityinc/fullframe-mode 'ibuffer-mode))
 
+
+;;; PROJECT
+;;;;  A project is a collection of files used for producing one or more
+;; programs. Files that belong to a project are typically stored in a
+;; hierarchy of directories; the top-level directory of the hierarchy
+;; is known as the project root.
+(use-package project
+  :ensure nil
+  :custom
+  (project-vc-extra-root-markers '(".projectile" ".git")))
 
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
