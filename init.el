@@ -3490,6 +3490,40 @@ Edit freely."
   :straight t)
 
 
+;;; TEMPEL
+;; Tempel is a tiny template package for Emacs, which uses the syntax
+;; of the Emacs Tempo library. Tempo is an ancient temple of the
+;; church of Emacs. It is over 32 years old, but still in good shape
+;; since it successfully resisted change over the decades. However it
+;; looks a bit dusty here and there. Therefore we present Tempel, its
+;; worthy successor with inline expansion and integration with recent
+;; Emacs facilities. Tempel takes advantage of the standard
+;; completion-at-point-functions mechanism which is used by Emacs for
+;; in-buffer completion.
+(use-package tempel
+  :straight t
+  :general
+  ("M-*" 'tempel-insert
+  "M-+" 'tempel-complete)
+  (:keymaps 'tempel-map
+			"C-c RET" 'tempel-done
+			"C-j" 'tempel-next
+			"C-k" 'tempel-previous
+			"C-<down>" 'tempel-next
+			"C-<up>" 'tempel-previous
+			"M-<down>" 'tempel-next
+			"M-<up>" 'tempel-previous)
+  :init
+  ;; Make a function that adds the tempel expansion function to the
+  ;; list of completion-at-point-functions (capf).
+  (defun tempel-setup-capf ()
+	(add-hook 'completion-at-point-functions #'tempel-expand -1 'local))
+  ;; Put tempel-expand on the list whenever you start programming or
+  ;; writing prose.
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf))
+
+
 ;;; ==================== LANGUAGE MODES ====================
 
 ;; Here is where I have to install all the different modes to support Emacs syntax highlighting

@@ -1,0 +1,52 @@
+;; ~/.config/emacs/templates
+
+fundamental-mode ;; Available everywhere
+
+(today (format-time-string "%Y-%m-%d")
+       :ann "Today's date"
+       :doc "Insert today's date")
+
+text-mode
+
+(box "┌─" (make-string (length str) ?─) "─┐" n
+     "│ " (s str)                       " │" n
+     "└─" (make-string (length str) ?─) "─┘" n :doc "UNICODE BOX")
+(abox "+-" (make-string (length str) ?-) "-+" n
+      "| " (s str)                       " |" n
+      "+-" (make-string (length str) ?-) "-+" n :doc "ASCII BOX")
+(cut "--8<---------------cut here---------------start------------->8---" n r n
+     "--8<---------------cut here---------------end--------------->8---" n)
+(rot13 (p "plain text" text) n "----" n (rot13 text))
+(calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
+(table (p (read-number "Rows: ") rows noinsert)
+       (p (read-number "Cols: ") cols noinsert)
+       "| " (p "  ") (* (1- cols) " | " (p "  ")) " |" n
+       "|" (* cols "----|") n
+       (* rows "| " (p "  ") (* (1- cols) " | " (p "  ")) " |" n))
+
+
+org-mode
+
+(caption "#+caption: ")
+(drawer ":" p ":" n r ":end:")
+(begin "#+begin_" (s name) n> r> n "#+end_" name)
+(quote "#+begin_quote" n> r> n "#+end_quote")
+(sidenote "#+begin_sidenote" n> r> n "#+end_sidenote")
+(marginnote "#+begin_marginnote" n> r> n "#+end_marginnote")
+(example "#+begin_example" n> r> n "#+end_example")
+(center "#+begin_center" n> r> n "#+end_center")
+(ascii "#+begin_export ascii" n> r> n "#+end_export")
+(html "#+begin_export html" n> r> n "#+end_export")
+(latex "#+begin_export latex" n> r> n "#+end_export")
+(comment "#+begin_comment" n> r> n "#+end_comment")
+(verse "#+begin_verse" n> r> n "#+end_verse")
+(src "#+begin_src " q n r n "#+end_src")
+(gnuplot "#+begin_src gnuplot :var data=" (p "table") " :file " (p "plot.png") n r n "#+end_src" :post (org-edit-src-code))
+(elisp "#+begin_src emacs-lisp" n r n "#+end_src" :post (org-edit-src-code))
+(inlsrc "src_" p "{" q "}")
+(title "#+title: " p n "#+author: Daniel Mendler" n "#+language: en")
+
+;; Local Variables:
+;; mode: lisp-data
+;; outline-regexp: "[a-z]"
+;; End:
