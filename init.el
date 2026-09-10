@@ -3479,14 +3479,24 @@ Edit freely."
   (mapcar (apply-partially #'apply #'gptel-make-tool)
                   (llm-tool-collection-get-all)))
 
-
+;;; YASNIPPET
+;; YASnippet is a template system for Emacs. It allows you to type an
+;; abbreviation and automatically expand it into function templates.
+;; Bundled language templates include: C, C++, C#, Perl, Python, Ruby,
+;; SQL, LaTeX, HTML, CSS and more. The snippet syntax is inspired from
+;; TextMate's syntax, you can even import most TextMate templates to
+;; YASnippet. Watch a demo on YouTube.
 (use-package yasnippet
   :straight t
   :config
   (yas-global-mode 1))
 
+
+;;; YASNIPPET SNIPPETS
+;; This repository contains the official collection of snippets for yasnippet.
 (use-package yasnippet-snippets
   :straight t)
+
 
 ;;; ==================== LANGUAGE MODES ====================
 
