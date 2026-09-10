@@ -1219,7 +1219,20 @@ targets."
          (remq #'embark-which-key-indicator embark-indicators)))
     (apply fn args)))
   (advice-add #'embark-completing-read-prompter
-			:around #'embark-hide-which-key-indicator))
+			  :around #'embark-hide-which-key-indicator)
+    ;; Add the option to run embark when using avy
+  (defun bedrock/avy-action-embark (pt)
+    (unwind-protect
+        (save-excursion
+          (goto-char pt)
+          (embark-act))
+      (select-window
+       (cdr (ring-ref avy-ring 0))))
+    t)
+
+  ;; After invoking avy-goto-char-timer, hit "." to run embark at the next
+  ;; candidate you select
+  (setf (alist-get ?. avy-dispatch-alist) 'bedrock/avy-action-embark))
 
 
 ;;; EMBARK-CONSULT
