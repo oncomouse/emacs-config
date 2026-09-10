@@ -3524,6 +3524,43 @@ Edit freely."
   (add-hook 'text-mode-hook 'tempel-setup-capf))
 
 
+;;; MPDEL
+;; MPDel is an Emacs client for Music Player Daemon (MPD), a flexible,
+;; powerful, server-side application for playing music. MPDel provides
+;; an Emacs user interface to control playback (play, pause, next,
+;; volume up…) and to display and control the current playlist as well
+;; as your stored playlists (e.g., “my favorites”, “wake me up”, “make
+;; me dance”, …).
+(use-package mpdel
+  :straight t
+  :general
+  (:states 'normal
+		   "<leader> z" 'mpdel-core-map)
+  :config
+  (mpdel-mode))
+
+
+;;; MPDEL EMBARK
+;; This Emacs package binds together mpdel (a Music Player Daemon
+;; client) with the embark library.
+;;
+;; When mpdel-embark is installed, you can use M-x mpdel-embark-list
+;; (bound to i in MPDel keymaps) to start a completion interface for
+;; all your music library. This interface shows a list of all artists
+;; in the MPD database. You can add all songs from any artist by
+;; selecting the artist and using embark-act. You can also browse the
+;; artist’s albums by typing RET. Add a complete album to the current
+;; playlist by using embark-act or go to the album’s songs by typing
+;; RET. Using embark-act on a song will add it to the current playlist
+;; while RET shows information about the song.
+(use-package mpdel-embark
+  :straight t
+  :after (embark mpdel)
+  :config
+  (progn
+    (mpdel-embark-setup)))
+
+
 ;;; ==================== LANGUAGE MODES ====================
 
 ;; Here is where I have to install all the different modes to support Emacs syntax highlighting
