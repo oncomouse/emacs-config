@@ -777,6 +777,8 @@ to be active.")
 (use-package project
   :ensure nil
   :custom
+  (when (>= emacs-major-version 30)
+    (project-mode-line t))
   (project-vc-extra-root-markers '(".projectile" ".git")))
 
 ;;; ==================== EXTERNAL PACKAGES ====================
