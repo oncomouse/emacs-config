@@ -566,7 +566,7 @@ burying it."
   :custom
   (completion-preview-minimum-symbol-length 2)
   :hook (((prog-mode org-mode md-mode markdown-mode) . completion-preview-mode)
-		 ((prog-mode org-mode md-mode markdown-mode) . completion-preview-echo-mode)
+		 (completion-preview-mode . completion-preview-echo-mode)
          (org-mode . (lambda ()
                        ;; need to overwrite `completion-preview-commands' to trigger
                        ;; completion-preview
@@ -1232,7 +1232,8 @@ targets."
 
   ;; After invoking avy-goto-char-timer, hit "." to run embark at the next
   ;; candidate you select
-  (setf (alist-get ?. avy-dispatch-alist) 'bedrock/avy-action-embark))
+  (with-eval-after-load 'avy
+	(setf (alist-get ?. avy-dispatch-alist) 'bedrock/avy-action-embark)))
 
 
 ;;; EMBARK-CONSULT
@@ -1318,7 +1319,7 @@ targets."
   :general
   ("C-x C-o" 'completion-at-point)
   :general-config
-  (general-imap :keymaps 'corfu-map
+  (:states 'insert :keymaps 'corfu-map
 			  "C-c" 'corfu-quit
 			  "Tab" 'corfu-insert
 			  "C-y" 'corfu-insert
@@ -1587,7 +1588,8 @@ targets."
   :straight t
   :commands (cape-keyword cape-dabbrev)
   :general
-  (general-imap
+  (:states 'insert
+	"C-x C-l" #'cape-line
     "C-x C-f" #'cape-file
     "C-x C-k" #'cape-dict)
   :hook ((md-mode markdown-mode org-mode) .
@@ -1718,15 +1720,17 @@ targets."
   (:keymaps 'universal-argument-map
 			"C-c u" 'universal-argument-more
 			"C-u" 'universal-argument-more)
+  (:states 'motion
+		   "C-e" #'end-of-line)
   (general-nivmap
 	"M-l" 'evil-shift-right-line
 	"M-h" 'evil-shift-left-line)
-  (general-imap
+  (:states 'insert
 	"C-y" 'yank
 	"M-y" 'yank-pop)
-  (general-imap :keymaps 'org-mode-map
+  (:states 'insert :keymaps 'org-mode-map
 	"C-y" 'org-yank)
-  (general-imap
+  (:states 'insert
 	"C-t" nil ;; unbind C-t for indentation
 	"C->" 'evil-shift-right-line
 	"C-<" 'evil-shift-left-line
@@ -1871,6 +1875,7 @@ targets."
 (use-package evil-collection
   :after evil
   :straight t
+  :diminish 'evil-collection-unimpaired-mode
   :custom
   (evil-collection-binding-overrides '((find-usages :enabled nil)))
   :init
@@ -2114,19 +2119,6 @@ targets."
   :straight (evil-textobj-entire :host github :repo "nscoder/evil-textobj-entire")
   :custom
   (evil-textobj-entire-key "g"))
-
-
-;;; EVIL RSI
-;; evil-rsi is intended to be a port of vim-rsi.
-;;
-;; It brings some essential emacs motion bindings (and potentially
-;; RSI...) back.
-(use-package evil-rsi
-     :straight (evil-rsi :type git :host github :repo "linktohack/evil-rsi")
-	 :diminish evil-rsi-mode
-     :after evil
-     :config
-	 (evil-rsi-mode))
 
 
 ;;; EVIL LION
