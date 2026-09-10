@@ -3152,6 +3152,7 @@ Switch to TODO otherwise"
   :hook (after-init . global-jinx-mode)
   :custom
   (jinx-languages "en_US")
+  (jinx-camel-modes '(prog-mode))
   :general
   ("M-$" 'jinx-correct
    "C-M-$" 'jinx-languages)
