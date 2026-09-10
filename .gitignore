@@ -32,3 +32,4 @@ url/
 projects
 .cache/
 .lsp-session*
+**/*.eld
