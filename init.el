@@ -13,7 +13,7 @@
 ;; it can occasionally experience pauses due to garbage collection.
 ;; By increasing the garbage collection threshold, we reduce these pauses
 ;; during heavy operations, leading to smoother performance.
-(setq gc-cons-threshold #x40000000)
+;; (setq gc-cons-threshold #x40000000)
 
 ;; Set the maximum output size for reading process output, allowing for larger data transfers.
 (setq read-process-output-max (* 1024 1024 4))
@@ -109,36 +109,40 @@
 ;; the desired features and improve our workflow.
 
 
-;;; EMACS
-;;  This is biggest one. Keep going, plugins (oops, I mean packages) will be shorter :)
+                                            ;;; EMACS
+                                            ;;  This is biggest one. Keep going, plugins (oops, I mean packages) will be shorter :)
 (use-package emacs
   :ensure nil
-  :custom                                         ;; Set custom variables to configure Emacs behavior.
-  (confirm-kill-emacs 'yes-or-no-p)               ;; Ask before quitting Emacs
-  (column-number-mode t)                          ;; Display the column number in the mode line.
-  (auto-save-default nil)                         ;; Disable automatic saving of buffers.
-  (create-lockfiles nil)                          ;; Prevent the creation of lock files when editing.
-  (delete-by-moving-to-trash t)                   ;; Move deleted files to the trash instead of permanently deleting them.
-  (delete-selection-mode 1)                       ;; Enable replacing selected text with typed text.
-  (display-line-numbers-type 'relative)           ;; Use relative line numbering in programming modes.
-  (global-auto-revert-non-file-buffers t)         ;; Automatically refresh non-file buffers.
-  (history-length 100)                            ;; Set the length of the command history.
-  (inhibit-startup-message t)                     ;; Disable the startup message when Emacs launches.
-  (initial-scratch-message "")                    ;; Clear the initial message in the *scratch* buffer.
-  (ispell-dictionary "en_US")                     ;; Set the default dictionary for spell checking.
-  (make-backup-files nil)                         ;; Disable creation of backup files.
-  (pixel-scroll-precision-mode t)                 ;; Enable precise pixel scrolling.
-  (pixel-scroll-precision-use-momentum nil)       ;; Disable momentum scrolling for pixel precision.
-  (ring-bell-function 'ignore)                    ;; Disable the audible bell.
-  (split-width-threshold 300)                     ;; Prevent automatic window splitting if the window width exceeds 300 pixels.
-  (switch-to-buffer-obey-display-actions t)       ;; Make buffer switching respect display actions.
-  (tab-always-indent 'complete)                   ;; Make the TAB key complete text instead of just indenting.
-  (tab-width 4)                                   ;; Set the tab width to 4 spaces.
-  (treesit-font-lock-level 4)                     ;; Use advanced font locking for Treesit mode.
-  (truncate-lines t)                              ;; Enable line truncation to avoid wrapping long lines.
-  (use-dialog-box nil)                            ;; Disable dialog boxes in favor of minibuffer prompts.
-  (use-short-answers t)                           ;; Use short answers in prompts for quicker responses (y instead of yes)
-  (sentence-end-double-space nil)                 ;; It's no longer the 1980s, Emacs
+  :custom                                   ;; Set custom variables to configure Emacs behavior.
+  (confirm-kill-emacs 'yes-or-no-p)         ;; Ask before quitting Emacs
+  (column-number-mode t)                    ;; Display the column number in the mode line.
+  (auto-save-default nil)                   ;; Disable automatic saving of buffers.
+  (create-lockfiles nil)                    ;; Prevent the creation of lock files when editing.
+  (delete-by-moving-to-trash t)             ;; Move deleted files to the trash instead of permanently deleting them.
+  (delete-selection-mode 1)                 ;; Enable replacing selected text with typed text.
+  (display-line-numbers-type 'relative)     ;; Use relative line numbering in programming modes.
+  (global-auto-revert-non-file-buffers t)   ;; Automatically refresh non-file buffers.
+  (history-length 100)                      ;; Set the length of the command history.
+  (inhibit-startup-message t)               ;; Disable the startup message when Emacs launches.
+  (initial-scratch-message "")              ;; Clear the initial message in the *scratch* buffer.
+  (ispell-dictionary "en_US")               ;; Set the default dictionary for spell checking.
+  (make-backup-files nil)                   ;; Disable creation of backup files.
+  (pixel-scroll-precision-mode t)           ;; Enable precise pixel scrolling.
+  (pixel-scroll-precision-use-momentum nil) ;; Disable momentum scrolling for pixel precision.
+  (ring-bell-function 'ignore)              ;; Disable the audible bell.
+  (split-width-threshold 300)               ;; Prevent automatic window splitting if the window width exceeds 300 pixels.
+  (switch-to-buffer-obey-display-actions t) ;; Make buffer switching respect display actions.
+  (tab-always-indent 'complete)             ;; Make the TAB key complete text instead of just indenting.
+  (tab-width 4)                             ;; Set the tab width to 4 spaces.
+  (treesit-font-lock-level 4)               ;; Use advanced font locking for Treesit mode.
+  (truncate-lines t)                        ;; Enable line truncation to avoid wrapping long lines.
+  (use-dialog-box nil)                      ;; Disable dialog boxes in favor of minibuffer prompts.
+  (use-short-answers t)                     ;; Use short answers in prompts for quicker responses (y instead of yes)
+  (sentence-end-double-space nil)           ;; It's no longer the 1980s, Emacs
+  (save-interprogram-paste-before-kill t)
+  (kill-do-not-save-duplicates t)
+  (ffap-machine-p-known 'reject)            ;; Don't ping url-looking things when running find-file
+
   ;; (warning-minimum-level :emergency)              ;; Set the minimum level of warnings to display.
 
   :hook                                           ;; Add hooks to enable specific features in certain modes.
@@ -186,14 +190,26 @@
   (add-to-list 'load-path (locate-user-emacs-file "lisp") t)
 
   :init                        ;; Initialization settings that apply before the package is loaded.
-  (tool-bar-mode -1)           ;; Disable the tool bar for a cleaner interface.
+  (setq-default bidi-paragraph-direction 'left-to-right)
+  (setq bidi-inhibit-bpa t)
+
   (menu-bar-mode -1)           ;; Disable the menu bar for a more streamlined look.
+
+  (when (display-graphic-p)
+	(mouse-shift-adjust-mode)
+	(context-menu-mode))
+
 
   (when scroll-bar-mode
     (scroll-bar-mode -1))      ;; Disable the scroll bar if it is active.
 
   (global-display-line-numbers-mode +1) ;; Display line numbers everywhere
   (global-hl-line-mode 1)               ;; Enable highlight of the current line
+
+  ;; Set this to `nil' if Emacs is having trouble picking up changes.
+  (setopt auto-revert-avoid-polling t)
+  (setopt auto-revert-interval 5)
+  (setopt auto-revert-check-vc-info t)
   (global-auto-revert-mode 1)           ;; Enable global auto-revert mode to keep buffers up to date with their corresponding files.
   (indent-tabs-mode nil)                ;; Disable the use of tabs for indentation (use spaces instead).
   (recentf-mode 1)                      ;; Enable tracking of recently opened files.
@@ -851,7 +867,7 @@ standard Emacs window‑selection utilities."
 ;; displays (lighters) of minor-modes.
 (use-package diminish
   :straight t
-  :config
+  :init
   (diminish 'visual-line-mode)
   (diminish 'eldoc-mode)
   (diminish 'evil-collection-unimpaired-mode))
