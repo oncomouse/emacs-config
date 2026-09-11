@@ -2256,7 +2256,7 @@ targets."
   :defer t)                               ;; Load the package only when needed to improve startup time.
 
 
-;;; NERD ICONS Dired
+;;; NERD ICONS DIRED
 ;; The `nerd-icons-dired' package integrates nerd icons into the Dired mode,
 ;; providing visual icons for files and directories. This enhances the Dired
 ;; interface by making it easier to identify file types at a glance.
