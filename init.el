@@ -1261,40 +1261,6 @@ targets."
   (global-treesit-auto-mode t))
 
 
-;;; MARKDOWN-MODE
-;; Markdown Mode provides support for editing Markdown files in Emacs,
-;; enabling features like syntax highlighting, previews, and more.
-;; It’s particularly useful for README files, as it can be set
-;; to use GitHub Flavored Markdown for enhanced compatibility.
-;; (use-package markdown-mode
-;;   :defer t
-;;   :straight t
-;;   :ensure t
-;;   :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
-;;   :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
-
-(use-package md-mode
-  :straight (md-mode :type git :host github :repo "yibie/md-mode")
-  :mode ("\\.md\\'" . md-mode)
-  :general-config (:states 'motion :keymaps 'md-mode-map
-					 "] ]" 'outline-next-visible-heading
-					 "[ [" 'outline-previous-visible-heading
-					 "[ ]" 'outline-up-heading))
-
-
-;;; TYPST-TS-MODE
-;; Tree Sitter support for Typst. Minimum Emacs version requirement: 29. Its
-;; tree-sitter grammar is installed once with `M-x typst-ts-mc-install-grammar'
-;; treesit-auto doesn't cover Typst.
-(use-package typst-ts-mode
-  :straight '(:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
-  :after (transient)
-  :custom
-  (typst-ts-watch-options "--open")
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
-  (typst-ts-mode-enable-raw-blocks-highlight t))
-
-
 ;;; CORFU
 ;; Corfu Mode provides a text completion framework for Emacs.
 ;; It enhances the editing experience by offering context-aware
@@ -3564,6 +3530,39 @@ Edit freely."
 ;;; ==================== LANGUAGE MODES ====================
 
 ;; Here is where I have to install all the different modes to support Emacs syntax highlighting
+
+;;; MARKDOWN-MODE
+;; Markdown Mode provides support for editing Markdown files in Emacs,
+;; enabling features like syntax highlighting, previews, and more.
+;; It’s particularly useful for README files, as it can be set
+;; to use GitHub Flavored Markdown for enhanced compatibility.
+;; (use-package markdown-mode
+;;   :defer t
+;;   :straight t
+;;   :ensure t
+;;   :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
+;;   :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
+(use-package md-mode
+  :straight (md-mode :type git :host github :repo "yibie/md-mode")
+  :mode ("\\.md\\'" . md-mode)
+  :general-config (:states 'motion :keymaps 'md-mode-map
+					 "] ]" 'outline-next-visible-heading
+					 "[ [" 'outline-previous-visible-heading
+					 "[ ]" 'outline-up-heading))
+
+
+;;; TYPST-TS-MODE
+;; Tree Sitter support for Typst. Minimum Emacs version requirement: 29. Its
+;; tree-sitter grammar is installed once with `M-x typst-ts-mc-install-grammar'
+;; treesit-auto doesn't cover Typst.
+(use-package typst-ts-mode
+  :straight '(:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
+  :after (transient)
+  :custom
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t))
+
 
 ;;; EMACS FISH
 ;; Emacs major mode for fish shell scripts.
