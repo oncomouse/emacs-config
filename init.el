@@ -3499,6 +3499,7 @@ Edit freely."
 ;; me dance”, …).
 (use-package mpdel
   :straight t
+  :diminish mpdel-mode
   :general
   (:states 'normal
 		   "<leader> z" 'mpdel-core-map)
