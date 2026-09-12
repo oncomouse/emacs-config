@@ -897,7 +897,7 @@ standard Emacs window‑selection utilities."
   (popper-group-function #'popper-group-by-project)
   (popper-reference-buffers
    '("\\*\\(lsp-help\\|Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Occur\\|eldoc.*\\)\\*"
-	 "\\*\\(Flymake diagnostics\\|xref\\|ivy\\|Swiper\\|Completions\\)"
+	 "\\*\\(Flymake diagnostics\\|xref\\|ivy\\|Swiper\\|Completions\\|gptel-reasoning\\)"
 	 "Output\\*$"
 	 "\\*Async Shell Command\\*"
 	 help-mode
