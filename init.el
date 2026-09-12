@@ -955,7 +955,13 @@ standard Emacs window‑selection utilities."
 	"<leader> t t" 'ghostel)
   (:keymaps 'ghostel-semi-char-mode-map
 			"M-`" 'popper-toggle
-			"M-o" 'other-window))
+			"M-o" 'other-window)
+  (:keymaps 'project-prefix-map
+			"t" 'ghostel-project
+			"T" 'ghostel-project-buffer-list)
+  :config
+  (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
+  (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t))
 
 (defun ghostel--close-window-on-kill ()
   "Remove window if it contains a Ghostel buffer, unless last window."
