@@ -43,11 +43,10 @@
 
 Otherwise, moves by visual lines."
   :type line
-  (let ((user-count-p current-prefix-arg))
-    (if (or (memq (evil-visual-type) '(line block))
-            user-count-p)
-        (evil-next-line (or count 1))
-      (evil-next-visual-line count))))
+  (if (or (evil-visual-state-p)
+		  current-prefix-arg)
+	  (evil-next-line (or count 1))
+	(evil-next-visual-line count)))
 
 ;;;###autoload(autoload 'evil-better-visual-line-previous-line "evil-better-visual-line")
 (evil-define-motion evil-better-visual-line-previous-line (count)
@@ -55,11 +54,10 @@ Otherwise, moves by visual lines."
 
 Otherwise, moves by visual lines."
   :type line
-  (let ((user-count-p current-prefix-arg))
-    (if (or (memq (evil-visual-type) '(line block))
-            user-count-p)
-        (evil-previous-line (or count 1))
-      (evil-previous-visual-line count))))
+  (if (or (evil-visual-state-p)
+          current-prefix-arg)
+      (evil-previous-line (or count 1))
+    (evil-previous-visual-line count)))
 
 
 ;;;###autoload
