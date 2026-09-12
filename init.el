@@ -163,7 +163,6 @@
 
 
   ;; Configure font settings based on the operating system.
-  ;; Ok, this kickstart is meant to be used on the terminal, not on GUI.
   ;; But without this, I fear you could start Graphical Emacs and be sad
   (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font"  :height 145)
   (when (eq system-type 'darwin)       ;; Check if the system is macOS.
@@ -421,8 +420,10 @@ burying it."
   (setq lazy-count-prefix-format "(%s/%s) ")   ;; Format for displaying current match count.
   (setq lazy-count-suffix-format nil)          ;; Disable suffix formatting for match count.
   (setq search-whitespace-regexp ".*?")        ;; Allow searching across whitespace.
-  :bind (("C-s" . isearch-forward)             ;; Bind C-s to forward isearch.
-         ("C-r" . isearch-backward)))          ;; Bind C-r to backward isearch.
+  :general
+  (:states '(insert normal motion)
+		   "C-s" 'isearch-forward             ;; Bind C-s to forward isearch.
+		   "C-S-s" 'isearch-backward))          ;; Bind C-r to backward isearch.
 
 
 ;;; VC
