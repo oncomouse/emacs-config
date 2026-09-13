@@ -141,7 +141,7 @@
         modus-themes-headings
         '((agenda-structure . (variable-pitch light 2.2))
           (agenda-date . (variable-pitch regular 1.3))
-          (t . (bold 1.15)))))
+          (t . (bold 1.0)))))
 
 ;;; MODUS CATPPUCCIN
 ;; Themes for Emacs based on the Catppuccin palette, built on
