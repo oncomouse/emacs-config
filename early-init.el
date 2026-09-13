@@ -6,6 +6,10 @@
 
 ;;; Code:
 
+;; We manage package installation ourselves in init.el (via `package-initialize'
+;; and `use-package'), so disable package.el's automatic startup here.
+(setq package-enable-at-startup nil)
+
 ;; Startup speed, annoyance suppression
 (setq bedrock--initial-gc-threshold gc-cons-threshold)
 (setq gc-cons-threshold 10000000)

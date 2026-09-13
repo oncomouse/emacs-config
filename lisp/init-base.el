@@ -7,7 +7,7 @@
 ;; char-based decision tree. See also ace-jump-mode and vim-easymotion
 ;; - avy uses the same idea.
 (use-package avy
-  :straight t
+  :ensure t
   :general
   (general-nmap
 	"<leader>gb" 'avy-pop-mark
@@ -90,7 +90,7 @@
 ;; This package aims to take the speed and predictability of windmove
 ;; and pack it into a single key binding, similar to other-window.
 (use-package ace-window
-  :straight t
+  :ensure t
   :general
   ;; ("M-o" 'ace-window)
   ([remap other-window] 'ace-window)
@@ -160,7 +160,6 @@
 ;; it easier to choose the correct one without typing out the entire string.
 (use-package vertico
   :ensure t
-  :straight t
   :hook
   (after-init . vertico-mode)           ;; Enable vertico after Emacs has initialized.
   (minibuffer-setup . vertico-repeat-save)
@@ -196,7 +195,6 @@
 ;; This combination provides a powerful and customizable completion experience.
 (use-package orderless
   :ensure t
-  :straight t
   :defer t                                    ;; Load Orderless on demand.
   :after vertico                              ;; Ensure Vertico is loaded before Orderless.
   :init
@@ -212,7 +210,6 @@
 ;; information, making it easier to choose the right option.
 (use-package marginalia
   :ensure t
-  :straight t
   :hook
   (after-init . marginalia-mode))
 
@@ -224,7 +221,6 @@
 ;; navigating buffers, files, and xrefs with ease.
 (use-package consult
   :ensure t
-  :straight t
   :defer t
   :custom
   (consult-narrow-key "<")
@@ -292,7 +288,6 @@
 ;; integrates Consult with Flycheck. Take a look at the Consult README
 ;; for an extensive documentation.
 (use-package consult-flycheck
-  :straight t
   :ensure t)
 
 
@@ -306,7 +301,6 @@
 ;; select from the available items.
 (use-package affe
   :ensure t
-  :straight t
   :after (orderless)
   :config
   ;; Manual preview key for `affe-grep'
@@ -325,7 +319,6 @@
 ;; Just `<leader> .' over any text, explore it :)
 (use-package embark
   :ensure t
-  :straight t
   :general
   ("C-;" 'embark-act)
   (:keymaps 'vertico-map
@@ -397,8 +390,7 @@ targets."
 ;; Embark-Consult provides a bridge between Embark and Consult, ensuring
 ;; that Consult commands, like previews, are available when using Embark.
 (use-package embark-consult
-  :ensure t
-  :straight t) ;; Enable preview in Embark collect mode.
+  :ensure t) ;; Enable preview in Embark collect mode.
 
 
 ;;; CORFU
@@ -408,7 +400,7 @@ targets."
 ;; Corfu Mode is highly customizable and can be integrated with
 ;; various modes and languages.
 (use-package corfu
-  :straight t
+  :ensure t
   :init
   (setq completion-cycle-threshold 4)
   (setq completion-auto-select 'second-tab)
@@ -462,7 +454,7 @@ targets."
 ;; completion backends used by completion-at-point are so called
 ;; completion-at-point-functions (Capfs).
 (use-package cape
-  :straight t
+  :ensure t
   :commands (cape-keyword cape-dabbrev)
   :general
   (:states 'insert

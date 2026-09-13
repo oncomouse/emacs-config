@@ -25,7 +25,6 @@
 ;; a different color, making it easier to match pairs visually.
 (use-package rainbow-delimiters
   :defer t
-  :straight t
   :ensure t
   :hook
   (prog-mode . rainbow-delimiters-mode))
@@ -38,7 +37,6 @@
 (use-package nerd-icons
   :if ek-use-nerd-fonts                   ;; Load the package only if the user has configured to use nerd fonts.
   :ensure t                               ;; Ensure the package is installed.
-  :straight t
   :defer t)                               ;; Load the package only when needed to improve startup time.
 
 
@@ -49,7 +47,6 @@
 (use-package nerd-icons-dired
   :if ek-use-nerd-fonts                   ;; Load the package only if the user has configured to use nerd fonts.
   :ensure t                               ;; Ensure the package is installed.
-  :straight t
   :defer t                                ;; Load the package only when needed to improve startup time.
   :hook
   (dired-mode . nerd-icons-dired-mode))
@@ -63,7 +60,6 @@
 (use-package nerd-icons-completion
   :if ek-use-nerd-fonts                   ;; Load the package only if the user has configured to use nerd fonts.
   :ensure t                               ;; Ensure the package is installed.
-  :straight t
   :after (:all nerd-icons marginalia)     ;; Load after `nerd-icons' and `marginalia' to ensure proper integration.
   :config
   (nerd-icons-completion-mode)            ;; Activate nerd icons for completion interfaces.
@@ -76,7 +72,6 @@
 (use-package tab-line-nerd-icons
   :if ek-use-nerd-fonts
   :ensure t
-  :straight t
   :after (:all nerd-icons)
   :config
   (tab-line-nerd-icons-global-mode))
@@ -87,7 +82,6 @@
 (use-package nerd-icons-ibuffer
   :if ek-use-nerd-fonts
   :ensure t
-  :straight t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 
@@ -98,7 +92,6 @@
 (use-package nerd-icons-corfu
   :if ek-use-nerd-fonts
   :ensure t
-  :straight t
   :after (:all corfu)
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
@@ -126,7 +119,7 @@
 ;; to enable the `modus-themes-include-derivatives-mode' and (ii) do
 ;; not install and activate those other theme packages.
 (use-package modus-themes
-  :straight t
+  :ensure t
   :demand t
   :init
   (modus-themes-include-derivatives-mode 1)
@@ -154,9 +147,8 @@
 ;; Themes for Emacs based on the Catppuccin palette, built on
 ;; modus-themes.
 (use-package modus-catppuccin
-  :straight (:type git
-             :repo "http://gitlab.com/magus/modus-catppuccin.git"
-             :branch "main")
+  :ensure nil
+  :vc (modus-catppuccin :url "https://gitlab.com/magus/modus-catppuccin.git" :branch "main")
   :config
   (modus-themes-load-theme 'catppuccin-latte))
 
@@ -169,7 +161,7 @@
 ;; customizability, and extensibility. Other themes are stylistic
 ;; variations of those.
 (use-package standard-themes
-  :straight t)
+  :ensure t)
 
 
 ;;; HIGHLIGHT INDENT GUIDES
@@ -182,7 +174,7 @@
 ;; properly around hard tabs and mixed indentation, and it behaves
 ;; well in large buffers.
 (use-package highlight-indent-guides
-  :straight t
+  :ensure t
   :diminish highlight-indent-guides-mode
   :custom
   (highlight-indent-guides-method 'character)
@@ -195,7 +187,6 @@
   :defer t
   :ensure t
   :after modus-themes
-  :straight t
   :hook
   (after-init . global-hl-todo-mode)
   :config
@@ -210,10 +201,11 @@
 ;; This minor mode sets background color to strings that match color
 ;; names, e.g. #0000ff is displayed in white with a blue background.
 (use-package ov ;; Required by this patch to rainbow-mode
-  :straight t)
+  :ensure t)
 (use-package rainbow-mode
   :defer nil
-  :straight (rainbow-mode :type git :host github :repo "amosbird/rainbow-mode")
+  :ensure nil
+  :vc (rainbow-mode :url "https://github.com/amosbird/rainbow-mode")
   :diminish rainbow-mode
   :custom
   (rainbow-x-colors nil)

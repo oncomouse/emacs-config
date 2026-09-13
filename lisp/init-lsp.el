@@ -18,7 +18,6 @@
 ;;       https://emacs-lsp.github.io/lsp-mode/
 (use-package lsp-mode
   :ensure t
-  :straight t
   :defer t
   :hook (;; Replace XXX-mode with concrete major mode (e.g. python-mode)
 		 (lsp-mode . lsp-enable-which-key-integration)  ;; Integrate with Which Key
@@ -213,10 +212,8 @@
 ;;; LSP BIOME
 ;; lsp-mode client for Biome.
 (use-package lsp-biome
-    :straight (lsp-biome
-			 :type git
-			 :host github
-			 :repo "cxa/lsp-biome"))
+  :ensure nil
+  :vc (lsp-biome :url "https://github.com/cxa/lsp-biome"))
 
 
 ;;; LSP UI
@@ -226,7 +223,7 @@
 ;; By default, lsp-mode automatically activates lsp-ui unless
 ;; lsp-auto-configure is set to nil.
 (use-package lsp-ui
-  :straight t)
+  :ensure t)
 
 
 (provide 'init-lsp)

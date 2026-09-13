@@ -1,5 +1,7 @@
-;;; init.el --- Emacs-Kick --- A feature rich Emacs config for (neo)vi(m)mers -*- lexical-binding: t; -*-
-;; Author: Rahul Martim Juliato
+;;; init.el --- oncomouse's Emacs config for (neo)vi(m)mers -*- lexical-binding: t; -*-
+;; Author: oncomouse <oncomouse@gmail.com>
+;; URL: https://github.com/oncomouse/emacs-config
+;; Derived from Emacs-Kick by Rahul Martim Juliato.
 
 ;; Version: 0.2.0
 ;; Package-Requires: ((emacs "30.1"))
@@ -34,49 +36,37 @@
 ;; Again, this setup configures Emacs much like how a Vimmer would configure Neovim.
 
 
-;; Emacs comes with a built-in package manager (`package.el'), and we'll use it
-;; when it makes sense. However, `straight.el' is a bit more user-friendly and
-;; reproducible, especially for newcomers and shareable configs like emacs-kick.
-;; So we bootstrap it here.
-(setq package-enable-at-startup nil) ;; Disables the default package manager.
+;; Emacs comes with a built-in package manager (`package.el'), which we use here
+;; to fetch and manage packages. The `use-package' macro (also built into Emacs,
+;; so it needs no bootstrapping) drives it:
+;;
+;;   ;; :ensure installs a package from a package archive (MELPA / ELPA).
+;;   ;; :vc     installs a package straight from its source repository via
+;;   ;;         `package-vc' (built into Emacs 30+), for packages that are not
+;;   ;;         published to any archive we use.
+;;
+;; In Emacs, a package is a collection of Elisp code that extends the editor's
+;; functionality, much like plugins do in Neovim. We register our archives and
+;; initialise `package.el' once, up front, before any `use-package' form runs.
 
-;; Bootstraps `straight.el'
-(setq straight-check-for-modifications nil)
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(straight-use-package '(project :type built-in))
-(straight-use-package 'use-package)
+;; Register MELPA before initialising. GNU ELPA is already in `package-archives'
+;; by default; MELPA offers a much broader range of packages and is the de-facto
+;; standard for Emacs users. Add more archives here as needed.
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(setq use-package-vc-prefer-newest t)
+
+;; Initialise package.el before any `use-package' form runs. On a fresh install
+;; (no cached archive contents yet) refresh so that `:ensure' can find packages.
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
 (use-package general
-  :straight t
+  :ensure t
   :config
   (general-evil-setup)
   (general-create-definer general-nivmap :states '(normal insert visual)))
-
-;; In Emacs, a package is a collection of Elisp code that extends the editor's functionality,
-;; much like plugins do in Neovim. We need to import this package to add package archives.
-(require 'package)
-
-;; Add MELPA (Milkypostman's Emacs Lisp Package Archive) to the list of package archives.
-;; This allows you to install packages from this widely-used repository, similar to how
-;; pip works for Python or npm for Node.js. While Emacs comes with ELPA (Emacs Lisp
-;; Package Archive) configured by default, which contains packages that meet specific
-;; licensing criteria, MELPA offers a broader range of packages and is considered the
-;; standard for Emacs users. You can also add more package archives later as needed.
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 ;; Define a global customizable variable `ek-use-nerd-fonts' to control the use of
 ;; Nerd Fonts symbols throughout the configuration. This boolean variable allows
@@ -95,16 +85,16 @@
 ;;
 ;; (use-package some-package
 ;;   :ensure t     ;; Ensure the package is installed (used with package.el).
-;;   :straight t   ;; Use straight.el to install and manage this package.
+;;   :vc     t     ;; Install from source via package-vc (Emacs 30+).
 ;;   :config       ;; Configuration settings for the package.
 ;;   ;; Additional settings can go here.
 ;; )
 ;;
 ;; This approach simplifies package management, enabling us to easily control
 ;; both built-in (first-party) and external (third-party) packages. While Emacs
-;; is a vast and powerful editor, using `use-package`—especially in combination
-;; with `straight.el`—helps streamline our configuration for better organization,
-;; reproducibility, and customization. As we proceed, you'll see smaller
+;; is a vast and powerful editor, using `use-package`—backed by `package.el` for
+;; archived packages and `package-vc` for packages installed from source—helps
+;; streamline our configuration for better organization and customization. As we proceed, you'll see smaller
 ;; `use-package` declarations for specific packages, which will help us enable
 ;; the desired features and improve our workflow.
 
@@ -870,7 +860,7 @@ standard Emacs window‑selection utilities."
 ;; This package implements hiding or abbreviation of the mode line
 ;; displays (lighters) of minor-modes.
 (use-package diminish
-  :straight t
+  :ensure t
   :init
   (diminish 'visual-line-mode)
   (diminish 'eldoc-mode)
@@ -889,7 +879,7 @@ standard Emacs window‑selection utilities."
 ;; of REPLs, documentation, compilation or shell output: any buffer
 ;; you need instant access to but want kept out of your way!
 (use-package popper
-  :straight t
+  :ensure t
   :bind (("M-`"   . popper-toggle)
 		 ("C-`"   . popper-cycle)
 		 ("C-M-`" . popper-toggle-type))
@@ -922,7 +912,6 @@ standard Emacs window‑selection utilities."
 (defalias 'ap/prev-error 'flycheck-previous-error)
 (use-package flycheck
   :ensure t
-  :straight t
   :hook (prog-mode . flycheck-mode))
 
 
@@ -939,7 +928,7 @@ standard Emacs window‑selection utilities."
 ;; Shell integration (directory tracking, prompt navigation) all works out of the
 ;; box for bash, zsh, fish and nushell.
 (use-package ghostel
-  :straight t
+  :ensure t
   :init
   (setq ghostel-compile-global-mode t)
   (autoload 'ghostel-compile--compilation-start-advice "ghostel-compile")
@@ -978,7 +967,7 @@ standard Emacs window‑selection utilities."
 ;; useful for getting work done with an unfamiliar package by providing for the
 ;; execution of commands by clicking on hyperlinks.
 (use-package hydra
-  :straight t)
+  :ensure t)
 
 
 ;;; TREESITTER-AUTO
@@ -989,7 +978,6 @@ standard Emacs window‑selection utilities."
 ;; programming languages.
 (use-package treesit-auto
   :ensure t
-  :straight t
   :after emacs
   :custom
   (treesit-auto-install 'prompt)
@@ -1015,7 +1003,6 @@ standard Emacs window‑selection utilities."
 ;; a comparable experience in Emacs with its own set of customizations.
 (use-package diff-hl
   :defer t
-  :straight t
   :ensure t
   :hook
   (find-file . (lambda ()
@@ -1048,7 +1035,6 @@ standard Emacs window‑selection utilities."
 ;; extend the powerful capabilities that Magit offers in Emacs.
 (use-package magit
   :ensure t
-  :straight t
   :defer t
   :init
   (sanityinc/fullframe-mode 'magit-status-mode))
@@ -1062,7 +1048,6 @@ standard Emacs window‑selection utilities."
 ;; smooth workflow when working across multiple environments.
 (use-package xclip
   :ensure t
-  :straight t
   :defer t
   :hook
   (after-init . xclip-mode))     ;; Enable xclip mode after initialization.
@@ -1077,7 +1062,7 @@ standard Emacs window‑selection utilities."
 ;; This package offers convenient editing commands much like Eclipse's
 ;; ability to move and duplicate lines or rectangular selections.
 (use-package move-dup
-  :straight t
+  :ensure t
   :general
   ("M-S-k" 'move-dup-move-lines-up
    "M-S-j" 'move-dup-move-lines-down
@@ -1095,7 +1080,7 @@ standard Emacs window‑selection utilities."
 ;; written in Rust. For some introduction and benchmarks, see ripgrep
 ;; is faster than {grep, ag, git grep, ucg, pt, sift}.
 (use-package rg
-  :straight t
+  :ensure t
   :config
   (rg-enable-default-bindings))
 
@@ -1106,7 +1091,7 @@ standard Emacs window‑selection utilities."
 ;; menu containing recently changed/visited files and restores the
 ;; places (e.g., point) of such a file when you revisit it.
 (use-package session
-  :straight t
+  :ensure t
   :hook
   (after-init . session-initialize)
   :init
@@ -1125,7 +1110,7 @@ standard Emacs window‑selection utilities."
 ;; can be corrected from a list of dictionary words presented as a
 ;; completion menu.
 (use-package jinx
-  :straight t
+  :ensure t
   :diminish jinx-mode
   :hook (after-init . global-jinx-mode)
   :custom
@@ -1155,7 +1140,7 @@ standard Emacs window‑selection utilities."
 ;; TextMate's syntax, you can even import most TextMate templates to
 ;; YASnippet. Watch a demo on YouTube.
 (use-package yasnippet
-  :straight t
+  :ensure t
   :config
   (yas-global-mode 1))
 
@@ -1163,7 +1148,7 @@ standard Emacs window‑selection utilities."
 ;;; YASNIPPET SNIPPETS
 ;; This repository contains the official collection of snippets for yasnippet.
 (use-package yasnippet-snippets
-  :straight t)
+  :ensure t)
 
 
 ;;; TEMPEL
@@ -1177,7 +1162,7 @@ standard Emacs window‑selection utilities."
 ;; completion-at-point-functions mechanism which is used by Emacs for
 ;; in-buffer completion.
 (use-package tempel
-  :straight t
+  :ensure t
   :general
   ("M-*" 'tempel-insert
   "M-+" 'tempel-complete)
@@ -1208,7 +1193,7 @@ standard Emacs window‑selection utilities."
 ;; as your stored playlists (e.g., “my favorites”, “wake me up”, “make
 ;; me dance”, …).
 (use-package mpdel
-  :straight t
+  :ensure t
   :diminish mpdel-mode
   :general
   (:states 'normal
@@ -1231,7 +1216,7 @@ standard Emacs window‑selection utilities."
 ;; RET. Using embark-act on a song will add it to the current playlist
 ;; while RET shows information about the song.
 (use-package mpdel-embark
-  :straight t
+  :ensure t
   :after (embark mpdel)
   :config
   (progn
@@ -1249,12 +1234,12 @@ standard Emacs window‑selection utilities."
 ;; to use GitHub Flavored Markdown for enhanced compatibility.
 ;; (use-package markdown-mode
 ;;   :defer t
-;;   :straight t
 ;;   :ensure t
 ;;   :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
 ;;   :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
 (use-package md-mode
-  :straight (md-mode :type git :host github :repo "yibie/md-mode")
+  :ensure nil
+  :vc (md-mode :url "https://github.com/yibie/md-mode")
   :mode ("\\.md\\'" . md-mode)
   :general-config (:states 'motion :keymaps 'md-mode-map
 					 "] ]" 'outline-next-visible-heading
@@ -1267,7 +1252,8 @@ standard Emacs window‑selection utilities."
 ;; tree-sitter grammar is installed once with `M-x typst-ts-mc-install-grammar'
 ;; treesit-auto doesn't cover Typst.
 (use-package typst-ts-mode
-  :straight '(:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
+  :ensure nil
+  :vc (typst-ts-mode :url "https://codeberg.org/meow_king/typst-ts-mode.git" :branch "main")
   :after (transient)
   :custom
   (typst-ts-watch-options "--open")
@@ -1278,26 +1264,27 @@ standard Emacs window‑selection utilities."
 ;;; EMACS FISH
 ;; Emacs major mode for fish shell scripts.
 (use-package fish-mode
-  :straight t)
+  :ensure t)
 
 
 ;;; SVELTE MODE
 ;; Emacs major mode for .svelte files. It's based on mhtml-mode. It
 ;; requires (>= emacs-major-version 26).
 (use-package svelte-ts-mode
-  :straight (svelte-ts-mode :type git :host github :repo "leafOfTree/svelte-ts-mode")
+  :ensure nil
+  :vc (svelte-ts-mode :url "https://github.com/leafOfTree/svelte-ts-mode")
   :config
     (dolist (item svelte-ts-mode-language-source-alist)
     (add-to-list 'treesit-language-source-alist item)))
 
 
-;;; UTILITARY FUNCTION TO INSTALL EMACS-KICK
+;;; UTILITARY FUNCTION TO INSTALL THIS CONFIG
 (defun ek/first-install ()
   "Install tree-sitter grammars and compile packages on first run..."
   (interactive)                                      ;; Allow this function to be called interactively.
   (switch-to-buffer "*Messages*")                    ;; Switch to the *Messages* buffer to display installation messages.
   (message ">>> All required packages installed.")
-  (message ">>> Configuring Emacs-Kick...")
+  (message ">>> Configuring Emacs...")
   (message ">>> Installing Python tooling...")
   (unless (file-exists-p (expand-file-name ".pixi" user-emacs-directory))
 	(shell-command (concat "pixi install -m " (expand-file-name (concat user-emacs-directory "pixi.toml")))))
@@ -1307,7 +1294,7 @@ standard Emacs window‑selection utilities."
   (message ">>> Configuring Nerd Fonts...")
   (require 'nerd-icons)
   (nerd-icons-install-fonts)                         ;; Install all available nerd-fonts
-  (message ">>> Emacs-Kick installed! Press any key to close the installer and open Emacs normally. First boot will compile some extra stuff :)")
+  (message ">>> Emacs config installed! Press any key to close the installer and open Emacs normally. First boot will compile some extra stuff :)")
   (read-key)                                         ;; Wait for the user to press any key.
   (kill-emacs))                                      ;; Close Emacs after installation is complete.
 

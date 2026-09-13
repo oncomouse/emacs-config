@@ -7,7 +7,7 @@
 ;; support for multiple models and backends. It works in the spirit of
 ;; Emacs, available at any time and uniformly in any buffer.
 (use-package gptel
-  :straight t
+  :ensure t
   :general
   (:states '(normal)
 		   "<leader> e g" 'gptel)
@@ -135,7 +135,8 @@ ex: What is in this buffer? @buffer *scratch*"
 ;; (https://gptel.org/manual.html) for details. There is also an
 ;; extensive YouTube demo (28 minutes).
 (use-package gptel-preset-collection
-  :straight (:host github :repo "karthink/gptel-preset-collection")
+  :ensure nil
+  :vc (gptel-preset-collection :url "https://github.com/karthink/gptel-preset-collection")
   :after gptel)
 
 
@@ -156,8 +157,7 @@ ex: What is in this buffer? @buffer *scratch*"
 ;; more tools and MCP servers etc as in regular gptel usage.
 (use-package gptel-agent
   :after gptel
-  :straight (gptel-agent :type git :host github :repo "karthink/gptel-agent"
-            :files (:defaults "agents"))
+  :ensure t
   :defer t
   :init
   (gptel-make-preset 'gptel-agent
@@ -264,7 +264,7 @@ Edit freely."
 
 
 (use-package gptel-inline
-  :straight (gptel-inline :type git :host github :repo "karthink/gptel-inline")
+  :ensure t
   :commands (gptel-inline)
   :general
   ("C-c g" 'gptel-inline)
@@ -286,14 +286,16 @@ Edit freely."
 ;; package facilitating communication with AI models.
 (use-package gptel-openrouter
   :after gptel
-  :straight (gptel-openrouter :type git :host github :repo "darcamo/gptel-openrouter"))
+  :ensure nil
+  :vc (gptel-openrouter :url "https://github.com/darcamo/gptel-openrouter"))
 
 
 ;;; LLM Tool Collection
 ;; A curated collection of tools to empower Emacs-based LLM agents.
 (use-package llm-tool-collection
   :after gptel
-  :straight (llm-tool-collection :type git :host github :repo "skissue/llm-tool-collection")
+  :ensure nil
+  :vc (llm-tool-collection :url "https://github.com/skissue/llm-tool-collection")
   :config
   (mapcar (apply-partially #'apply #'gptel-make-tool)
                   (llm-tool-collection-get-all)))
