@@ -978,5 +978,19 @@ snippets. Use for anything current, or any fact that needs a source."
    :args '((:name "query" :type string :description "The search query."))
    :category "research"))
 
+
+;;; GPTEL MAGIT
+;; Uses the fantastic gptel to extend the equally fantastic magit with
+;; some LLM-powered functionality.
+;;
+;; Functionality is provided for:
+;;
+;; + Generating commit messages
+;; + Explaining diffs
+(use-package gptel-magit
+  :ensure t
+  :hook (magit-mode . gptel-magit-install))
+
+
 (provide 'init-gptel)
 ;;; init-gptel.el ends here
