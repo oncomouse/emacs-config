@@ -773,6 +773,23 @@ to be active.")
     (project-mode-line t))
   (project-vc-extra-root-markers '(".projectile" ".git")))
 
+
+;;; VISUAL LINE MODE
+;; Another alternative to ordinary line continuation is to use word
+;; wrap. Here, each long logical line is divided into two or more
+;; screen lines, or “visual lines”, like in ordinary line
+;; continuation. However, Emacs attempts to wrap the line at word
+;; boundaries near the right window edge. (If the line’s direction is
+;; right-to-left, it is wrapped at the left window edge instead.) This
+;; makes the text easier to read, as wrapping does not occur in the
+;; middle of words.
+(use-package visual-line-mode
+  :ensure nil
+  :diminish 'visual-line-mode
+  :hook
+  (text-mode  . turn-on-visual-line-mode))
+
+
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
 ;; From this point onward, all configurations will be for third-party packages
@@ -862,7 +879,6 @@ standard Emacs window‑selection utilities."
 (use-package diminish
   :ensure t
   :init
-  (diminish 'visual-line-mode)
   (diminish 'eldoc-mode)
   (diminish 'evil-collection-unimpaired-mode))
 

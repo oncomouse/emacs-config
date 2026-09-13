@@ -135,7 +135,6 @@
     "<localleader> p u" #'org-priority-up)
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
 		 (org-mode . (lambda () (setq-local line-spacing 0.1)))
-         ((org-mode md-mode markdown-mode markdown-ts-mode)  . turn-on-visual-line-mode)
          (org-agenda-mode . hl-line-mode)
          (org-agenda-mode . (lambda () (add-hook 'window-configuration-change-hook 'org-agenda-align-tags nil t)))
          (org-agenda-after-show . org-show-entry))
