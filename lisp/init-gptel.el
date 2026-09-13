@@ -274,7 +274,25 @@ Edit freely."
 			"j" #'gptel-inline--response-overlay-down
 			"k" #'gptel-inline--response-overlay-up
 			[remap evil-scroll-down] #'gptel-inline--response-overlay-pagedown
-			[remap evil-scroll-up] #'gptel-inline--response-overlay-pageup))
+			[remap evil-scroll-up] #'gptel-inline--response-overlay-pageup)
+  :config
+  ;; Upstream bug workaround (gptel-inline ~20260831):
+  ;; `gptel-inline--response-overlay-append-chunk' inserts each streamed chunk
+  ;; into the *gptel-inline-response* source buffer WITHOUT binding
+  ;; `inhibit-read-only'. Once a response involves tool calls that buffer is
+  ;; read-only -- the sibling `gptel-inline--response-overlay-reset' guards its
+  ;; erase with `inhibit-read-only' for exactly this reason -- so every chunk's
+  ;; bare `insert' throws, once per chunk:
+  ;;   Error running timer `gptel-inline--update-response-overlay':
+  ;;     (buffer-read-only #<buffer *gptel-inline-response*>)
+  ;; Bind `inhibit-read-only' around it. Harmless no-op when the buffer is
+  ;; writable; drop this once upstream adds the same guard.
+  (when (fboundp 'gptel-inline--response-overlay-append-chunk)
+    (advice-add 'gptel-inline--response-overlay-append-chunk
+                :around
+                (lambda (fn ov chunk)
+                  (let ((inhibit-read-only t))
+                    (funcall fn ov chunk))))))
 
 
 ;;; GPTEL OPENROUTER
