@@ -476,6 +476,7 @@ burying it."
 ;; The following line enables Eldoc globally for all buffers.
 (use-package eldoc
   :ensure nil          ;; This is built-in, no need to fetch it.
+  :diminish eldoc-mode
   :init
   (global-eldoc-mode))
 
@@ -877,10 +878,7 @@ standard Emacs window‑selection utilities."
 ;; This package implements hiding or abbreviation of the mode line
 ;; displays (lighters) of minor-modes.
 (use-package diminish
-  :ensure t
-  :init
-  (diminish 'eldoc-mode)
-  (diminish 'evil-collection-unimpaired-mode))
+  :ensure t)
 
 
 ;;; POPPER
