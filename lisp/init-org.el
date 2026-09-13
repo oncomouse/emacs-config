@@ -135,7 +135,6 @@
     "<localleader> p u" #'org-priority-up)
   :hook ((org-mode . (lambda () (electric-indent-local-mode -1)))
 		 (org-mode . (lambda () (setq-local line-spacing 0.1)))
-         ((org-mode md-mode markdown-mode markdown-ts-mode)  . turn-on-visual-line-mode)
          (org-agenda-mode . hl-line-mode)
          (org-agenda-mode . (lambda () (add-hook 'window-configuration-change-hook 'org-agenda-align-tags nil t)))
          (org-agenda-after-show . org-show-entry))
@@ -314,10 +313,10 @@ Switch to TODO otherwise"
 (use-package citar
   :ensure t
   :after (org)
-  :hook ((org-mode markdown-ts-mode md-mode markdown-mode latex-mode) . citar-capf-setup)
+  :hook ((org-mode markdown-ts-mode latex-mode) . citar-capf-setup)
   :general
-  (general-nivmap :keymaps '(org-mode-map markdown-mode-map markdown-ts-mode md-mode-map)
-	"<C-c> @" 'citar-insert-citation)
+  (general-nivmap :keymaps '(org-mode-map markdown-mode-map)
+	"C-c C-x @" 'citar-insert-citation)
   (general-nmap
 	"<leader> n o n" 'citar-open-notes
 	"<leader> n o f" 'citar-open-files)

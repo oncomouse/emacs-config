@@ -476,6 +476,7 @@ burying it."
 ;; The following line enables Eldoc globally for all buffers.
 (use-package eldoc
   :ensure nil          ;; This is built-in, no need to fetch it.
+  :diminish eldoc-mode
   :init
   (global-eldoc-mode))
 
@@ -532,14 +533,14 @@ burying it."
 										; Posted by Stefan, modified by community. See post 'Timeline' for change history
 										; Retrieved 2026-08-19, License - CC BY-SA 3.0
   :hook
-  ((org-mode markdown-mode md-mode markdown-ts-mode prog-mode) . electric-pair-mode)
-  ((org-mode markdown-mode md-mode markdown-ts-mode) . (lambda ()
+  ((text-mode prog-mode) . electric-pair-mode)
+  ((org-mode markdown-ts-mode) . (lambda ()
 														 (add-function :before-until (local 'electric-pair-inhibit-predicate)
 																	   (lambda (c) (eq c ?<)))))
-  ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
+  ((markdown-ts-mode) . (lambda ()
 			   (add-hook 'post-self-insert-hook
 						 #'markdown-electric-pair-string-delimiter 'append t)))
-  ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
+  ((markdown-ts-mode) . (lambda ()
 			   (setq-local electric-pair-pairs
 						   (append electric-pair-pairs
 								   '((?* . ?*)
@@ -557,7 +558,7 @@ burying it."
   :diminish completion-preview-mode
   :custom
   (completion-preview-minimum-symbol-length 2)
-  :hook (((prog-mode org-mode md-mode markdown-ts-mode markdown-mode) . completion-preview-mode)
+  :hook (((prog-mode org-mode markdown-ts-mode) . completion-preview-mode)
 		 (completion-preview-mode . completion-preview-echo-mode)
          (org-mode . (lambda ()
                        ;; need to overwrite `completion-preview-commands' to trigger
@@ -773,6 +774,23 @@ to be active.")
     (project-mode-line t))
   (project-vc-extra-root-markers '(".projectile" ".git")))
 
+
+;;; VISUAL LINE MODE
+;; Another alternative to ordinary line continuation is to use word
+;; wrap. Here, each long logical line is divided into two or more
+;; screen lines, or “visual lines”, like in ordinary line
+;; continuation. However, Emacs attempts to wrap the line at word
+;; boundaries near the right window edge. (If the line’s direction is
+;; right-to-left, it is wrapped at the left window edge instead.) This
+;; makes the text easier to read, as wrapping does not occur in the
+;; middle of words.
+(use-package visual-line-mode
+  :ensure nil
+  :diminish 'visual-line-mode
+  :hook
+  (text-mode  . turn-on-visual-line-mode))
+
+
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
 ;; From this point onward, all configurations will be for third-party packages
@@ -860,11 +878,7 @@ standard Emacs window‑selection utilities."
 ;; This package implements hiding or abbreviation of the mode line
 ;; displays (lighters) of minor-modes.
 (use-package diminish
-  :ensure t
-  :init
-  (diminish 'visual-line-mode)
-  (diminish 'eldoc-mode)
-  (diminish 'evil-collection-unimpaired-mode))
+  :ensure t)
 
 
 ;;; POPPER
