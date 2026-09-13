@@ -461,7 +461,7 @@ targets."
 	"C-x C-l" #'cape-line
     "C-x C-f" #'cape-file
     "C-x C-k" #'cape-dict)
-  :hook ((md-mode markdown-mode org-mode markdown-ts-mode) .
+  :hook ((org-mode markdown-ts-mode) .
          (lambda ()
            (setq-local completion-at-point-functions (list #'cape-dict #'cape-keyword #'cape-dabbrev)
                        completion-styles '(basic)))))

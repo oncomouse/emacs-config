@@ -313,10 +313,10 @@ Switch to TODO otherwise"
 (use-package citar
   :ensure t
   :after (org)
-  :hook ((org-mode markdown-ts-mode md-mode markdown-mode latex-mode) . citar-capf-setup)
+  :hook ((org-mode markdown-ts-mode latex-mode) . citar-capf-setup)
   :general
-  (general-nivmap :keymaps '(org-mode-map markdown-mode-map markdown-ts-mode md-mode-map)
-	"<C-c> @" 'citar-insert-citation)
+  (general-nivmap :keymaps '(org-mode-map markdown-mode-map)
+	"C-c C-x @" 'citar-insert-citation)
   (general-nmap
 	"<leader> n o n" 'citar-open-notes
 	"<leader> n o f" 'citar-open-files)

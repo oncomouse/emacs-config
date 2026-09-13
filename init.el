@@ -532,14 +532,14 @@ burying it."
 										; Posted by Stefan, modified by community. See post 'Timeline' for change history
 										; Retrieved 2026-08-19, License - CC BY-SA 3.0
   :hook
-  ((org-mode markdown-mode md-mode markdown-ts-mode prog-mode) . electric-pair-mode)
-  ((org-mode markdown-mode md-mode markdown-ts-mode) . (lambda ()
+  ((text-mode prog-mode) . electric-pair-mode)
+  ((org-mode markdown-ts-mode) . (lambda ()
 														 (add-function :before-until (local 'electric-pair-inhibit-predicate)
 																	   (lambda (c) (eq c ?<)))))
-  ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
+  ((markdown-ts-mode) . (lambda ()
 			   (add-hook 'post-self-insert-hook
 						 #'markdown-electric-pair-string-delimiter 'append t)))
-  ((markdown-mode markdown-ts-mode md-mode) . (lambda ()
+  ((markdown-ts-mode) . (lambda ()
 			   (setq-local electric-pair-pairs
 						   (append electric-pair-pairs
 								   '((?* . ?*)
@@ -557,7 +557,7 @@ burying it."
   :diminish completion-preview-mode
   :custom
   (completion-preview-minimum-symbol-length 2)
-  :hook (((prog-mode org-mode md-mode markdown-ts-mode markdown-mode) . completion-preview-mode)
+  :hook (((prog-mode org-mode markdown-ts-mode) . completion-preview-mode)
 		 (completion-preview-mode . completion-preview-echo-mode)
          (org-mode . (lambda ()
                        ;; need to overwrite `completion-preview-commands' to trigger
