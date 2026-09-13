@@ -7,11 +7,12 @@
  '(custom-safe-themes
    '("e184d8607cc9933f2ba8e180699365bdf8b6f311834a9e15c71947b38be0caa3"
 	 default))
+ '(org-fold-catch-invisible-edits 'show nil nil "Customized with use-package org")
  '(package-selected-packages
    '(ace-window affe avy better-jumper cape citar citar-embark
 				citar-org-roam citeproc consult consult-flycheck
-				consult-org-roam corfu diff-hl diminish embark
-				embark-consult embrace evil evil-collection
+				consult-org-roam corfu diff-hl diminish doric-themes
+				embark embark-consult embrace evil evil-collection
 				evil-embrace evil-ghostel evil-goggles evil-lion
 				evil-matchit evil-nerd-commenter evil-numbers evil-org
 				evil-replace-with-register evil-surround
