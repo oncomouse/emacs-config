@@ -532,7 +532,7 @@ burying it."
 										; Posted by Stefan, modified by community. See post 'Timeline' for change history
 										; Retrieved 2026-08-19, License - CC BY-SA 3.0
   :hook
-  ((org-mode markdown-mode md-mode prog-mode) . electric-pair-mode)
+  ((org-mode markdown-mode md-mode markdown-ts-mode prog-mode) . electric-pair-mode)
   ((org-mode markdown-mode md-mode markdown-ts-mode) . (lambda ()
 														 (add-function :before-until (local 'electric-pair-inhibit-predicate)
 																	   (lambda (c) (eq c ?<)))))
@@ -557,7 +557,7 @@ burying it."
   :diminish completion-preview-mode
   :custom
   (completion-preview-minimum-symbol-length 2)
-  :hook (((prog-mode org-mode md-mode markdown-mode) . completion-preview-mode)
+  :hook (((prog-mode org-mode md-mode markdown-ts-mode markdown-mode) . completion-preview-mode)
 		 (completion-preview-mode . completion-preview-echo-mode)
          (org-mode . (lambda ()
                        ;; need to overwrite `completion-preview-commands' to trigger
@@ -1232,19 +1232,11 @@ standard Emacs window‑selection utilities."
 ;; enabling features like syntax highlighting, previews, and more.
 ;; It’s particularly useful for README files, as it can be set
 ;; to use GitHub Flavored Markdown for enhanced compatibility.
-;; (use-package markdown-mode
-;;   :defer t
-;;   :ensure t
-;;   :mode ("README\\.md\\'" . gfm-mode)            ;; Use gfm-mode for README.md files.
-;;   :init (setq markdown-command "pandoc")) ;; Set the Markdown processing command.
-(use-package md-mode
+(use-package markdown-ts-mode
   :ensure nil
-  :vc (md-mode :url "https://github.com/yibie/md-mode")
-  :mode ("\\.md\\'" . md-mode)
-  :general-config (:states 'motion :keymaps 'md-mode-map
-					 "] ]" 'outline-next-visible-heading
-					 "[ [" 'outline-previous-visible-heading
-					 "[ ]" 'outline-up-heading))
+  :mode ("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'")
+  :config
+  (require 'markdown-ts-mode-x))
 
 
 ;;; TYPST-TS-MODE

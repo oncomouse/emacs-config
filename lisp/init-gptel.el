@@ -14,7 +14,7 @@
   :defer t
   :commands (gptel-send gptel)
   :custom
-  (gptel-default-mode 'md-mode)
+  (gptel-default-mode 'markdown-ts-mode)
   (gptel-include-reasoning "*gptel-reasoning*")
   :config
   (gptel-make-openai "cubtram"

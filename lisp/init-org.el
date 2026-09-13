@@ -314,9 +314,9 @@ Switch to TODO otherwise"
 (use-package citar
   :ensure t
   :after (org)
-  :hook ((org-mode md-mode markdown-mode latex-mode) . citar-capf-setup)
+  :hook ((org-mode markdown-ts-mode md-mode markdown-mode latex-mode) . citar-capf-setup)
   :general
-  (general-nivmap :keymaps '(org-mode-map markdown-mode-map md-mode-map)
+  (general-nivmap :keymaps '(org-mode-map markdown-mode-map markdown-ts-mode md-mode-map)
 	"<C-c> @" 'citar-insert-citation)
   (general-nmap
 	"<leader> n o n" 'citar-open-notes
