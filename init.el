@@ -56,6 +56,18 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (setq use-package-vc-prefer-newest t)
 
+;; `loaddefs-generate' copies `;;;###autoload'-tagged non-defun forms verbatim
+;; into a package's generated autoloads file.  `typst-ts-mode' tags a
+;; `define-compilation-mode' form, so evaluating that copy needs `compile.el'
+;; already loaded -- otherwise `package-activate' logs
+;;   Error loading autoloads: (void-function define-compilation-mode)
+;; and abandons the rest of the file, silently dropping every autoload that comes
+;; after it, including `typst-ts-mode' itself and its .typ entry in
+;; `auto-mode-alist'.  An autoload stub for the macro satisfies the copied form
+;; without paying for `compile.el' at startup.  This must stay above
+;; `(package-initialize)'.
+(autoload 'define-compilation-mode "compile" nil t)
+
 ;; Initialise package.el before any `use-package' form runs. On a fresh install
 ;; (no cached archive contents yet) refresh so that `:ensure' can find packages.
 (package-initialize)
