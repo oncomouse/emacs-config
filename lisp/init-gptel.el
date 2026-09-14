@@ -313,7 +313,7 @@ Edit freely."
 (use-package llm-tool-collection
   :after gptel
   :ensure nil
-  :vc (llm-tool-collection :url "https://github.com/skissue/llm-tool-collection")
+  :vc (llm-tool-collection :url "https://github.com/skissue/llm-tool-collection" :rev "main")
   :config
   (mapcar (apply-partially #'apply #'gptel-make-tool)
                   (llm-tool-collection-get-all)))

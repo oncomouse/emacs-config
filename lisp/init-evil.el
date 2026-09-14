@@ -452,6 +452,7 @@
 ;; "Entire Buffer" text objects for emacs `evil`
 (use-package evil-textobj-entire
   :ensure t
+  :vc (evil-text-object-entire :url "https://github.com/NSCoder/evil-textobj-entire" :rev "main")
   :custom
   (evil-textobj-entire-key "g"))
 
