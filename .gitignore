@@ -33,3 +33,4 @@ projects
 .cache/
 .lsp-session*
 **/*.eld
+.vc-upgrade.stamp

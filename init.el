@@ -1015,6 +1015,11 @@ standard Emacs window‑selection utilities."
 (require 'init-base)
 (require 'init-lsp)
 
+;; Keep source-installed (:vc) packages current: `M-x ek-vc-status' shows what is
+;; actually checked out, `M-x ek-vc-upgrade-stale' fast-forwards and rebuilds,
+;; and a gated idle timer does the same on `ek-vc-upgrade-interval-days'.
+(require 'init-vc-maintenance)
+
 ;;; Diff-HL
 ;; The `diff-hl' package provides visual indicators for version control changes
 ;; directly in the margin of the buffer, showing lines added, deleted, or changed.
