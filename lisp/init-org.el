@@ -514,6 +514,5 @@ Switch to TODO otherwise"
   :diminish org-autolist-mode
   :hook (org-mode . org-autolist-mode))
 
-
 (provide 'init-org)
 ;;; init-org.el ends here
