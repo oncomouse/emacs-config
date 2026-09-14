@@ -1317,9 +1317,18 @@ standard Emacs window‑selection utilities."
   (message ">>> Configuring Nerd Fonts...")
   (require 'nerd-icons)
   (nerd-icons-install-fonts)                         ;; Install all available nerd-fonts
+  (message ">>> Configuring Ghostel...")
+  (require 'ghostel)
+  (ghostel-download-module)
+  (message ">>> Configuring GPTel OpenRouter...")
+  (require 'gptel-openrouter)
+  (gptel-openrouter-download-model-data)
   (message ">>> Emacs config installed! Press any key to close the installer and open Emacs normally. First boot will compile some extra stuff :)")
   (read-key)                                         ;; Wait for the user to press any key.
   (kill-emacs))                                      ;; Close Emacs after installation is complete.
+
+
+(setq gc-cons-threshold (or bedrock--initial-gc-threshold 800000))
 
 (provide 'init)
 ;;; init.el ends here
