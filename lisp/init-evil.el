@@ -25,7 +25,7 @@
 			"C-c u" 'universal-argument-more
 			"C-u" 'universal-argument-more)
   (:states '(motion insert replace)
-		   "C-e" 'evil-end-of-line)
+		   "C-e" 'end-of-line)
   (general-nivmap
 	"M-l" 'evil-shift-right-line
 	"M-h" 'evil-shift-left-line)
