@@ -106,6 +106,16 @@ emacs -nw    # terminal
 
 - Check the `*Messages*` buffer (`SPC b b`, then look for `*Messages*`) for
   install/compile errors.
+- **`Error loading autoloads: (void-function define-compilation-mode)`** means a
+  package put `;;;###autoload` on a *non-`defun`* form — `typst-ts-mode` tags a
+  `define-compilation-mode` call, and `loaddefs-generate` copies such forms
+  verbatim into the generated autoloads file. Evaluating that copy requires
+  `compile.el` to be loaded already; otherwise `package-activate` aborts the
+  rest of the file and silently drops every autoload that follows it, including
+  `typst-ts-mode` itself and its `.typ` entry in `auto-mode-alist`. `init.el`
+  registers an autoload stub for the macro **before** `(package-initialize)` to
+  prevent this — if the message comes back, that stub has drifted below
+  `(package-initialize)`.
 
 ## Maintaining packages
 
@@ -115,7 +125,7 @@ inside Emacs with `M-x` (or `SPC SPC` / `M-x` via `vertico`).
 | Kind                | How it's installed          | How to update                        |
 | ------------------- | --------------------------- | ------------------------------------ |
 | **Archive** packages | `:ensure t` from MELPA/ELPA | `package-upgrade-all`                |
-| **Source** packages  | `:vc (…)` from a git repo    | `package-vc-upgrade-all`             |
+| **Source** packages  | `:vc (…)` from a git repo    | `ek-vc-upgrade-stale`                |
 
 ### Refresh the archive list
 
@@ -147,12 +157,50 @@ These are the few packages installed from git rather than an archive
 `rainbow-mode`, `modus-catppuccin`, `gptel-preset-collection`,
 `gptel-openrouter`, `llm-tool-collection`, …):
 
+Prefer the helpers from `lisp/init-vc-maintenance.el`, which fast-forward each
+checkout and rebuild it:
+
 ```
-M-x package-vc-upgrade-all     # pull + rebuild every :vc package
-M-x package-vc-upgrade         # just one (prompts)
-M-x package-vc-log-incoming    # preview what a pull would bring
-M-x package-vc-checkout        # pin a package to a rev / branch / tag
+M-x ek-vc-status           # what each :vc package is ACTUALLY checked out at
+M-x ek-vc-upgrade-stale    # fetch + merge --ff-only + rebuild everything behind
 ```
+
+`ek-vc-upgrade-stale` never merges, resets or stashes: it refuses any checkout
+that is not fast-forwardable or that carries tracked modifications, and reports
+why. The same work also runs automatically on an idle timer at most once every
+`ek-vc-upgrade-interval-days` days (default 7) — set `ek-vc-auto-upgrade` to
+`nil` to keep it strictly manual. The last pass is stamped in
+`~/.emacs.d/.vc-upgrade.stamp`; delete that file to force one.
+
+The built-in equivalents still exist, but read the caveats first:
+
+```
+M-x package-vc-upgrade-all   # pull + rebuild every :vc package
+M-x package-vc-upgrade       # just one (prompts)
+M-x package-vc-log-incoming  # preview what a pull would bring
+```
+
+**Why the helpers exist.** `use-package` installs a `:vc` package exactly once:
+`use-package-vc-install` is wrapped in `(unless (package-installed-p name) ...)`,
+so nothing in the declaration ever refreshes an installed package afterwards.
+And `use-package-vc-prefer-newest` (set in `init.el`) only decides which
+revision a *fresh* install resolves to — it is not an update policy. Without it,
+a `:vc` install resolves to `:last-release`, which `package-vc` defines as
+**the last commit that touched the package's `Version:` header**. For upstreams
+that add features without re-versioning, that is arbitrarily stale: for
+`llm-tool-collection` it was the empty "package scaffolding" commit, so the
+package loaded cleanly and defined nothing at all. The release pin also leaves
+the checkout on a **detached HEAD**, where a later `git pull` fails outright
+with *"You are not currently on a branch."*
+
+Two rules follow:
+
+- Keep `use-package-vc-prefer-newest t`. Use `:rev` only for a deliberate pin
+  (prefer a tag or a SHA), and `:branch` only for a genuinely non-default
+  branch — note that `:branch` does **not** protect you from the release pin.
+- Trust `M-x ek-vc-status` over your init file. A `:rev` naming a ref that does
+  not exist is silently ignored by `vc-git-clone`: no error, you just get
+  whatever the default branch happens to be.
 
 ### Byte-compiling and native compilation
 
@@ -190,7 +238,7 @@ Run `package-autoremove` after dropping packages from the config.
 1. cd ~/.emacs.d && git pull          # config changes
 2. M-x package-refresh-contents
 3. M-x package-upgrade-all            # MELPA / ELPA
-4. M-x package-vc-upgrade-all         # source packages
+4. M-x ek-vc-upgrade-stale            # source packages (ff-only + rebuild)
 5. M-x package-autoremove
 6. restart Emacs
 ```
