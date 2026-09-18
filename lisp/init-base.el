@@ -455,16 +455,33 @@ targets."
 ;; completion-at-point-functions (Capfs).
 (use-package cape
   :ensure t
-  :commands (cape-keyword cape-dabbrev)
+  :demand t
   :general
   (:states 'insert
-	"C-x C-l" #'cape-line
-    "C-x C-f" #'cape-file
-    "C-x C-k" #'cape-dict)
-  :hook ((org-mode markdown-ts-mode) .
-         (lambda ()
-           (setq-local completion-at-point-functions (list #'cape-dict #'cape-keyword #'cape-dabbrev)
-                       completion-styles '(basic)))))
+		   "C-x C-l" #'cape-line
+		   "C-x C-f" #'cape-file
+		   "C-x C-k" #'cape-dict)
+  :init
+  (defvar ap/textgen-capf '(tempel-complete yasnippet-capf))
+  (defun ap/default-capf (local-capf)
+	"Include default hooks along with LOCAL-CAPF which are combined with `cape-capf-super'.
+
+This adds capfs defined in `ap/textgen-capf' and `cape-file' "
+	(add-hook 'completion-at-point-functions (apply #'cape-capf-super (append ap/textgen-capf local-capf)) 0 'local)
+	(add-hook 'completion-at-point-functions 'cape-file 1 'local))
+  (defun ap/org-mode-capf ()
+	(ap/default-capf '(cape-dict cape-dabbrev))
+	(add-hook 'completion-at-point-functions #'org-roam-complete-link-at-point 1 'local))
+  (defun ap/text-mode-capf ()
+	(ap/default-capf '(cape-dict cape-dabbrev)))
+  (defun ap/prog-mode-capf ()
+	(add-hook 'completion-at-point-functions #'yasnippet-capf -1 'local)
+	(add-hook 'completion-at-point-functions #'tempel-complete -1 'local)
+	(add-hook 'completion-at-point-functions 'cape-file -1 'local))
+  :hook
+  (text-mode . ap/text-mode-capf)
+  (org-mode  . ap/org-mode-capf)
+  (prog-mode . ap/prog-mode-capf))
 
 
 (provide 'init-base)

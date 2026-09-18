@@ -16,20 +16,20 @@
 				evil-embrace evil-ghostel evil-goggles evil-lion
 				evil-matchit evil-nerd-commenter evil-numbers evil-org
 				evil-replace-with-register evil-surround
-				evil-text-object-entire fish-mode
-				flycheck general ghostel gptel gptel-agent
-				gptel-inline gptel-magit gptel-openrouter
-				gptel-preset-collection highlight-indent-guides
-				hl-todo hydra jinx llm-tool-collection lsp-biome
-				lsp-mode lsp-ui magit marginalia md-mode
-				modus-catppuccin modus-themes move-dup mpdel
-				mpdel-embark nerd-icons nerd-icons-completion
-				nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer
-				orderless org-autolist org-roam ov ox-pandoc popper
+				evil-text-object-entire fish-mode flycheck general
+				ghostel gptel gptel-agent gptel-inline gptel-magit
+				gptel-openrouter gptel-preset-collection
+				highlight-indent-guides hl-todo hydra jinx
+				llm-tool-collection lsp-biome lsp-mode lsp-ui magit
+				marginalia md-mode modus-catppuccin modus-themes
+				move-dup mpdel mpdel-embark nerd-icons
+				nerd-icons-completion nerd-icons-corfu
+				nerd-icons-dired nerd-icons-ibuffer orderless
+				org-autolist org-roam ov ox-pandoc popper
 				rainbow-delimiters rainbow-mode rg session
 				standard-themes svelte-ts-mode tab-line-nerd-icons
 				targets tempel treesit-auto typst-ts-mode undo-fu
-				undo-fu-session vertico xclip yasnippet
+				undo-fu-session vertico xclip yasnippet yasnippet-capf
 				yasnippet-snippets))
  '(package-vc-selected-packages
    '((evil-text-object-entire :url

@@ -1182,6 +1182,13 @@ standard Emacs window‑selection utilities."
   :ensure t)
 
 
+;;; YASNIPPET CAPF
+;; A simple capf (Completion-At-Point Function) for completing
+;; yasnippet snippets.
+(use-package yasnippet-capf
+  :ensure t)
+
+
 ;;; TEMPEL
 ;; Tempel is a tiny template package for Emacs, which uses the syntax
 ;; of the Emacs Tempo library. Tempo is an ancient temple of the
@@ -1204,16 +1211,7 @@ standard Emacs window‑selection utilities."
 			"C-<down>" 'tempel-next
 			"C-<up>" 'tempel-previous
 			"M-<down>" 'tempel-next
-			"M-<up>" 'tempel-previous)
-  :init
-  ;; Make a function that adds the tempel expansion function to the
-  ;; list of completion-at-point-functions (capf).
-  (defun tempel-setup-capf ()
-	(add-hook 'completion-at-point-functions #'tempel-expand -1 'local))
-  ;; Put tempel-expand on the list whenever you start programming or
-  ;; writing prose.
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf))
+			"M-<up>" 'tempel-previous))
 
 
 ;;; MPDEL
