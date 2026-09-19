@@ -1326,6 +1326,32 @@ standard Emacs window‑selection utilities."
   (kill-emacs))                                      ;; Close Emacs after installation is complete.
 
 
+;; Handle unicode quotes in document by converting them to ASCII
+(defun ap/convert-quotes-to-straight (&optional string)
+  "Convert Unicode curly quotes to ASCII straight quotes in STRING."
+  (interactive)
+  (if (stringp string)
+	  (replace-regexp-in-string "[\u2018\u2019]" "'"
+								(replace-regexp-in-string "[\u201C\u201D]" "\"" string))
+	(save-excursion
+	  (if (use-region-p)
+		  (replace-regexp "[\u2018\u2019]" "'" nil (region-beginning) (region-end))
+		(replace-regexp "[\u2018\u2019]" "'"))
+	  (if (use-region-p)
+		  (replace-regexp "[\u201C\u201D]" "\"" nil (region-beginning) (region-end))
+		(replace-regexp "[\u201C\u201D]" "\"")))))
+
+(defun ap/advice-yank-before (orig-fn &optional ARG)
+  "Before yank, sanitize the current kill-ring item."
+  (let ((killed (car kill-ring)))
+    (when (stringp killed)
+      (let ((sanitized (ap/convert-quotes-to-straight killed)))
+        (unless (string-equal killed sanitized)
+          (setcar kill-ring sanitized))))))
+
+(advice-add 'yank :before #'ap/advice-yank-before)
+(advice-add 'yank-pop :before #'ap/advice-yank-before)
+
 (setq gc-cons-threshold (or bedrock--initial-gc-threshold 800000))
 
 (provide 'init)
