@@ -239,7 +239,10 @@
 ;; Add/Change/Delete pairs based on expand-region.
 (use-package embrace
   :ensure t
-  :hook (org-mode . embrace-org-mode-hook)
+  :hook
+  (org-mode . embrace-org-mode-hook)
+  ((markdown-ts-mode org-mode) . (lambda ()
+								   (embrace-add-pair ?d "---" "---")))
   :general
   ("C-," 'embrace-commander))
 
