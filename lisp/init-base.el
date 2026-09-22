@@ -333,9 +333,8 @@
   (:keymaps 'embark-general-map
 			"/" 'consult-ripgrep)
   :config
-  ;; Use embark for completion help
-  (with-eval-after-load 'which-key
-	(setq prefix-help-command #'embark-prefix-help-command))
+  ;; NOTE: `prefix-help-command' is claimed at the end of this section rather than
+  ;; inside this :config, so that it never depends on embark itself having loaded.
   (defun embark-which-key-indicator ()
 	"An embark indicator that displays keymaps using which-key.
 The which-key help message will show the type and value of the
@@ -384,6 +383,29 @@ targets."
   ;; candidate you select
   (with-eval-after-load 'avy
 	(setf (alist-get ?. avy-dispatch-alist) 'bedrock/avy-action-embark)))
+
+;; Embark owns "press C-h after a prefix" help.  Two things have to be true for
+;; that to stick, which is why this lives at the top level of the Embark section
+;; rather than inside the `use-package embark' :config above:
+;;
+;; 1. It must not be gated on embark being loaded.  A `with-eval-after-load'
+;;    buried in embark's :config only runs when embark loads, so on a session
+;;    where nothing triggers embark first, `prefix-help-command' stays whatever
+;;    which-key set, and the Embark behaviour only shows up after the first
+;;    `embark-act' finally loads the package.
+;; 2. `which-key-use-C-h-commands' must be nil.  Its default is t, and the
+;;    `which-key-mode' enable body (which-key.el, shipped with Emacs 30+) saves
+;;    the current `prefix-help-command' into `which-key--prefix-help-cmd-backup'
+;;    and then overwrites `prefix-help-command' with `which-key-C-h-dispatch'.
+;;    With this option nil which-key leaves `prefix-help-command' alone entirely.
+;;
+;; Which-key keeps working as usual: the popup still shows on the idle timer and
+;; still pages with <f5>/<f4>.  Only the C-h paging keymap inside the popup
+;; (`C-h d', `C-h c', ...) goes away, since C-h now belongs to Embark.
+(with-eval-after-load 'which-key
+  ;; Let Embark handle C-h after a prefix key sequence.
+  (setq which-key-use-C-h-commands nil
+	prefix-help-command #'embark-prefix-help-command))
 
 
 ;;; EMBARK-CONSULT
