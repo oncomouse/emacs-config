@@ -238,7 +238,8 @@
 ;;; EMBRACE.EL
 ;; Add/Change/Delete pairs based on expand-region.
 (use-package embrace
-  :ensure t
+  :ensure nil
+  :vc (embrace :url "https://github.com/oncomouse/embrace.el" :rev "master")
   :hook
   (org-mode . embrace-org-mode-hook)
   ((markdown-ts-mode org-mode) . (lambda ()
