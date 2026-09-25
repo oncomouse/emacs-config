@@ -314,6 +314,32 @@ burying it."
   :config
   (desktop-save-mode 1))
 
+;; FIX: restored frames missing modeline + minibuffer (echo area).
+;;
+;; With `frame-resize-pixelwise' t (see early-init.el), `frameset-save'
+;; pins each frame's raw pixel height in the `frameset--text-pixel-height'
+;; parameter, and `frameset--restore-frame' then forces that pixel size at
+;; restore time.  Under a tiling WM (niri) those saved pixel heights are
+;; fractional multiples of the text row height (e.g. 1338 px for 51 rows
+;; = 26.24 px/row), so when the frame is restored with the current font's
+;; real row height the content window (also pixel-pinned) leaves less than
+;; one row for the modeline + minibuffer and those rows render outside the
+;; frame.  Fix: drop the stale pixel-height pin at restore time so height
+;; is restored in character rows, which always match the live font.  The
+;; saved pixel WIDTH is left alone; only the height was mis-accumulating.
+(with-eval-after-load 'frameset
+  (defun ap/frameset-drop-stale-pixel-height (args)
+    "Drop `frameset--text-pixel-height' from `frameset--restore-frame' ARGS.
+See the long comment above for why: the saved pixel height is a stale,
+fractional-of-row-height value that clips the modeline and minibuffer
+rows out of restored frames.  Height then comes from the saved `height'
+frame parameter, in character rows, matching the live font."
+    (setf (car args)
+          (assq-delete-all 'frameset--text-pixel-height (car args)))
+    args)
+  (advice-add 'frameset--restore-frame :filter-args
+              #'ap/frameset-drop-stale-pixel-height))
+
 
 ;;; TAB LINE
 ;; The command global-tab-line-mode toggles the display of a tab line
