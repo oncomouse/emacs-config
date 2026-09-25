@@ -536,7 +536,15 @@ frame parameter, in character rows, matching the live font."
 ;;; ELECTRIC PAIR
 ;; `electric-pair' is an Emacs package that automatically types the closing
 ;; character for paired syntax elements (quotations, brackets, etc).
-(use-package electric-pair
+;;
+;; NOTE: the feature name is `elec-pair', NOT `electric-pair'.  `use-package'
+;; defers `:config' by wrapping it in `with-eval-after-load' for the package's
+;; feature name, and nothing can ever be loaded *as* `electric-pair' (the file
+;; is elec-pair.el and it does (provide 'elec-pair)).  With the old name the
+;; `:config' block below never ran: `electric-pair-mode' still autoloaded from
+;; elec-pair.el through the `:hook' below, so quotes and brackets paired, but
+;; the org emphasis-markers and the custom inhibit predicate were dead code.
+(use-package elec-pair
   :ensure nil
   :init
   (defun markdown-electric-pair-string-delimiter ()
@@ -549,27 +557,33 @@ frame parameter, in character rows, matching the live font."
 	  (save-excursion (insert (make-string 2 last-command-event)))))
   :config
   (defun my/text-electric-pair-inhibit (char)
-	;; Account for buffer-end weirdness
-	(unless (eq (following-char) 0)
-	  (or
-	   ;; (electric-pair-inhibit-if-helps-balance char)
-	   ;; TODO This logic isn't quite right, check out how
-	   ;; `electric-pair-inhibit-if-helps-balance' does it.
-	   ;; (electric-pair-conservative-inhibit char)
-	   ;; Don't pair after before a word
-	   (memq (char-syntax (char-before)) '(?w ?.))
-	   (memq (char-syntax (following-char)) '(?w ?.))
-	   (memq (char-syntax (char-after (- (point) 2))) '(?w ?.)))))
+	"Inhibit pairing of CHAR next to a word or symbol constituent.
+Point is just after the character that was just inserted.  Note that
+`char-before' is nil at buffer start and `char-after' is nil outside
+the buffer, and `char-syntax' signals `wrong-type-argument' on nil,
+so every probe is range-guarded."
+	(let ((touches-word
+		   (lambda (pos)
+		     (and (> pos (point-min))
+			  (<= pos (point-max))
+			  (memq (char-syntax (char-after pos)) '(?w ?.))))))
+	  ;; Nothing after point, so nothing can be paired around: always pair.
+	  (and (not (eobp))
+	   ;; Don't pair right after or right before a word.
+	   (or (funcall touches-word (1- (point)))  ; the char just inserted
+	       (funcall touches-word (point))       ; the char under point
+	       (funcall touches-word (- (point) 2)))))) ; the char before it
   (setq electric-pair-inhibit-predicate #'my/text-electric-pair-inhibit)
-  (modify-syntax-entry ?/ "\"" org-mode-syntax-table)
-  (modify-syntax-entry ?* "\"" org-mode-syntax-table)
-  (modify-syntax-entry ?= "\"" org-mode-syntax-table)
-  (modify-syntax-entry ?+ "\"" org-mode-syntax-table)
-  (modify-syntax-entry ?_ "\"" org-mode-syntax-table)
-  (modify-syntax-entry ?~ "\"" org-mode-syntax-table)
-										; Source - https://stackoverflow.com/a/19715115
-										; Posted by Stefan, modified by community. See post 'Timeline' for change history
-										; Retrieved 2026-08-19, License - CC BY-SA 3.0
+  ;; Teach org's syntax table that its emphasis markers are string-like
+  ;; delimiters, which is what lets `electric-pair-mode' pair them.  This has
+  ;; to run after org is loaded -- `org-mode-syntax-table' does not exist
+  ;; before that, and this `:config' runs whenever elec-pair loads.
+  (with-eval-after-load 'org
+	;; Source - https://stackoverflow.com/a/19715115
+	;; Posted by Stefan, modified by community. See post 'Timeline' for change history
+	;; Retrieved 2026-08-19, License - CC BY-SA 3.0
+	(dolist (char '(?/ ?* ?= ?+ ?_ ?~))
+	  (modify-syntax-entry char "\"" org-mode-syntax-table)))
   :hook
   ((text-mode prog-mode) . electric-pair-mode)
   ((org-mode markdown-ts-mode) . (lambda ()

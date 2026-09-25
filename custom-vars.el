@@ -12,21 +12,21 @@
    '(ace-window affe avy better-jumper cape citar citar-embark
 				citar-org-roam citeproc consult consult-flycheck
 				consult-org-roam corfu diff-hl diminish embark
-				embark-consult embrace evil evil-collection
-				evil-embrace evil-ghostel evil-goggles evil-lion
-				evil-matchit evil-nerd-commenter evil-numbers evil-org
-				evil-replace-with-register evil-surround
-				evil-text-object-entire fish-mode flycheck general
-				ghostel gptel gptel-agent gptel-inline gptel-magit
-				gptel-openrouter gptel-preset-collection
-				highlight-indent-guides hl-todo hydra jinx
-				llm-tool-collection lsp-biome lsp-mode lsp-ui magit
-				marginalia md-mode modus-catppuccin modus-themes
-				move-dup mpdel mpdel-embark nerd-icons
-				nerd-icons-completion nerd-icons-corfu
-				nerd-icons-dired nerd-icons-ibuffer orderless
-				org-autolist org-roam ov ox-pandoc popper
-				rainbow-delimiters rainbow-mode rg session
+				embark-consult embrace enhanced-evil-paredit evil
+				evil-collection evil-embrace evil-ghostel evil-goggles
+				evil-lion evil-matchit evil-nerd-commenter
+				evil-numbers evil-org evil-replace-with-register
+				evil-surround evil-text-object-entire fish-mode
+				flycheck general ghostel gptel gptel-agent
+				gptel-inline gptel-magit gptel-openrouter
+				gptel-preset-collection highlight-indent-guides
+				hl-todo hydra jinx llm-tool-collection lsp-biome
+				lsp-mode lsp-ui magit marginalia md-mode
+				modus-catppuccin modus-themes move-dup mpdel
+				mpdel-embark nerd-icons nerd-icons-completion
+				nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer
+				orderless org-autolist org-roam ov ox-pandoc paredit
+				popper rainbow-delimiters rainbow-mode rg session
 				standard-themes svelte-ts-mode tab-line-nerd-icons
 				targets tempel treesit-auto typst-ts-mode undo-fu
 				undo-fu-session vertico xclip yasnippet yasnippet-capf
