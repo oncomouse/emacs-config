@@ -43,7 +43,7 @@
 
 Otherwise, moves by visual lines."
   :type line
-  (if (or (evil-visual-state-p)
+  (if (or (and (evil-visual-state-p) (eq evil-visual-selection 'line))
 		  current-prefix-arg)
 	  (evil-next-line (or count 1))
 	(evil-next-visual-line count)))
@@ -54,10 +54,10 @@ Otherwise, moves by visual lines."
 
 Otherwise, moves by visual lines."
   :type line
-  (if (or (evil-visual-state-p)
-          current-prefix-arg)
-      (evil-previous-line (or count 1))
-    (evil-previous-visual-line count)))
+  (if (or (and (evil-visual-state-p) (eq evil-visual-selection 'line))
+		  current-prefix-arg)
+	  (evil-previous-line (or count 1))
+	(evil-previous-visual-line count)))
 
 
 ;;;###autoload
