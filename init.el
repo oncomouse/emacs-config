@@ -564,40 +564,109 @@ the buffer, and `char-syntax' signals `wrong-type-argument' on nil,
 so every probe is range-guarded."
 	(let ((touches-word
 		   (lambda (pos)
-		     (and (> pos (point-min))
-			  (<= pos (point-max))
-			  (memq (char-syntax (char-after pos)) '(?w ?.))))))
+			 (and (> pos (point-min))
+				  (<= pos (point-max))
+				  (memq (char-syntax (char-after pos)) '(?w ?.))))))
 	  ;; Nothing after point, so nothing can be paired around: always pair.
 	  (and (not (eobp))
-	   ;; Don't pair right after or right before a word.
-	   (or (funcall touches-word (1- (point)))  ; the char just inserted
-	       (funcall touches-word (point))       ; the char under point
-	       (funcall touches-word (- (point) 2)))))) ; the char before it
+		   ;; Don't pair right after or right before a word.
+		   (or (funcall touches-word (1- (point)))  ; the char just inserted
+			   (funcall touches-word (point))       ; the char under point
+			   (funcall touches-word (- (point) 2)))))) ; the char before it
   (setq electric-pair-inhibit-predicate #'my/text-electric-pair-inhibit)
-  ;; Teach org's syntax table that its emphasis markers are string-like
-  ;; delimiters, which is what lets `electric-pair-mode' pair them.  This has
-  ;; to run after org is loaded -- `org-mode-syntax-table' does not exist
-  ;; before that, and this `:config' runs whenever elec-pair loads.
-  (with-eval-after-load 'org
-	;; Source - https://stackoverflow.com/a/19715115
-	;; Posted by Stefan, modified by community. See post 'Timeline' for change history
-	;; Retrieved 2026-08-19, License - CC BY-SA 3.0
-	(dolist (char '(?/ ?* ?= ?+ ?_ ?~))
-	  (modify-syntax-entry char "\"" org-mode-syntax-table)))
+  ;; Org emphasis markers are paired EXPLICITLY, not by faking string syntax.
+  ;;
+  ;; The usual recipe (modify-syntax-entry ?/ "\"" org-mode-syntax-table) is a
+  ;; trap in org: one unmatched marker marks the whole rest of the buffer as
+  ;; "inside a string", and org is full of unmatched markers -- `*' headlines,
+  ;; `#+', partial emphasis.  From then on `electric-pair--with-syntax-1'
+  ;; ignores the major-mode table and swaps in `electric-pair-text-syntax-table'
+  ;; (default `prog-mode-syntax-table'), where those chars are not fences, and
+  ;; the balance check refuses to skip a closer while nominally in a string.
+  ;; That is why the fence recipe pairs correctly on an empty line and produces
+  ;; doubled closers (`*bold**') in real content.
+  ;;
+  ;; So instead the markers are paired by `ek/org-electric-emphasis' below, which
+  ;; is driven straight from `post-self-insert-hook' and never consults a syntax
+  ;; table for the pairing decision.  That keeps `syntax-ppss' honest and makes
+  ;; pairing and skip-over-the-closer behave the same in every parse state.
+  (defconst ek/org-emphasis-chars '(?/ ?* ?+ ?~ ?= ?_)
+    "Org emphasis markers that should auto-pair.")
+
+  (defun ek/org-headline-star-p ()
+    "Non-nil when the `*' just before point is part of a headline bullet.
+True when only stars, spaces and tabs separate point from the start of the
+line, i.e. we are still inside the leading star sequence.  Point is assumed
+to be just after the `*' that was just inserted."
+    (save-excursion
+      (skip-chars-backward "* \t")
+      (bolp)))
+
+  (defun ek/org-electric-emphasis ()
+    "Auto-pair the org emphasis markers; runs from `post-self-insert-hook'.
+`last-command-event' is the marker just inserted, point is just after it.
+
+Deliberately avoids the usual recipe of making the markers string-fences in
+the major-mode syntax table.  In org an unmatched marker flags the rest of
+the buffer as being inside a string, and org is full of unmatched markers:
+starred headlines, `#+\' keywords, partial emphasis.  Once that happens
+`electric-pair--with-syntax-1' ignores the major-mode table and swaps in
+`electric-pair-text-syntax-table', and the balance check then refuses to
+skip a closer, which is how doubled closers show up in real content.
+Driving this from a hook instead keeps `syntax-ppss' honest and gives the
+same behaviour in every parse state.
+
+Guards, so it stays out of the way:
+  * no pairing when the marker is glued to a word character;
+  * no pairing of a plus right after a hash, where it belongs to a keyword;
+  * no pairing of a star that is a headline bullet."
+    (when (and electric-pair-mode
+               (memq last-command-event ek/org-emphasis-chars))
+      (let* ((marker last-command-event)
+             (before (char-before (1- (point))))  ; char left of the marker
+             (after (char-after))                ; char under point
+             (word (lambda (c) (and c (eq (char-syntax c) ?w)))))
+        (cond
+         ;; The closer was re-typed: drop what we just inserted and step over
+         ;; the closer that is already there.
+         ((eq after marker)
+          (delete-char -1)
+          (forward-char 1))
+         ;; Glued to a word -- leave the lone marker alone.
+         ((or (funcall word before)
+              (funcall word after))
+          nil)
+         ;; `#+keyword' -- the `+' is part of the keyword, not a pair.
+         ((and (eq marker ?+) (eq before ?#))
+          nil)
+         ;; Headline bullet -- a leading `*' opens a heading, not emphasis.
+         ;; Not inside a source block, where a leading `*' is just code.
+         ((and (eq marker ?*)
+               (not (org-in-src-block-p))
+               (ek/org-headline-star-p))
+          nil)
+         (t
+          (save-excursion (insert marker)))))))
   :hook
   ((text-mode prog-mode) . electric-pair-mode)
+  ((org-mode) . (lambda ()
+                  ;; Our handler runs after electric-pair's, and because the
+                  ;; emphasis markers are no longer declared as electric-pair
+                  ;; pairs there is nothing for electric-pair to double up.
+                  (add-hook 'post-self-insert-hook
+                           #'ek/org-electric-emphasis nil t)))
   ((org-mode markdown-ts-mode) . (lambda ()
-														 (add-function :before-until (local 'electric-pair-inhibit-predicate)
-																	   (lambda (c) (eq c ?<)))))
+																													(add-function :before-until (local 'electric-pair-inhibit-predicate)
+																																	   (lambda (c) (eq c ?<)))))
   ((markdown-ts-mode) . (lambda ()
-			   (add-hook 'post-self-insert-hook
-						 #'markdown-electric-pair-string-delimiter 'append t)))
+						  (add-hook 'post-self-insert-hook
+									#'markdown-electric-pair-string-delimiter 'append t)))
   ((markdown-ts-mode) . (lambda ()
-			   (setq-local electric-pair-pairs
-						   (append electric-pair-pairs
-								   '((?* . ?*)
-									 (?_ . ?_)
-									 ))))))
+						  (setq-local electric-pair-pairs
+									  (append electric-pair-pairs
+											  '((?* . ?*)
+												(?_ . ?_)
+												))))))
 
 
 ;;; COMPLETION PREVIEW
