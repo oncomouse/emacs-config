@@ -647,6 +647,37 @@ Guards, so it stays out of the way:
           nil)
          (t
           (save-excursion (insert marker)))))))
+  (defun ek/org-electric-delete-emphasis ()
+    "Delete both halves of the emphasis pair surrounding point."
+    (interactive)
+    (delete-char 1)
+    (backward-delete-char 1))
+
+  (defvar ek/org-electric-del-map
+    (let ((map (make-sparse-keymap)))
+      ;; The same trick `electric-pair-mode-map' uses for its own DEL: a
+      ;; filtered menu-item.  When the filter returns nil the lookup falls
+      ;; through to the next keymap, so evil's ordinary DEL still handles
+      ;; every case that is not an adjacent pair.  We cannot just list the
+      ;; markers in `electric-pair-pairs' to get this for free: a direct hit
+      ;; there marks the pair unconditional, which would skip every guard
+      ;; `ek/org-electric-emphasis' implements.
+      (define-key map (kbd "DEL")
+        `(menu-item "" nil :filter
+           ,(lambda (&optional _cmd)
+              (let ((prev (char-before))
+                    (next (char-after)))
+                (when (and prev (memq prev ek/org-emphasis-chars) (eq prev next))
+                  #'ek/org-electric-delete-emphasis)))))
+      map)
+    "Keymap deleting both halves of an adjacent org emphasis marker pair.")
+
+  (define-minor-mode ek/org-electric-del-mode
+    "Make DEL remove both halves of an adjacent org emphasis pair.\n
+The opening and closing marker both go when nothing separates them, the way
+parentheses do; otherwise DEL behaves exactly as it would without this mode."
+    :lighter nil
+    :keymap ek/org-electric-del-map)
   :hook
   ((text-mode prog-mode) . electric-pair-mode)
   ((org-mode) . (lambda ()
@@ -654,7 +685,8 @@ Guards, so it stays out of the way:
                   ;; emphasis markers are no longer declared as electric-pair
                   ;; pairs there is nothing for electric-pair to double up.
                   (add-hook 'post-self-insert-hook
-                           #'ek/org-electric-emphasis nil t)))
+                           #'ek/org-electric-emphasis nil t)
+                  (ek/org-electric-del-mode 1)))
   ((org-mode markdown-ts-mode) . (lambda ()
 																													(add-function :before-until (local 'electric-pair-inhibit-predicate)
 																																	   (lambda (c) (eq c ?<)))))
