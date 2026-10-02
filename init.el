@@ -1213,19 +1213,6 @@ standard Emacs window‑selection utilities."
   (sanityinc/fullframe-mode 'magit-status-mode))
 
 
-;;; XCLIP
-;; `xclip' is an Emacs package that integrates the X Window System clipboard
-;; with Emacs. It allows seamless copying and pasting between Emacs and other
-;; applications using the clipboard. When `xclip' is enabled, any text copied
-;; in Emacs can be pasted in other applications, and vice versa, providing a
-;; smooth workflow when working across multiple environments.
-(use-package xclip
-  :ensure t
-  :defer t
-  :hook
-  (after-init . xclip-mode))     ;; Enable xclip mode after initialization.
-
-
 (require 'init-evil)
 (require 'init-pretty-ui)
 (require 'init-org)
