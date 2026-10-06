@@ -1386,6 +1386,7 @@ standard Emacs window‑selection utilities."
 (use-package paredit
   :ensure t
   :commands paredit-mode
+  :diminish paredit-mode
   :hook
   (emacs-lisp-mode . paredit-mode))
 
@@ -1437,11 +1438,18 @@ standard Emacs window‑selection utilities."
     (add-to-list 'treesit-language-source-alist item)))
 
 
+;;; KDL MODE
+;; Emacs major mode for editing files in the KDL document language.
+(use-package kdl-mode
+  :mode ("\\.kdl\\'")
+  :ensure t)
+
+
 ;;; UTILITARY FUNCTION TO INSTALL THIS CONFIG
 (defun ek/first-install ()
   "Install tree-sitter grammars and compile packages on first run..."
-  (interactive)                                      ;; Allow this function to be called interactively.
-  (switch-to-buffer "*Messages*")                    ;; Switch to the *Messages* buffer to display installation messages.
+  (interactive)	;; Allow this function to be called interactively.
+  (switch-to-buffer "*Messages*") ;; Switch to the *Messages* buffer to display installation messages.
   (message ">>> All required packages installed.")
   (message ">>> Configuring Emacs...")
   (message ">>> Installing Python tooling...")

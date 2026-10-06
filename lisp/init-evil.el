@@ -559,6 +559,7 @@
 ;; features of evil-mode.
 (use-package enhanced-evil-paredit
   :ensure t
+  :diminish enhanced-evil-paredit-mode
   :commands enhanced-evil-paredit-mode
   :hook (paredit-mode . enhanced-evil-paredit-mode))
 
