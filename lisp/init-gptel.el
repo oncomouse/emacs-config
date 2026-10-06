@@ -266,6 +266,9 @@ Edit freely."
 (use-package gptel-inline
   :ensure t
   :commands (gptel-inline)
+  :hook
+  ;; Make sure responses are word-wrapped:
+  ((gptel-mode gptel-inline--response-overlay-mode) . turn-on-visual-line-mode)
   :general
   ("C-c g" 'gptel-inline)
   (:keymaps 'gptel-inline-map
