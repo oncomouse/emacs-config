@@ -20,8 +20,8 @@
 				flycheck general ghostel gptel gptel-agent
 				gptel-inline gptel-magit gptel-openrouter
 				gptel-preset-collection highlight-indent-guides
-				hl-todo hydra jinx llm-tool-collection lsp-biome
-				lsp-mode lsp-ui magit marginalia md-mode
+				hl-todo hydra jinx kdl-mode llm-tool-collection
+				lsp-biome lsp-mode lsp-ui magit marginalia md-mode
 				modus-catppuccin modus-themes move-dup mpdel
 				mpdel-embark nerd-icons nerd-icons-completion
 				nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer
