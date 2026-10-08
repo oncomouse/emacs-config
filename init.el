@@ -945,6 +945,20 @@ to be active.")
   (text-mode  . turn-on-visual-line-mode))
 
 
+;;; SERVER
+;; Emacs server mode allows Emacs to run as a server, enabling faster
+;; startup times for new client instances and allowing multiple
+;; clients to connect to the same Emacs session. You can start the
+;; server by using the command M-x server-start within Emacs or by
+;; launching Emacs with the --daemon option.
+(use-package server
+  :ensure nil
+  :defer 1
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
+
 ;;; ==================== EXTERNAL PACKAGES ====================
 ;;
 ;; From this point onward, all configurations will be for third-party packages
