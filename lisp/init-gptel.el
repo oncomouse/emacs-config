@@ -7,7 +7,6 @@
 ;; support for multiple models and backends. It works in the spirit of
 ;; Emacs, available at any time and uniformly in any buffer.
 (use-package gptel
-  :ensure t
   :general
   (:states '(normal)
 		   "<leader> e g" 'gptel)
@@ -157,7 +156,6 @@ ex: What is in this buffer? @buffer *scratch*"
 ;; more tools and MCP servers etc as in regular gptel usage.
 (use-package gptel-agent
   :after gptel
-  :ensure t
   :defer t
   :init
   (gptel-make-preset 'gptel-agent
@@ -264,7 +262,6 @@ Edit freely."
 
 
 (use-package gptel-inline
-  :ensure t
   :commands (gptel-inline)
   :hook
   ;; Make sure responses are word-wrapped:
@@ -991,7 +988,6 @@ snippets. Use for anything current, or any fact that needs a source."
 ;; + Generating commit messages
 ;; + Explaining diffs
 (use-package gptel-magit
-  :ensure t
   :hook (magit-mode . gptel-magit-install))
 
 

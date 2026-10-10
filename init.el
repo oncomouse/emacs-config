@@ -55,6 +55,7 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (setq use-package-vc-prefer-newest t)
+(setq use-package-always-ensure t)
 
 ;; `loaddefs-generate' copies `;;;###autoload'-tagged non-defun forms verbatim
 ;; into a package's generated autoloads file.  `typst-ts-mode' tags a
@@ -75,7 +76,6 @@
   (package-refresh-contents))
 
 (use-package general
-  :ensure t
   :config
   (general-evil-setup)
   (general-create-definer general-nivmap :states '(normal insert visual)))
@@ -96,11 +96,18 @@
 ;; look like this:
 ;;
 ;; (use-package some-package
-;;   :ensure t     ;; Ensure the package is installed (used with package.el).
-;;   :vc     t     ;; Install from source via package-vc (Emacs 30+).
+;;   :vc     t     ;; Install from source via package-vc (Emacs 30+) instead of
+;;                 ;; from an archive. This also cancels `:ensure'.
+;;   :ensure nil   ;; Install nothing: for packages that ship with Emacs.
 ;;   :config       ;; Configuration settings for the package.
 ;;   ;; Additional settings can go here.
 ;; )
+;;
+;; You won't see `:ensure t' anywhere in this config: `use-package-always-ensure'
+;; is set above, so fetching from MELPA / ELPA is already the default and naming
+;; the keyword would be redundant. The two keywords above are the opt-outs --
+;; `:ensure nil' for built-ins, `:vc' for packages installed from their own
+;; source repository. Please keep it that way when adding a package.
 ;;
 ;; This approach simplifies package management, enabling us to easily control
 ;; both built-in (first-party) and external (third-party) packages. While Emacs
@@ -1045,8 +1052,7 @@ standard Emacs window‑selection utilities."
 ;;; DIMINISH
 ;; This package implements hiding or abbreviation of the mode line
 ;; displays (lighters) of minor-modes.
-(use-package diminish
-  :ensure t)
+(use-package diminish)
 
 
 ;;; POPPER
@@ -1061,7 +1067,6 @@ standard Emacs window‑selection utilities."
 ;; of REPLs, documentation, compilation or shell output: any buffer
 ;; you need instant access to but want kept out of your way!
 (use-package popper
-  :ensure t
   :bind (("M-`"   . popper-toggle)
 		 ("C-`"   . popper-cycle)
 		 ("C-M-`" . popper-toggle-type))
@@ -1093,7 +1098,6 @@ standard Emacs window‑selection utilities."
 (defalias 'ap/next-error 'flycheck-next-error)
 (defalias 'ap/prev-error 'flycheck-previous-error)
 (use-package flycheck
-  :ensure t
   :hook (prog-mode . flycheck-mode))
 
 
@@ -1110,7 +1114,6 @@ standard Emacs window‑selection utilities."
 ;; Shell integration (directory tracking, prompt navigation) all works out of the
 ;; box for bash, zsh, fish and nushell.
 (use-package ghostel
-  :ensure t
   :init
   (setq ghostel-compile-global-mode t)
   (autoload 'ghostel-compile--compilation-start-advice "ghostel-compile")
@@ -1148,8 +1151,7 @@ standard Emacs window‑selection utilities."
 ;; mode of operation. Transient menus are currently more popular. Both are
 ;; useful for getting work done with an unfamiliar package by providing for the
 ;; execution of commands by clicking on hyperlinks.
-(use-package hydra
-  :ensure t)
+(use-package hydra)
 
 
 ;;; TREESITTER-AUTO
@@ -1159,7 +1161,6 @@ standard Emacs window‑selection utilities."
 ;; code parsing capabilities, making it easier to work with modern
 ;; programming languages.
 (use-package treesit-auto
-  :ensure t
   :after emacs
   :custom
   (treesit-auto-install 'prompt)
@@ -1190,7 +1191,6 @@ standard Emacs window‑selection utilities."
 ;; a comparable experience in Emacs with its own set of customizations.
 (use-package diff-hl
   :defer t
-  :ensure t
   :hook
   (find-file . (lambda ()
                  (global-diff-hl-mode)           ;; Enable Diff-HL mode for all files.
@@ -1221,7 +1221,6 @@ standard Emacs window‑selection utilities."
 ;; changes in a visual format. Both of these plugins aim to replicate and
 ;; extend the powerful capabilities that Magit offers in Emacs.
 (use-package magit
-  :ensure t
   :defer t
   :init
   (sanityinc/fullframe-mode 'magit-status-mode))
@@ -1236,7 +1235,6 @@ standard Emacs window‑selection utilities."
 ;; This package offers convenient editing commands much like Eclipse's
 ;; ability to move and duplicate lines or rectangular selections.
 (use-package move-dup
-  :ensure t
   :general
   ("M-S-k" 'move-dup-move-lines-up
    "M-S-j" 'move-dup-move-lines-down
@@ -1254,7 +1252,6 @@ standard Emacs window‑selection utilities."
 ;; written in Rust. For some introduction and benchmarks, see ripgrep
 ;; is faster than {grep, ag, git grep, ucg, pt, sift}.
 (use-package rg
-  :ensure t
   :config
   (rg-enable-default-bindings))
 
@@ -1265,7 +1262,6 @@ standard Emacs window‑selection utilities."
 ;; menu containing recently changed/visited files and restores the
 ;; places (e.g., point) of such a file when you revisit it.
 (use-package session
-  :ensure t
   :hook
   (after-init . session-initialize)
   :init
@@ -1284,7 +1280,6 @@ standard Emacs window‑selection utilities."
 ;; can be corrected from a list of dictionary words presented as a
 ;; completion menu.
 (use-package jinx
-  :ensure t
   :diminish jinx-mode
   :hook (after-init . global-jinx-mode)
   :custom
@@ -1314,22 +1309,19 @@ standard Emacs window‑selection utilities."
 ;; TextMate's syntax, you can even import most TextMate templates to
 ;; YASnippet. Watch a demo on YouTube.
 (use-package yasnippet
-  :ensure t
   :config
   (yas-global-mode 1))
 
 
 ;;; YASNIPPET SNIPPETS
 ;; This repository contains the official collection of snippets for yasnippet.
-(use-package yasnippet-snippets
-  :ensure t)
+(use-package yasnippet-snippets)
 
 
 ;;; YASNIPPET CAPF
 ;; A simple capf (Completion-At-Point Function) for completing
 ;; yasnippet snippets.
-(use-package yasnippet-capf
-  :ensure t)
+(use-package yasnippet-capf)
 
 
 ;;; TEMPEL
@@ -1343,7 +1335,6 @@ standard Emacs window‑selection utilities."
 ;; completion-at-point-functions mechanism which is used by Emacs for
 ;; in-buffer completion.
 (use-package tempel
-  :ensure t
   :general
   ("M-*" 'tempel-insert
   "M-+" 'tempel-complete)
@@ -1365,7 +1356,6 @@ standard Emacs window‑selection utilities."
 ;; as your stored playlists (e.g., “my favorites”, “wake me up”, “make
 ;; me dance”, …).
 (use-package mpdel
-  :ensure t
   :diminish mpdel-mode
   :general
   (:states 'normal
@@ -1388,7 +1378,6 @@ standard Emacs window‑selection utilities."
 ;; RET. Using embark-act on a song will add it to the current playlist
 ;; while RET shows information about the song.
 (use-package mpdel-embark
-  :ensure t
   :after (embark mpdel)
   :config
   (progn
@@ -1398,7 +1387,6 @@ standard Emacs window‑selection utilities."
 ;;; PAREDIT
 ;; Parenthetical Editing in Emacs.
 (use-package paredit
-  :ensure t
   :commands paredit-mode
   :diminish paredit-mode
   :hook
@@ -1437,8 +1425,7 @@ standard Emacs window‑selection utilities."
 
 ;;; EMACS FISH
 ;; Emacs major mode for fish shell scripts.
-(use-package fish-mode
-  :ensure t)
+(use-package fish-mode)
 
 
 ;;; SVELTE MODE
@@ -1455,8 +1442,7 @@ standard Emacs window‑selection utilities."
 ;;; KDL MODE
 ;; Emacs major mode for editing files in the KDL document language.
 (use-package kdl-mode
-  :mode ("\\.kdl\\'")
-  :ensure t)
+  :mode ("\\.kdl\\'"))
 
 
 ;;; UTILITARY FUNCTION TO INSTALL THIS CONFIG

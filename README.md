@@ -122,10 +122,15 @@ emacs -nw    # terminal
 Packages live in two places and are updated differently. Everything below runs
 inside Emacs with `M-x` (or `SPC SPC` / `M-x` via `vertico`).
 
-| Kind                | How it's installed          | How to update                        |
-| ------------------- | --------------------------- | ------------------------------------ |
-| **Archive** packages | `:ensure t` from MELPA/ELPA | `package-upgrade-all`                |
-| **Source** packages  | `:vc (…)` from a git repo    | `ek-vc-upgrade-stale`                |
+| Kind                 | How it's installed                 | How to update         |
+| -------------------- | ---------------------------------- | --------------------- |
+| **Archive** packages | implied `:ensure`, from MELPA/ELPA | `package-upgrade-all` |
+| **Source** packages  | `:vc (…)` from a git repo          | `ek-vc-upgrade-stale` |
+
+`init.el` sets `use-package-always-ensure t`, so fetching from an archive is the
+default and a `use-package` form needs no `:ensure` keyword at all. `:ensure nil`
+is written only for packages that ship with Emacs, and `:vc` only for packages
+installed from their own repository — keep those two opt-outs explicit.
 
 ### Refresh the archive list
 

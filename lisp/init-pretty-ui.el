@@ -25,7 +25,6 @@
 ;; a different color, making it easier to match pairs visually.
 (use-package rainbow-delimiters
   :defer t
-  :ensure t
   :hook
   (prog-mode . rainbow-delimiters-mode))
 
@@ -36,7 +35,6 @@
 ;; distinguish between different file types and functionalities.
 (use-package nerd-icons
   :if ek-use-nerd-fonts                   ;; Load the package only if the user has configured to use nerd fonts.
-  :ensure t                               ;; Ensure the package is installed.
   :defer t)                               ;; Load the package only when needed to improve startup time.
 
 
@@ -46,7 +44,6 @@
 ;; interface by making it easier to identify file types at a glance.
 (use-package nerd-icons-dired
   :if ek-use-nerd-fonts                   ;; Load the package only if the user has configured to use nerd fonts.
-  :ensure t                               ;; Ensure the package is installed.
   :defer t                                ;; Load the package only when needed to improve startup time.
   :hook
   (dired-mode . nerd-icons-dired-mode))
@@ -59,7 +56,6 @@
 ;; making it easier to distinguish between different types of items.
 (use-package nerd-icons-completion
   :if ek-use-nerd-fonts                   ;; Load the package only if the user has configured to use nerd fonts.
-  :ensure t                               ;; Ensure the package is installed.
   :after (:all nerd-icons marginalia)     ;; Load after `nerd-icons' and `marginalia' to ensure proper integration.
   :config
   (nerd-icons-completion-mode)            ;; Activate nerd icons for completion interfaces.
@@ -71,7 +67,6 @@
 ;; to tab-line tabs.
 (use-package tab-line-nerd-icons
   :if ek-use-nerd-fonts
-  :ensure t
   :after (:all nerd-icons)
   :config
   (tab-line-nerd-icons-global-mode))
@@ -81,7 +76,6 @@
 ;; Display nerd icons in ibuffer.
 (use-package nerd-icons-ibuffer
   :if ek-use-nerd-fonts
-  :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 
@@ -91,7 +85,6 @@
 ;; both GUI and terminal. Below is a screenshot of the GUI version.
 (use-package nerd-icons-corfu
   :if ek-use-nerd-fonts
-  :ensure t
   :after (:all corfu)
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
@@ -119,7 +112,6 @@
 ;; to enable the `modus-themes-include-derivatives-mode' and (ii) do
 ;; not install and activate those other theme packages.
 (use-package modus-themes
-  :ensure t
   :demand t
   :init
   (modus-themes-include-derivatives-mode 1)
@@ -160,8 +152,7 @@
 ;; a theme) while bringing to them thematic consistency,
 ;; customizability, and extensibility. Other themes are stylistic
 ;; variations of those.
-(use-package standard-themes
-  :ensure t)
+(use-package standard-themes)
 
 
 ;;; HIGHLIGHT INDENT GUIDES
@@ -174,7 +165,6 @@
 ;; properly around hard tabs and mixed indentation, and it behaves
 ;; well in large buffers.
 (use-package highlight-indent-guides
-  :ensure t
   :diminish highlight-indent-guides-mode
   :custom
   (highlight-indent-guides-method 'character)
@@ -185,7 +175,6 @@
 ;; Highlight TODO and similar keywords in comments and strings
 (use-package hl-todo
   :defer t
-  :ensure t
   :after modus-themes
   :hook
   (after-init . global-hl-todo-mode)
@@ -200,8 +189,7 @@
 ;;; RAINBOW MODE
 ;; This minor mode sets background color to strings that match color
 ;; names, e.g. #0000ff is displayed in white with a blue background.
-(use-package ov ;; Required by this patch to rainbow-mode
-  :ensure t)
+(use-package ov) ;; Required by this patch to rainbow-mode
 (use-package rainbow-mode
   :defer nil
   :ensure nil

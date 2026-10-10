@@ -8,7 +8,6 @@
 ;; operates. This setup configures `evil-mode' to enhance the editing
 ;; experience.
 (use-package evil
-  :ensure t
   :init
   (setq
    evil-undo-system 'undo-fu
@@ -178,7 +177,6 @@
 ;; commands to fit the `evil' style.
 (use-package evil-collection
   :after evil
-  :ensure t
   :diminish 'evil-collection-unimpaired-mode
   :custom
   (evil-collection-binding-overrides '((find-usages :enabled nil)))
@@ -189,7 +187,6 @@
 ;;; EVIL GHOSTEL
 ;; Evil bindings for ghostel
 (use-package evil-ghostel
-  :ensure t
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode)
   :custom
@@ -203,7 +200,6 @@
 ;;; EVIL ORG MODE
 ;; Supplemental evil-mode key-bindings to Emacs org-mode.
 (use-package evil-org
-  :ensure t
   :diminish (evil-org-mode)
   :after org
   :hook (org-mode . (lambda () evil-org-mode))
@@ -229,7 +225,6 @@
 ;; More examples here:
 ;; - https://github.com/emacs-evil/evil-surround?tab=readme-ov-file#examples
 (use-package evil-surround
-  :ensure t
   :after evil-collection
   :config
   (global-evil-surround-mode 1))
@@ -254,7 +249,6 @@
 ;; this package aims at adding the goodies of embrace.el to
 ;; evil-surround and making evil-surround even better.
 (use-package evil-embrace
-  :ensure t
   :after evil-surround
   :config
   (evil-embrace-enable-evil-surround-integration))
@@ -264,7 +258,6 @@
 ;; A Nerd Commenter emulation, help you comment code efficiently. For
 ;; example, you can press “99,ci” to comment out 99 lines.
 (use-package evil-nerd-commenter
-  :ensure t
   :general
   ([remap comment-line] #'evilnc-comment-or-uncomment-lines)
   (general-nvmap "gc" #'evilnc-comment-operator)
@@ -283,7 +276,6 @@
 ;;   numbers within that region will be incremented/decremented (unlike
 ;;   in vim)
 (use-package evil-numbers
-  :ensure t
   :general
   (general-nivmap
 	"C-c +" 'evil-numbers/inc-at-pt
@@ -310,7 +302,6 @@
 ;; navigate and manipulate code blocks.
 ;; Just use % for jumping between matching structures to check it out.
 (use-package evil-matchit
-  :ensure t
   :after evil-collection
   :config
   (global-evil-matchit-mode 1))
@@ -366,7 +357,6 @@
 ;;; EVIL GOGGLES
 ;; evil-goggles-mode displays a visual hint when editing with evil.
 (use-package evil-goggles
-  :ensure t
   :diminish evil-goggles-mode
   :config
   (setq evil-goggles-pulse nil)
@@ -377,7 +367,6 @@
 ;; Override evil-replace-register with a function that uses evil-paste and override evil-paste-pop to allow
 ;; evil-replace-with-register to count as a paste command.
 (use-package evil-replace-with-register
-  :ensure t
   :custom
   (evil-replace-with-register-key (kbd "gr"))
   :config
@@ -455,7 +444,6 @@
 ;;; EVIL TEXTOBJ ENTIRE
 ;; "Entire Buffer" text objects for emacs `evil`
 (use-package evil-textobj-entire
-  :ensure t
   :vc (evil-text-object-entire :url "https://github.com/NSCoder/evil-textobj-entire" :rev "main")
   :custom
   (evil-textobj-entire-key "g"))
@@ -471,7 +459,6 @@
 ;; Use CHAR RET to align with align.el's default rules for the active
 ;; major mode.
 (use-package evil-lion
-  :ensure t
   :config
   (evil-lion-mode))
 
@@ -495,7 +482,6 @@
 ;; Note that this doesn't interfere with Emacs internal undo data,
 ;; which can be error prone.
 (use-package undo-fu
-  :ensure t
   :hook (after-init . undo-fu-mode)
   :custom
   ;; Increase undo history limits to reduce likelihood of data loss
@@ -524,7 +510,6 @@
 ;; This package writes undo/redo information upon file save which is
 ;; restored where possible when the file is loaded again.
 (use-package undo-fu-session
-  :ensure t
   :hook (undo-fu-mode  . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (concat user-emacs-directory "undo-fu-session/"))
@@ -540,7 +525,6 @@
 ;; A configurable jump list implementation for Emacs that can be used
 ;; to easily jump back to previous locations.
 (use-package better-jumper
-  :ensure t
   :diminish (better-jumper-mode better-jumper-local-mode)
   :general
   (:states 'normal
@@ -558,7 +542,6 @@
 ;; Lisp code remains syntactically correct while retaining the editing
 ;; features of evil-mode.
 (use-package enhanced-evil-paredit
-  :ensure t
   :diminish enhanced-evil-paredit-mode
   :commands enhanced-evil-paredit-mode
   :hook (paredit-mode . enhanced-evil-paredit-mode))

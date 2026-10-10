@@ -17,7 +17,6 @@
 ;;       Fortunately, `lsp-mode` has a great resource site:
 ;;       https://emacs-lsp.github.io/lsp-mode/
 (use-package lsp-mode
-  :ensure t
   :defer t
   :hook (;; Replace XXX-mode with concrete major mode (e.g. python-mode)
 		 (lsp-mode . lsp-enable-which-key-integration)  ;; Integrate with Which Key
@@ -222,8 +221,7 @@
 ;;
 ;; By default, lsp-mode automatically activates lsp-ui unless
 ;; lsp-auto-configure is set to nil.
-(use-package lsp-ui
-  :ensure t)
+(use-package lsp-ui)
 
 
 (provide 'init-lsp)

@@ -275,7 +275,6 @@ Switch to TODO otherwise"
 ;; This is another exporter that translates Org-mode file to various
 ;; other formats via Pandoc.
 (use-package ox-pandoc
-  :ensure t
   :after org
   :init
   (add-to-list 'org-export-backends 'pandoc)
@@ -302,7 +301,6 @@ Switch to TODO otherwise"
 ;; HTML and org-mode markup (see Supported output formats for the full
 ;; list).
 (use-package citeproc
-  :ensure t
   :after (org))
 
 
@@ -311,7 +309,6 @@ Switch to TODO otherwise"
 ;; browse and act on BibTeX, BibLaTeX, and CSL JSON bibliographic
 ;; data, and LaTeX, markdown, and org-cite editing support.
 (use-package citar
-  :ensure t
   :after (org)
   :hook ((org-mode markdown-ts-mode latex-mode) . citar-capf-setup)
   :general
@@ -340,7 +337,6 @@ Switch to TODO otherwise"
 ;; minibuffer, and also at-point in org, markdown, and LaTeX buffers.
 (use-package citar-embark
   :defer t
-  :ensure t
   :after (citar embark)
   :diminish citar-embark-mode
   :custom
@@ -359,7 +355,6 @@ Switch to TODO otherwise"
 ;; their personal wiki.
 (use-package org-roam
   :defer t
-  :ensure t
   :custom
   (org-roam-capture-templates
    '(("d" "default" plain
@@ -427,7 +422,6 @@ Switch to TODO otherwise"
 ;;; CITAR ORG ROAM
 ;; This package integrates org-roam with citar; use M-x citar-open-notes to create notes for a citation
 (use-package citar-org-roam
-  :ensure t
   :diminish citar-org-roam-mode
   :custom
   (citar-org-roam-capture-template-key "r")
@@ -470,7 +464,6 @@ Switch to TODO otherwise"
 ;; filter and find notes, preview backlinks as well as forward links,
 ;; and sift through currently open org-roam buffers.
 (use-package consult-org-roam
-  :ensure t
   :diminish consult-org-roam-mode
   :config
   (require 'consult-org-roam)
@@ -510,7 +503,6 @@ Switch to TODO otherwise"
 ;; beginning of a list item deletes the bullet / checkbox, and moves
 ;; the cursor to the end of the previous line.
 (use-package org-autolist
-  :ensure t
   :diminish org-autolist-mode
   :hook (org-mode . org-autolist-mode))
 
