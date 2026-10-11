@@ -937,6 +937,7 @@ to be active.")
 ;; are grouped by project or by default directory.
 (use-package ibuffer-project
   :custom
+  (ibuffer-project-use-cache t)
   (ibuffer-formats
    '((mark modified read-only locked " "
            (name 18 18 :left :elide)
