@@ -922,11 +922,34 @@ to be active.")
 (use-package ibuffer
   :ensure nil
   :defer t
+  :custom
+  (ibuffer-show-empty-filter-groups nil)
   :commands (ibuffer)
   :general
   ("C-x C-b" 'ibuffer)
   :init
   (sanityinc/fullframe-mode 'ibuffer-mode))
+
+
+;;; IBUFFER PROJECT
+;; Emacs package that provides ibuffer filtering and sorting functions
+;; to group buffers by custom functions or regexps. By default buffers
+;; are grouped by project or by default directory.
+(use-package ibuffer-project
+  :custom
+  (ibuffer-formats
+   '((mark modified read-only locked " "
+           (name 18 18 :left :elide)
+           " "
+           (size 9 -1 :right)
+           " "
+           (mode 16 16 :left :elide)
+           " " project-file-relative)))
+  :hook
+  (ibuffer . (lambda ()
+            (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
+            (unless (eq ibuffer-sorting-mode 'project-file-relative)
+              (ibuffer-do-sort-by-project-file-relative)))))
 
 
 ;;; PROJECT
