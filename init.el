@@ -319,7 +319,14 @@ burying it."
   (desktop-path (list user-emacs-directory))
   (desktop-auto-save-timeout 600)
   :config
+  (dolist (symbol '(kill-ring
+					file-name-history
+					org-tags-history
+					minibuffer-history
+					regexp-history))
+	(add-to-list 'desktop-globals-to-save symbol))
   (desktop-save-mode 1))
+
 
 ;; FIX: restored frames missing modeline + minibuffer (echo area).
 ;;
@@ -1254,20 +1261,6 @@ standard Emacs window‑selection utilities."
 (use-package rg
   :config
   (rg-enable-default-bindings))
-
-
-;;; SESSION
-;; When you start Emacs, package Session restores various variables
-;; (e.g., input histories) from your last session. It also provides a
-;; menu containing recently changed/visited files and restores the
-;; places (e.g., point) of such a file when you revisit it.
-(use-package session
-  :hook
-  (after-init . session-initialize)
-  :init
-  (setq session-save-file (locate-user-emacs-file ".session"))
-  (setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-  (setq session-save-file-coding-system 'utf-8))
 
 
 ;;; JINX
