@@ -202,7 +202,7 @@
   (org-use-property-inheritance t) ;; Inherit properties from parents
   ;; org-cite:
   (org-cite-global-bibliography (list dotfiles-bibliography))
-  (org-cite-export-processors '((t csl)))
+  (org-cite-export-processors '((t csl "chicago-notes-bibliography.csl")))
   (org-cite-csl-styles-dir "~/.csl")
   :config
   ;; Open file links in the same frame:
