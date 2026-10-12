@@ -9,7 +9,7 @@
 	 default))
  '(org-fold-catch-invisible-edits 'show nil nil "Customized with use-package org")
  '(package-selected-packages
-   '(ace-window affe avy better-jumper cape citar citar-embark
+   '(ace-window affe avy better-jumper cape casual citar citar-embark
 				citar-org-roam citeproc consult consult-flycheck
 				consult-org-roam corfu diff-hl diminish embark
 				embark-consult embrace enhanced-evil-paredit evil

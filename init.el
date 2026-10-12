@@ -927,6 +927,7 @@ to be active.")
   :commands (ibuffer)
   :general
   ("C-x C-b" 'ibuffer)
+
   :init
   (sanityinc/fullframe-mode 'ibuffer-mode))
 
@@ -1078,6 +1079,35 @@ standard Emacs window‑selection utilities."
 		  ;; -----------------------------------------------------------------
 		  (set-window-text-height win lines)
 		  t)))))
+
+
+;;; CASUAL
+;; Casual is a project to re-imagine the primary user interface for
+;; Emacs using keyboard-driven menus.
+;;
+;; Emacs has many commands that are easy to forget if not used
+;; frequently. Menus are a user interface (UI) affordance that offers
+;; discoverability and recognition. While menus are commonly
+;; associated with mouse-driven UI, the inclusion of Transient
+;; ((transient)Top) in Emacs core allows for building menus that are
+;; keyboard-driven instead. This appeals to users that prefer
+;; keyboard-driven workflows.
+;;
+;; Casual organizes itself primarily around the different built-in
+;; modes Emacs provides. For each mode Casual supports, there is a
+;; bespoke designed library of Transient menus for that mode’s command
+;; set.
+;;
+;; Casual has no aims to be a mutually exclusive user interface. All
+;; existing user interfaces to commands (keybinding, mini-buffer
+;; prompt, mouse menus) are still available to the user.
+(use-package casual
+  :custom
+  (casual-keybinding-primary "C-c o")
+  :general
+  (:keymaps 'ibuffer-mode-map :states 'normal
+			"<leader> t F" 'casual-ibuffer-filter-tmenu
+			"<leader> t s" 'casual-ibuffer-sortby-tmenu))
 
 
 ;;; DIMINISH
