@@ -1433,15 +1433,6 @@ standard Emacs window‑selection utilities."
     (mpdel-embark-setup)))
 
 
-;;; PAREDIT
-;; Parenthetical Editing in Emacs.
-(use-package paredit
-  :commands paredit-mode
-  :diminish paredit-mode
-  :hook
-  (emacs-lisp-mode . paredit-mode))
-
-
 ;;; ==================== LANGUAGE MODES ====================
 
 ;; Here is where I have to install all the different modes to support Emacs syntax highlighting
