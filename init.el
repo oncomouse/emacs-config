@@ -1107,7 +1107,9 @@ standard Emacs window‑selection utilities."
   :general
   (:keymaps 'ibuffer-mode-map :states 'normal
 			"<leader> t F" 'casual-ibuffer-filter-tmenu
-			"<leader> t s" 'casual-ibuffer-sortby-tmenu))
+			"<leader> t s" 'casual-ibuffer-sortby-tmenu)
+  :hook
+  (after-init . casual-init))
 
 
 ;;; DIMINISH
