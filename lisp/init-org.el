@@ -312,7 +312,7 @@ Switch to TODO otherwise"
   :after (org)
   :hook ((org-mode markdown-ts-mode latex-mode) . citar-capf-setup)
   :general
-  (general-nivmap :keymaps '(org-mode-map markdown-mode-map)
+  (:keymaps '(org-mode-map markdown-mode-map)
 	"C-c C-x @" 'citar-insert-citation)
   (general-nmap
 	"<leader> n o n" 'citar-open-notes

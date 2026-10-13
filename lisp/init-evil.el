@@ -25,8 +25,7 @@
 			"C-u" 'universal-argument-more)
   (:states '(motion insert replace)
 		   "C-e" 'end-of-line)
-  (general-nivmap
-	"M-l" 'evil-shift-right-line
+  ("M-l" 'evil-shift-right-line
 	"M-h" 'evil-shift-left-line)
   (:states 'insert
 	"C-y" 'yank
@@ -277,13 +276,12 @@
 ;;   in vim)
 (use-package evil-numbers
   :general
-  (general-nivmap
-	"C-c +" 'evil-numbers/inc-at-pt
-	"C-c =" 'evil-numbers/inc-at-pt
-	"C-c -" 'evil-numbers/dec-at-pt
-	"C-c C-+" 'evil-numbers/inc-at-pt-incremental
-	"C-c C-=" 'evil-numbers/inc-at-pt-incremental
-	"C-c C--" 'evil-numbers/dec-at-pt-incremental)
+  ("C-c +" 'evil-numbers/inc-at-pt
+   "C-c =" 'evil-numbers/inc-at-pt
+   "C-c -" 'evil-numbers/dec-at-pt
+   "C-c C-+" 'evil-numbers/inc-at-pt-incremental
+   "C-c C-=" 'evil-numbers/inc-at-pt-incremental
+   "C-c C--" 'evil-numbers/dec-at-pt-incremental)
   :config
   (defvar-keymap evil-numbers-repeat-map
 	:repeat t

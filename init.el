@@ -77,8 +77,7 @@
 
 (use-package general
   :config
-  (general-evil-setup)
-  (general-create-definer general-nivmap :states '(normal insert visual)))
+  (general-evil-setup))
 
 ;; Define a global customizable variable `ek-use-nerd-fonts' to control the use of
 ;; Nerd Fonts symbols throughout the configuration. This boolean variable allows
