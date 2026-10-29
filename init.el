@@ -1196,6 +1196,7 @@ standard Emacs window‑selection utilities."
 			"t" 'ghostel-project
 			"T" 'ghostel-project-buffer-list)
   :config
+  (add-to-list 'ghostel-eval-cmds '("find-file-other-frame" find-file-other-frame))
   (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
   (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t))
 
