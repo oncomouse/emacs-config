@@ -1164,7 +1164,7 @@ standard Emacs window‑selection utilities."
 
 
 ;;; GHOSTEL
-;; Provides a termainl using is a terminal emulator for Emacs powered by
+;; Provides a terminal emulator for Emacs powered by
 ;; libghostty-vt, the VT engine behind the Ghostty terminal.
 ;;
 ;; It aims to be featureful, fast, robust and correct.
@@ -1206,6 +1206,70 @@ standard Emacs window‑selection utilities."
     (when (> (length (window-list)) 1)
       (delete-window))))
 
+;;; Dedicated ghostel frames: no popper, frame closes when the shell exits.
+(defgroup ap-ghostel-frame nil
+  "Dedicated ghostel terminal frames."
+  :group 'convenience)
+
+(defun ap/popper--ghostel-frame-p ()
+  "Non-nil when the selected frame is a dedicated ghostel frame."
+  (frame-parameter nil 'ap-ghostel-frame))
+
+(defun ap/popper-display-control-p-advice (orig-fn &rest args)
+  "Never let popper claim a buffer displayed in a ghostel frame.
+ORIG-FN is `popper-display-control-p'; ARGS are its arguments."
+  (unless (ap/popper--ghostel-frame-p)
+    (apply orig-fn args)))
+
+(defun ap/popper-update-popups-advice (orig-fn &rest args)
+  "Skip popup bookkeeping while a ghostel frame is selected.
+ORIG-FN is `popper--update-popups'; ARGS are its arguments."
+  (unless (ap/popper--ghostel-frame-p)
+    (apply orig-fn args)))
+
+(with-eval-after-load 'popper
+  (advice-add #'popper-display-control-p :around #'ap/popper-display-control-p-advice)
+  (advice-add #'popper--update-popups     :around #'ap/popper-update-popups-advice))
+
+(defun ap/ghostel-frame-close (buffer _event)
+  "Delete the dedicated frame belonging to ghostel terminal BUFFER.
+Meant for `ghostel-exit-functions', which is run with (BUFFER EVENT)
+when the terminal process exits."
+  (dolist (frame (frame-list))
+    (when (and (frame-live-p frame)
+               (eq (frame-parameter frame 'ap-ghostel-frame) buffer))
+      (delete-frame frame))))
+
+(add-hook 'ghostel-exit-functions #'ap/ghostel-frame-close)
+
+;;;###autoload
+(defun ap/ghostel-frame ()
+  "Open ghostel in a new dedicated frame.
+Popper is disabled in that frame, ghostel fills it entirely, and the
+frame is deleted when the terminal process exits."
+  (interactive)
+  (let ((frame (make-frame '((ap-ghostel-frame . t)   ; marker, refined below
+                             (name . "Ghostel")))))
+    (with-selected-frame frame
+      (let ((buf (ghostel-create)))        ; new shell terminal, returns buffer
+        ;; Point the marker at the buffer so we can find the frame at exit.
+        (set-frame-parameter frame 'ap-ghostel-frame buf)
+        ;; Safety net: also close the frame if the buffer is killed by other
+        ;; means (e.g. M-x kill-buffer), not just process exit.
+        (with-current-buffer buf
+		  (setq tab-line-exclude t) ;; buffer-local exclusion, persists
+		  (tab-line-mode -1) ;; disable tab-line
+		  (setq mode-line-format nil) ;; disable modeline
+          (add-hook 'kill-buffer-hook
+                    (lambda ()
+                      (dolist (f (frame-list))
+                        (when (and (frame-live-p f)
+                                   (eq (frame-parameter f 'ap-ghostel-frame)
+                                       (current-buffer))
+                                   (not (buffer-killing-p)))
+                          (delete-frame f))))
+                    nil t))
+        (switch-to-buffer buf)))))
 
 ;;; HYDRA
 ;; Hydras and transient menus both can provide a temporary menu of commands at
