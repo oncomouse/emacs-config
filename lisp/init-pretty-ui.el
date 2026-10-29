@@ -138,9 +138,39 @@
 ;;; MODUS CATPPUCCIN
 ;; Themes for Emacs based on the Catppuccin palette, built on
 ;; modus-themes.
+;;
+;; The Catppuccin palettes in modus-catppuccin stop at the colour names
+;; Catppuccin actually ships (rosewater ... crust) plus the semantic
+;; mappings in `modus-catppuccin-common-palette-mappings'.  They never
+;; touch the terminal slots (`fg-term-*'/`bg-term-*'), so the
+;; `ansi-color-*' faces -- and every terminal that renders through them,
+;; Ghostel included -- silently keep the values inherited from the base
+;; Modus palette.  Concretely: magenta came out as Modus' #721045 instead
+;; of Catppuccin pink #ea76cb, cyan as #005e8b instead of teal #179299,
+;; and the whole bright row came out as Modus' *-warmer/cooler colours
+;; (bright red was #972500, a brown).  That is why Ghostel looked
+;; "unset": four slots were right and twelve were not.
 (use-package modus-catppuccin
   :ensure nil
   :vc (modus-catppuccin :url "https://gitlab.com/magus/modus-catppuccin.git" :branch "main")
+  :custom
+  (catppuccin-latte-palette-overrides
+   '((fg-term-black subtext1)     (bg-term-black subtext1)      ; regular0 5c5f77
+	 (fg-term-red red)            (bg-term-red red)             ; regular1 d20f39
+	 (fg-term-green green)        (bg-term-green green)         ; regular2 40a02b
+	 (fg-term-yellow yellow)      (bg-term-yellow yellow)       ; regular3 df8e1d
+	 (fg-term-blue blue)          (bg-term-blue blue)           ; regular4 1e66f5
+	 (fg-term-magenta pink)       (bg-term-magenta pink)        ; regular5 ea76cb
+	 (fg-term-cyan teal)          (bg-term-cyan teal)           ; regular6 179299
+	 (fg-term-white surface2)     (bg-term-white surface2)      ; regular7 acb0be
+	 (fg-term-black-bright subtext0)    (bg-term-black-bright subtext0)   ; bright0 6c6f85
+	 (fg-term-red-bright red)           (bg-term-red-bright red)          ; bright1 d20f39
+	 (fg-term-green-bright green)       (bg-term-green-bright green)      ; bright2 40a02b
+	 (fg-term-yellow-bright yellow)     (bg-term-yellow-bright yellow)    ; bright3 df8e1d
+	 (fg-term-blue-bright blue)         (bg-term-blue-bright blue)        ; bright4 1e66f5
+	 (fg-term-magenta-bright pink)      (bg-term-magenta-bright pink)     ; bright5 ea76cb
+	 (fg-term-cyan-bright teal)         (bg-term-cyan-bright teal)        ; bright6 179299
+	 (fg-term-white-bright surface1)    (bg-term-white-bright surface1))) ; bright7 bcc0cc
   :config
   (modus-themes-load-theme 'catppuccin-latte))
 
