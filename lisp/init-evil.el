@@ -189,8 +189,10 @@
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode)
   :custom
-  (evil-ghostel-escape 'evil) ; make ESC always switches to evil normal state
+  (evil-ghostel-escape 'terminal) ; make ESC always switches to evil normal state
   :config
+  (with-eval-after-load 'evil-collection
+	(delete 'evil-ghostel evil-collection-mode-list))
   ;; Make C-q the literal-key escape hatch in insert state.
   (evil-define-key 'insert evil-ghostel-mode-map
 	(kbd "C-q") #'ghostel-send-next-key))

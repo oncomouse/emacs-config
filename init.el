@@ -1191,7 +1191,8 @@ standard Emacs window‑selection utilities."
 	"<leader> t t" 'ghostel)
   (:keymaps 'ghostel-semi-char-mode-map
 			"M-`" 'popper-toggle
-			"M-o" 'other-window)
+			"M-o" 'other-window
+			"C-SPC" (lambda () (interactive) (ghostel-send-key "space" "ctrl")))
   (:keymaps 'project-prefix-map
 			"t" 'ghostel-project
 			"T" 'ghostel-project-buffer-list)
