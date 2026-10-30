@@ -1251,9 +1251,9 @@ Popper is disabled in that frame, ghostel fills it entirely, and the
 frame is deleted when the terminal process exits."
   (interactive)
   (let ((frame (make-frame '((ap-ghostel-frame . t)   ; marker, refined below
-                             (name . "Ghostel")))))
+                             (title-format . "%b")))))
     (with-selected-frame frame
-      (let ((buf (ghostel-create)))        ; new shell terminal, returns buffer
+      (let ((buf (let ((default-directory "~")) (ghostel-create))))        ; new shell terminal, returns buffer
         ;; Point the marker at the buffer so we can find the frame at exit.
         (set-frame-parameter frame 'ap-ghostel-frame buf)
         ;; Safety net: also close the frame if the buffer is killed by other
@@ -1272,6 +1272,27 @@ frame is deleted when the terminal process exits."
                           (delete-frame f))))
                     nil t))
         (switch-to-buffer buf)))))
+
+(defun ap/ghostel--foreground-name ()
+  "Comm of the foreground process in the current ghostel buffer, or nil."
+  (when-let* ((pid (ghostel-foreground-pid)))
+    (alist-get 'comm (process-attributes pid))))
+
+(defun ap/ghostel-buffer-name (title)
+  "Return a foot-style buffer name for a ghostel terminal.
+TITLE is the OSC 2 title, if the terminal reported one."
+  (let* ((dir  (abbreviate-file-name (directory-file-name default-directory)))
+		 (leaf (if (string= dir "/") "/" (file-name-nondirectory dir)))
+		 ;; OSC 2 title (shell integration sets it to the running command);
+		 ;; fall back to the PTY's foreground process name.
+		 (prog (or (and (stringp title) (not (string-empty-p title)) title)
+				   (ap/ghostel--foreground-name))))
+	(if prog
+		(format "*%s*" prog)
+	  (format "*%s*" leaf))))
+
+(with-eval-after-load 'ghostel
+  (setq ghostel-buffer-name-function #'ap/ghostel-buffer-name))
 
 ;;; HYDRA
 ;; Hydras and transient menus both can provide a temporary menu of commands at
