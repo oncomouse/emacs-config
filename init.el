@@ -928,7 +928,10 @@ to be active.")
   ("C-x C-b" 'ibuffer)
 
   :init
-  (sanityinc/fullframe-mode 'ibuffer-mode))
+  (sanityinc/fullframe-mode 'ibuffer-mode)
+  :config
+  (with-eval-after-load 'evil-collection
+	(delete 'ibuffer evil-collection-mode-list)))
 
 
 ;;; IBUFFER PROJECT
