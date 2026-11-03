@@ -926,7 +926,6 @@ to be active.")
   :commands (ibuffer)
   :general
   ("C-x C-b" 'ibuffer)
-
   :init
   (sanityinc/fullframe-mode 'ibuffer-mode)
   :config
