@@ -965,9 +965,10 @@ to be active.")
   :custom
   (when (>= emacs-major-version 30)
     (project-mode-line t))
-  (project-vc-extra-root-markers '(".projectile" ".git"))
+  (project-vc-extra-root-markers '(".project" ".projectile" ".git"))
   (when (>= emacs-major-version 31)
 	(project-list-exclude '("/elpa/" "/\\.eldev/" "/node_modules/"))))
+
 
 ;;; VISUAL LINE MODE
 ;; Another alternative to ordinary line continuation is to use word
