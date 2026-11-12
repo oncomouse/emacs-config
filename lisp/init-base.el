@@ -227,44 +227,50 @@
    [remap imenu]  'consult-imenu
    [remap browse-kill-ring]  'consult-yank-from-kill-ring
    [remap recentf]  'consult-recent-file)
-
   :init
   ;; Enhance register preview with thin lines and no mode line.
   (advice-add #'register-preview :override #'consult-register-window)
-
   ;; Use Consult for xref locations with a preview feature.
   (setq xref-show-xrefs-function #'consult-xref
 		xref-show-definitions-function #'consult-xref)
   :config
-   (defun my/consult-buffer-font (&optional buffer)
-   "Pick a font family for BUFFER (default current buffer), with live preview."
-   (interactive)
-   (let* ((buf (or buffer (current-buffer)))
-          (orig-face (buffer-local-value 'buffer-face-mode-face buf))
-          (orig-mode (buffer-local-value 'buffer-face-mode buf))
-          (selected
-           (consult--read
-            (font-family-list)
-            :prompt (format "Font for %s: " (buffer-name buf))
-            :require-match t
-            :sort t
-            :preview-key 'any
-            :default (plist-get orig-face :family)
-            :state (lambda (action cand)
-                     (when (buffer-live-p buf)
-                       (with-current-buffer buf
-                         (pcase action
-                           ('preview
-                            (if cand
-                                (progn
-                                  (setq buffer-face-mode-face (list :family cand))
-                                  (buffer-face-mode 1))
-                              (setq buffer-face-mode-face orig-face)
-                              (buffer-face-mode (if orig-mode 1 -1)))))))))))
-     (when selected
-       (with-current-buffer buf
-         (setq buffer-face-mode-face (list :family selected))
-         (buffer-face-mode 1))))))
+  ;; Configure initial narrowing per command
+  (defvar consult-initial-narrow-config
+	'((consult-buffer . ?p)))
+  ;; Add initial narrowing hook
+  (defun consult-initial-narrow ()
+	(when-let (key (alist-get this-command consult-initial-narrow-config))
+	  (setq unread-command-events (append unread-command-events (list key 32)))))
+  (add-hook 'minibuffer-setup-hook #'consult-initial-narrow)
+  (defun my/consult-buffer-font (&optional buffer)
+	"Pick a font family for BUFFER (default current buffer), with live preview."
+	(interactive)
+	(let* ((buf (or buffer (current-buffer)))
+		   (orig-face (buffer-local-value 'buffer-face-mode-face buf))
+		   (orig-mode (buffer-local-value 'buffer-face-mode buf))
+		   (selected
+			(consult--read
+			 (font-family-list)
+			 :prompt (format "Font for %s: " (buffer-name buf))
+			 :require-match t
+			 :sort t
+			 :preview-key 'any
+			 :default (plist-get orig-face :family)
+			 :state (lambda (action cand)
+					  (when (buffer-live-p buf)
+						(with-current-buffer buf
+						  (pcase action
+							('preview
+							 (if cand
+								 (progn
+								   (setq buffer-face-mode-face (list :family cand))
+								   (buffer-face-mode 1))
+							   (setq buffer-face-mode-face orig-face)
+							   (buffer-face-mode (if orig-mode 1 -1)))))))))))
+	  (when selected
+		(with-current-buffer buf
+		  (setq buffer-face-mode-face (list :family selected))
+		  (buffer-face-mode 1))))))
 
 
 (use-package consult-hunks

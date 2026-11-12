@@ -962,6 +962,8 @@ to be active.")
 ;; is known as the project root.
 (use-package project
   :ensure nil
+  :general
+  ([remap project-switch-to-buffer] 'consult-project-buffer)
   :custom
   (when (>= emacs-major-version 30)
     (project-mode-line t))
