@@ -1,18 +1,10 @@
 ;;; init-pretty-ui.el --- Themes, colors, fancy lines -*- lexical-binding: t; -*-
 ;;; Commentary:
 
-(defconst catppuccin-to-modus-colors
-  `((base . bg-main)
-	(text . fg-main)
-	(mantle . bg-mode-line-active)
-	(teal . info)
-	(red . err)
-	(yellow . warning)
-	(sky . operator)))
 (defun ap/get-catppuccin-color (fg-key &optional bg-key)
   "Get modus colors based on catppuccin keys passed in FG-KEY and BG-KEY."
-  (let ((fg-val (modus-themes-get-color-value (alist-get fg-key catppuccin-to-modus-colors)))
-		(bg-val (when bg-key (modus-themes-get-color-value (alist-get bg-key catppuccin-to-modus-colors)))))
+  (let ((fg-val (car (alist-get fg-key catppuccin-latte-palette)))
+		(bg-val (when bg-key (car (alist-get bg-key catppuccin-latte-palette)))))
 		(if bg-val
 			`(:background ,bg-val
 						  :foreground ,fg-val)
